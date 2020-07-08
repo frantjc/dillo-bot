@@ -1,4 +1,4 @@
-  discord:
+discord:
   bot:
     redirect_uri: https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=1841683649&scope=bot
     token: ${DISCORD_TOKEN}
