@@ -12,7 +12,7 @@ A bot for Discord server Dillos the Third.
 
 >hint: there are a bunch of useful Java and SpringBoot extensions for VSCode that you can add inside of the editor itself!
 
-On the command line, ensure a correct version of java is on your PATH
+On the command line, ensure a correct version of java is on your PATH:
 ```
 $ java --version
 openjdk 11 2018-09-25
