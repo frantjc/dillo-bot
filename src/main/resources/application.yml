@@ -4,7 +4,10 @@ discord:
     token: {discord_token}
     prefix: /
 github:
-  token: {github_token}
-  repository: 
+  mark_uri: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+  logo_uri: https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png
+  repository:
+    uri: https://github.com/frantjc/dillo-bot
     api: https://api.github.com/repos/frantjc/dillo-bot
+    token: {github_token}
 

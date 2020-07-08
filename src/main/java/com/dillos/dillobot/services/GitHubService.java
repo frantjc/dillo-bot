@@ -28,28 +28,35 @@ public class GitHubService {
     @Value("${github.repository.api}")
     String api;
 
-    @Value("${github.token}")
+    @Value("${github.repository.token}")
     String token;
 
     RestTemplate rest;
+    
+    GitHubUserService gitHubUserService;
 
     @Autowired
-    public GitHubService(RestTemplate rest) {
+    public GitHubService(RestTemplate rest, GitHubUserService gitHubUserService) {
         this.rest = rest;
+        this.gitHubUserService = gitHubUserService;
     }
 
     public List<IssueResponse> getIssues(String state) {
         URI uri = UriComponentsBuilder.fromUriString(api)
-        .path("/issues")
-        .queryParam("state", state)
-        .build().encode().toUri();
+            .path("/issues")
+            .queryParam("state", state)
+            .build().encode().toUri();
 
-        return Optional.ofNullable(
+        List<IssueResponse> response = Optional.ofNullable(
             rest.getForObject(
                 uri,
                 IssueResponse[].class
             )
         ).map(Arrays::asList).orElseGet(ArrayList::new);
+
+        gitHubUserService.saveUsersFrom(response);
+
+        return response;
     }
 
     public IssueResponse createIssue(IssueRequest issue) {
@@ -60,12 +67,16 @@ public class GitHubService {
             .path("/issues")
             .build().encode().toUri();
 
-        return Optional.ofNullable(
+        IssueResponse response = Optional.ofNullable(
             rest.postForObject(
                 uri,
                 new HttpEntity<IssueRequest>(issue, headers),
                 IssueResponse.class
             )
         ).orElseGet(IssueResponse::new);
+
+        gitHubUserService.saveUsersFrom(response);
+
+        return response;
     }
 }

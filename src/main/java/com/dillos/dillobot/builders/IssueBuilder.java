@@ -7,7 +7,6 @@ import lombok.Getter;
 
 @Getter
 public class IssueBuilder {
-    
     String title;
 
     String body;

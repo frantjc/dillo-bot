@@ -41,9 +41,12 @@ public class JDAService {
     @Value("${discord.bot.prefix}")
     String prefix;
 
+    @Value("${discord.bot.token}")
+	String token;
+
     JDA jda;
 
-    UserService userService;
+    DiscordUserService discordUserService;
 
     @Bean("jda")
     public JDA getJda() {
@@ -51,11 +54,11 @@ public class JDAService {
     }
 
     @Autowired
-    public JDAService(UserService userService) {
-        this.userService = userService;
+    public JDAService(DiscordUserService discordUserService) {
+        this.discordUserService = discordUserService;
     }
 
-    public void start(String token) throws LoginException {
+    public void start() throws LoginException {
         this.jda = JDABuilder.createDefault(token).build();
     }
 
@@ -83,25 +86,28 @@ public class JDAService {
 
                         @Override
                         public void onMessageReceived(MessageReceivedEvent event) {
-                            List<String> args = Arrays.stream(
-                                Commandline.translateCommandline(
-                                    event.getMessage().getContentRaw()
-                                )
-                            ).collect(Collectors.toList());
-
                             if (
                                 Arrays.stream(
                                     usage.split(" ")
                                 ).collect(Collectors.toList()).get(0).equals(
-                                    args.get(0)
+                                    Arrays.stream(
+                                        event.getMessage().getContentRaw().split(" ")
+                                    ).collect(Collectors.toList()).get(0)
                                 )
                             ) {
                                 if (event.getAuthor().isBot()) {
                                     log.warn("@Commands can't be sent by bots");
                                     return;
                                 }
+                                event.getChannel().sendTyping();
 
-                                userService.save(
+                                List<String> args = Arrays.stream(
+                                    Commandline.translateCommandline(
+                                        event.getMessage().getContentRaw()
+                                    )
+                                ).collect(Collectors.toList());
+
+                                discordUserService.save(
                                     new UserBuilder()
                                         .setId(event.getAuthor().getId())
                                         .setName(event.getAuthor().getName())
@@ -155,8 +161,15 @@ public class JDAService {
                                     }
                                 } catch (IllegalAccessException | IllegalArgumentException
                                         | InvocationTargetException e) {
-                                            log.warn("{}", e.getLocalizedMessage());
+                                            log.warn("{}", e);
+                                            event.getChannel().sendMessage(
+                                                new EmbedBuilder()
+                                                .setTitle("Command failed")
+                                                .addField("Usage:", "`" + usage + "`", true)
+                                                .build()
+                                            ).queue();
                                 }
+                                event.getChannel().sendTyping().complete();
                             }
                         }
                     });

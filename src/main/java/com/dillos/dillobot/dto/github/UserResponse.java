@@ -1,5 +1,8 @@
 package com.dillos.dillobot.dto.github;
 
+import lombok.Data;
+
+@Data
 public class UserResponse {
     
     String login;
@@ -32,7 +35,7 @@ public class UserResponse {
 
     String events_url;
 
-    String receieved_events_url;
+    String received_events_url;
 
     String type;
 

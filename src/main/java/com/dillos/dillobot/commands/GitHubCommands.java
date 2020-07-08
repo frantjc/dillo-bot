@@ -13,13 +13,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
+@Component
 public class GitHubCommands {
 
     private final Logger log = LoggerFactory.getLogger(GitHubCommands.class);
+
+    @Value("${github.mark_uri}")
+    String githubMarkUri;
+
+    @Value("${github.logo_uri}")
+    String githubLogoUri;
+
+    @Value("${github.repository.uri}")
+    String gitHubRepositoryUri;
 
     GitHubService gitHubService;
 
@@ -28,9 +40,16 @@ public class GitHubCommands {
         this.gitHubService = gitHubService;
     }
 
-    @Command("/repoistory")
+    @Command("/repository")
     public void getRepository(@Channel MessageChannel channel) {
         log.info("/repository");
+
+        EmbedBuilder message = new EmbedBuilder()
+            .setThumbnail(githubMarkUri)
+            .setTitle("GitHub", gitHubRepositoryUri)
+            .setDescription("A link to the GitHub repository for this bot");
+
+        channel.sendMessage(message.build()).queue();
     }
 
     @Command("/issues {state}")
@@ -43,22 +62,23 @@ public class GitHubCommands {
         List<IssueResponse> issues = gitHubService.getIssues(state);
 
         EmbedBuilder message = new EmbedBuilder()
-            .setTitle(state + " issues for dillo-bot");
+            .setTitle(state + " issues for dillo-bot")
+            .setThumbnail(githubLogoUri);
 
         for (IssueResponse issue : issues) {
-            message.addField(issue.getId() + " / " + issue.getTitle(), issue.getBody(), false);
+            message.addField(issue.getId() + " - " + issue.getTitle(), issue.getBody(), false);
         }
 
         channel.sendMessage(message.build()).queue();
     }
 
-    @Command("/createIssue {title} {body}")
-    public void createIssue(
+    @Command("/request {title} {body}")
+    public void request(
         @Channel MessageChannel channel,
         @Arg(required = true) String title,
         @Arg(required = true) String body
     ) {
-        log.info("/createIssue \"{}\" \"{}\"", title, body);
+        log.info("/request \"{}\" \"{}\"", title, body);
 
         IssueResponse issue = gitHubService.createIssue(
             new IssueBuilder()
@@ -70,6 +90,7 @@ public class GitHubCommands {
         channel.sendMessage(
             new EmbedBuilder()
                 .setTitle("issue created successfully", issue.getHtml_url())
+                .setThumbnail(githubLogoUri)
                 .build()
         ).queue();
     }
