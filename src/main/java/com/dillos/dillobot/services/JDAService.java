@@ -14,13 +14,15 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
+import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.exceptions.InvalidCommandPrefixException;
 import com.dillos.dillobot.annotations.Message;
 import com.dillos.dillobot.annotations.Sender;
 
+import org.apache.tools.ant.types.Commandline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -41,9 +43,16 @@ public class JDAService {
 
     JDA jda;
 
+    UserService userService;
+
     @Bean("jda")
-    public JDA jda() throws LoginException {
+    public JDA getJda() {
         return this.jda;
+    }
+
+    @Autowired
+    public JDAService(UserService userService) {
+        this.userService = userService;
     }
 
     public void start(String token) throws LoginException {
@@ -70,10 +79,14 @@ public class JDAService {
                     List<Parameter> expectedParams = Arrays.stream(method.getParameters()).collect(Collectors.toList());
 
                     this.addListeners(new ListenerAdapter() {
+                        boolean shouldInvoke = true;
+
                         @Override
                         public void onMessageReceived(MessageReceivedEvent event) {
                             List<String> args = Arrays.stream(
-                                event.getMessage().getContentRaw().split(" ")
+                                Commandline.translateCommandline(
+                                    event.getMessage().getContentRaw()
+                                )
                             ).collect(Collectors.toList());
 
                             if (
@@ -87,6 +100,14 @@ public class JDAService {
                                     log.warn("@Commands can't be sent by bots");
                                     return;
                                 }
+
+                                userService.save(
+                                    new UserBuilder()
+                                        .setId(event.getAuthor().getId())
+                                        .setName(event.getAuthor().getName())
+                                        .setDiscriminator(event.getAuthor().getDiscriminator())
+                                        .build()
+                                );
 
                                 args.remove(0);
                                 Object[] params = expectedParams.stream().map(param -> {
@@ -108,40 +129,39 @@ public class JDAService {
                                         return args.get(expectedArgs.indexOf(param.getName()));
                                     } else if (
                                         param.isAnnotationPresent(Arg.class)
+                                        && !param.getAnnotation(Arg.class).defaultValue().isEmpty()
+                                    ) {
+                                        return param.getAnnotation(Arg.class).defaultValue();
+                                    } else if (
+                                        param.isAnnotationPresent(Arg.class)
                                         && param.getAnnotation(Arg.class).required()
+                                        && shouldInvoke
                                     ) {
                                         event.getChannel().sendMessage(
                                             new EmbedBuilder()
-                                                .setFooter(usage)
+                                                .setTitle("Invalid command provided")
+                                                .addField("Usage:", "`" + usage + "`", true)
                                                 .build()
                                         ).queue();
                                         log.warn("Missing required @Arg on @Command");
+                                        shouldInvoke = false;
                                     }
                                     return null;
                                 }).toArray(Object[]::new);
 
                                 try {
-                                    method.invoke(command, params);
+                                    if (shouldInvoke) {
+                                        method.invoke(command, params);
+                                    }
                                 } catch (IllegalAccessException | IllegalArgumentException
                                         | InvocationTargetException e) {
-                                            log.warn("{}", e);
+                                            log.warn("{}", e.getLocalizedMessage());
                                 }
                             }
                         }
                     });
                 }
             }
-        }
-    }
-
-    public void addCommand(Class<?>... commands) throws InvalidCommandPrefixException {
-        try {
-            for (Class<?> command : commands) {
-                this.addCommands(command.getDeclaredConstructor().newInstance());
-            }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            log.warn("{}", e);
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.dillos.dillobot;
 
 import com.dillos.dillobot.commands.GitHubCommands;
-import com.dillos.dillobot.commands.DefaultCommands;
+import com.dillos.dillobot.commands.SimpleCommands;
+import com.dillos.dillobot.services.GitHubService;
 import com.dillos.dillobot.services.JDAService;
+import com.dillos.dillobot.services.RestService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +20,15 @@ public class DillobotApplication implements CommandLineRunner {
 
 	JDAService jdaService;
 
+	RestService restService;
+
+	GitHubService gitHubService;
+
 	@Autowired
-	public DillobotApplication(JDAService jdaService) {
+	public DillobotApplication(JDAService jdaService, RestService restService, GitHubService gitHubService) {
 		this.jdaService = jdaService;
+		this.restService = restService;
+		this.gitHubService = gitHubService;
 	}
 
 	public static void main(String[] args) {
@@ -32,9 +40,11 @@ public class DillobotApplication implements CommandLineRunner {
 		jdaService.start(token);
 
 		jdaService.addCommands(
-			new GitHubCommands(),
-			new DefaultCommands()
+			new GitHubCommands(gitHubService),
+			new SimpleCommands()
 		);
+
+		jdaService.getJda().awaitReady();
 	}
 
 }
