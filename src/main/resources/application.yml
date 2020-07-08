@@ -1,7 +1,7 @@
-discord:
+  discord:
   bot:
-    redirect_uri: https://discord.com/api/oauth2/authorize?client_id=730190921236480051&permissions=1841683649&scope=bot
-    token: NzMwMTkwOTIxMjM2NDgwMDUx.XwUrPA.0S5nYMDdgUH7SawS91k6bH1sAYI
+    redirect_uri: https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=1841683649&scope=bot
+    token: ${DISCORD_TOKEN}
     prefix: /
 github:
   mark_uri: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
@@ -9,5 +9,5 @@ github:
   repository:
     uri: https://github.com/frantjc/dillo-bot
     api: https://api.github.com/repos/frantjc/dillo-bot
-    token: 7241043a906094b9ce8c3dcabbd3a0c3bb023306
+    token: ${GITHUB_TOKEN}
 
