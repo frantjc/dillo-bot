@@ -73,30 +73,31 @@ I kind of created my own annotation-driven development pattern for adding comman
 
 Create a class with some commands:
 ```java
-    // src/main/java/com/dillos/dillobot/Dillo
+// src/main/java/com/dillos/dillobot/Dillo
 
-    ...
+...
 
-    public class MyCommands {
+@Component
+public class MyCommands {
 
-        @Command("/myCommand {someArg}")
-        public void myCommand(
-            @Arg(defaultValue = "mine") someArg,
-            @Channel MessageChannel channel
-        ) {
-            channel.sendMessage(someArg).queue();
-        }
-
+    @Command("/myCommand {someArg}")
+    public void myCommand(
+        @Arg(defaultValue = "mine") someArg,
+        @Channel MessageChannel channel
+    ) {
+        channel.sendMessage(someArg).queue();
     }
+
+}
 ```
 
 Add your commands to the bot:
 ```java
-    // src/main/java/com/dillos/dillobot/DillobotApplication.java
+// src/main/java/com/dillos/dillobot/DillobotApplication.java
 
-    ...
+...
 
-    MyCommands myCommands; // add your class with @Command functions here
+    MyCommands myCommands; // add your @Component class with some @Command functions
 
     // @Autowired your commands
     @Autowired
@@ -109,10 +110,10 @@ Add your commands to the bot:
 		this.gitHubCommands = gitHubCommands;
 		this.simpleCommands = simpleCommands;
         this.informationCommands = informationCommands;
-        this.myCommands = myCommands; // instantite them
+        this.myCommands = myCommands; // instantite your commands
     }
     
-    ...
+...
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -127,6 +128,8 @@ Add your commands to the bot:
 
 		jdaService.getJda().awaitReady();
     }
+
+...
 ```
 
 Done! If you are interested in the code behind this, it exists largely in `src/main/java/com/dillos/dillobot/services/JDAService.java` and `src/main/java/com/dillos/dillobot/annotations`.  I think it's pretty cool.
