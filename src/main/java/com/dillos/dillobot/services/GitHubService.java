@@ -54,7 +54,7 @@ public class GitHubService {
             )
         ).map(Arrays::asList).orElseGet(ArrayList::new);
 
-        gitHubUserService.saveUsersFrom(response);
+        // gitHubUserService.saveUsersFrom(response);
 
         return response;
     }
@@ -75,7 +75,7 @@ public class GitHubService {
             )
         ).orElseGet(IssueResponse::new);
 
-        gitHubUserService.saveUsersFrom(response);
+        // gitHubUserService.saveUsersFrom(response);
 
         return response;
     }
