@@ -14,13 +14,17 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
+import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.exceptions.InvalidCommandPrefixException;
 import com.dillos.dillobot.annotations.Message;
 import com.dillos.dillobot.annotations.Sender;
 
+import org.apache.tools.ant.types.Commandline;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -39,14 +43,24 @@ public class JDAService {
     @Value("${discord.bot.prefix}")
     String prefix;
 
+    @Value("${discord.bot.token}")
+	String token;
+
     JDA jda;
 
+    DiscordUserService discordUserService;
+
     @Bean("jda")
-    public JDA jda() throws LoginException {
+    public JDA getJda() {
         return this.jda;
     }
 
-    public void start(String token) throws LoginException {
+    @Autowired
+    public JDAService(DiscordUserService discordUserService) {
+        this.discordUserService = discordUserService;
+    }
+
+    public void start() throws LoginException {
         this.jda = JDABuilder.createDefault(token).build();
     }
 
@@ -70,23 +84,38 @@ public class JDAService {
                     List<Parameter> expectedParams = Arrays.stream(method.getParameters()).collect(Collectors.toList());
 
                     this.addListeners(new ListenerAdapter() {
+                        boolean shouldInvoke = true;
+
                         @Override
                         public void onMessageReceived(MessageReceivedEvent event) {
-                            List<String> args = Arrays.stream(
-                                event.getMessage().getContentRaw().split(" ")
-                            ).collect(Collectors.toList());
-
                             if (
                                 Arrays.stream(
                                     usage.split(" ")
                                 ).collect(Collectors.toList()).get(0).equals(
-                                    args.get(0)
+                                    Arrays.stream(
+                                        event.getMessage().getContentRaw().split(" ")
+                                    ).collect(Collectors.toList()).get(0)
                                 )
                             ) {
                                 if (event.getAuthor().isBot()) {
                                     log.warn("@Commands can't be sent by bots");
                                     return;
                                 }
+                                event.getChannel().sendTyping();
+
+                                List<String> args = Arrays.stream(
+                                    Commandline.translateCommandline(
+                                        event.getMessage().getContentRaw()
+                                    )
+                                ).collect(Collectors.toList());
+
+                                discordUserService.save(
+                                    new UserBuilder()
+                                        .setId(event.getAuthor().getId())
+                                        .setName(event.getAuthor().getName())
+                                        .setDiscriminator(event.getAuthor().getDiscriminator())
+                                        .build()
+                                );
 
                                 args.remove(0);
                                 Object[] params = expectedParams.stream().map(param -> {
@@ -108,40 +137,46 @@ public class JDAService {
                                         return args.get(expectedArgs.indexOf(param.getName()));
                                     } else if (
                                         param.isAnnotationPresent(Arg.class)
+                                        && !param.getAnnotation(Arg.class).defaultValue().isEmpty()
+                                    ) {
+                                        return param.getAnnotation(Arg.class).defaultValue();
+                                    } else if (
+                                        param.isAnnotationPresent(Arg.class)
                                         && param.getAnnotation(Arg.class).required()
+                                        && shouldInvoke
                                     ) {
                                         event.getChannel().sendMessage(
                                             new EmbedBuilder()
-                                                .setFooter(usage)
+                                                .setTitle("Invalid command provided")
+                                                .addField("Usage:", "`" + usage + "`", true)
                                                 .build()
                                         ).queue();
                                         log.warn("Missing required @Arg on @Command");
+                                        shouldInvoke = false;
                                     }
                                     return null;
                                 }).toArray(Object[]::new);
 
                                 try {
-                                    method.invoke(command, params);
+                                    if (shouldInvoke) {
+                                        method.invoke(command, params);
+                                    }
                                 } catch (IllegalAccessException | IllegalArgumentException
                                         | InvocationTargetException e) {
                                             log.warn("{}", e);
+                                            event.getChannel().sendMessage(
+                                                new EmbedBuilder()
+                                                .setTitle("Command failed")
+                                                .addField("Usage:", "`" + usage + "`", true)
+                                                .build()
+                                            ).queue();
                                 }
+                                event.getChannel().sendTyping().complete();
                             }
                         }
                     });
                 }
             }
-        }
-    }
-
-    public void addCommand(Class<?>... commands) throws InvalidCommandPrefixException {
-        try {
-            for (Class<?> command : commands) {
-                this.addCommands(command.getDeclaredConstructor().newInstance());
-            }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
-            log.warn("{}", e);
         }
     }
 }

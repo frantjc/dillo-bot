@@ -1,4 +1,13 @@
 discord:
   bot:
-    token: fake_token
+    redirect_uri: https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=1841683649&scope=bot
+    token: ${DISCORD_TOKEN}
     prefix: /
+github:
+  mark_uri: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+  logo_uri: https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png
+  repository:
+    uri: https://github.com/frantjc/dillo-bot
+    api: https://api.github.com/repos/frantjc/dillo-bot
+    token: ${GITHUB_TOKEN}
+
