@@ -1,13 +1,3 @@
-# var_sources:
-#   - name: dummy
-#     type: dummy
-#     config:
-#       vars:
-#         discord-token: ((discord.token))
-#         discord-channel-id: "((discord.channel.id))"
-#         github-uri: ((github.uri))
-#         github-branch: ((github.branch))
-
 resource_types:
   - name: discord-resource
     type: registry-image
@@ -23,16 +13,19 @@ resources:
   - name: discord-notify
     type: discord-resource
     source:
-      token: ((discord.token))
+      token: ((concourse.discord.token))
+
+env_vars: &env_vars
+  DISCORD_TOKEN: ((discord.token))
+  DISCORD_CLIENT_ID: ((discord.client.id))
+  GITHUB_TOKEN: ((github.branch))
 
 jobs:
-  - name: where-am-i
+  - name: dillo-bot
     plan:
       - get: dillo-bot
-      - task: where-am-i
-        file: dillo-bot/cicd/tasks/where-am-i.yml
-      - get: dillo-bot
       - task: test-bot
+        params: *env_vars
         file: dillo-bot/cicd/tasks/test-bot.yml
         on_failure:
           put: discord-notify
@@ -42,6 +35,7 @@ jobs:
             message: |
               New DilloBot failed his tests
       - task: build-bot
+        params: *env_vars
         file: dillo-bot/cicd/tasks/build-bot.yml
         on_failure:
           put: discord-notify

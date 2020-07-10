@@ -9,6 +9,9 @@ image_resource:
 inputs:
   - name: dillo-bot
 
+caches:
+  - name: dillo-bot
+
 run:
   path: /bin/sh
   args: ["dillo-bot/cicd/tasks/test-bot.sh"]
