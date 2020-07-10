@@ -11,6 +11,7 @@ inputs:
 
 caches:
   - name: dillo-bot
+  - path: .m2/
 
 run:
   path: /bin/sh
