@@ -4,7 +4,7 @@
 #     config:
 #       vars:
 #         discord-token: ((discord.token))
-#         discord-channel-id: ((discord.channel.id))
+#         discord-channel-id: "((discord.channel.id))"
 #         github-uri: ((github.uri))
 #         github-branch: ((github.branch))
 
@@ -37,7 +37,7 @@ jobs:
         on_failure:
           put: discord-notify
           params:
-            channel: ((discord.channel.id))
+            channel: "((discord.channel.id))"
             title: FAIL
             message: |
               New DilloBot failed his tests
@@ -46,7 +46,7 @@ jobs:
         on_failure:
           put: discord-notify
           params:
-            channel: ((discord.channel.id))
+            channel: "((discord.channel.id))"
             title: FAIL
             message: |
               New DilloBot could not be built
@@ -55,23 +55,23 @@ jobs:
         on_failure:
           put: discord-notify
           params:
-            channel: ((discord.channel.id))
+            channel: "((discord.channel.id))"
             title: FAIL
             message: |
-              Previos DilloBot refused to die
+              Previous DilloBot refused to die
       - task: start-bot
         file: dillo-bot/cicd/tasks/start-bot.yml
         on_failure:
           put: discord-notify
           params:
-            channel: ((discord.channel.id))
+            channel: "((discord.channel.id))"
             title: FAIL
             message: |
               New DilloBot was failed to start
         on_success:
           put: discord-notify
           params:
-            channel: ((discord.channel.id))
+            channel: "((discord.channel.id))"
             title: Success
             message: |
               New DilloBot up and running!
