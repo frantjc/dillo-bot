@@ -26,6 +26,10 @@ resources:
       token: ((discord.token))
 
 jobs:
+  - name: where-am-i
+    plan:
+      - task: where-am-i
+        file: dillo-bot/cicd/tasks/where-am-i.yml
   - name: test-bot
     plan:
       - get: dillo-bot
