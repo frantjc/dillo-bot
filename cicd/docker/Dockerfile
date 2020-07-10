@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-alpine as build
+FROM openjdk:11.0.7-jdk-slim as build
 WORKDIR /dillo-bot
 
 COPY ../../mvwn .
@@ -8,7 +8,7 @@ COPY ../../src src
 
 RUN ./mvwn install -DskipTests
 
-FROM openjdk:11-jdk-alpine
+FROM openjdk:11.0.7-jdk-slim
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
 ARG JAR=../../target/*.jar
