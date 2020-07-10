@@ -7,4 +7,5 @@ image_resource:
     repository: openjdk
 
 run:
-  path: dillo-bot/cicd/tasks/stop-bot.sh
+  path: /bin/sh
+  args: [" dillo-bot/cicd/tasks/stop-bot.sh"]

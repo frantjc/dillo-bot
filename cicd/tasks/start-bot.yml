@@ -10,4 +10,5 @@ inputs:
   - name: target
 
 run:
-  path: dillo-bot/cicd/tasks/start-bot.sh
+  path: /bin/sh
+  args: [" dillo-bot/cicd/tasks/start-bot.sh"]
