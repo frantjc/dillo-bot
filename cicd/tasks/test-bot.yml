@@ -10,7 +10,6 @@ inputs:
   - name: dillo-bot
 
 caches:
-  - path: dillo-bot
   - path: .m2/
 
 run:
