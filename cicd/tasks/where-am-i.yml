@@ -6,6 +6,9 @@ image_resource:
   source:
     repository: openjdk
 
+inputs:
+  - name: dillo-bot
+
 run:
   path: /bin/sh
   args: ["dillo-bot/cicd/tasks/where-am-i.sh"]

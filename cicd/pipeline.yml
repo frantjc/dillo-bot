@@ -33,7 +33,6 @@ jobs:
   - name: test-bot
     plan:
       - get: dillo-bot
-        trigger: true
       - task: test-bot
         file: dillo-bot/cicd/tasks/test-bot.yml
         on_failure:
