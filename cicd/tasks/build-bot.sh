@@ -9,4 +9,6 @@ else
     exit 1
 fi
 
+chmod +x mvnw
+
 ./mvnw package -Dmaven.test.skip=true

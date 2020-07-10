@@ -11,7 +11,4 @@ fi
 
 chmod +x mvnw
 
-./mvnw clean
-./mvnw validate
-./mvnw compile
 ./mvnw test
