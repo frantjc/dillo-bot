@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: registry_image
+  source:
+    repository: openjdk
+
+inputs:
+  - name: dillo-bot
+
+outputs:
+  - name: target
+
+run:
+  path: dillo-bot/cicd/tasks/build-bot.sh

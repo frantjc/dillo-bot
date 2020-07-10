@@ -1,0 +1,10 @@
+---
+platform: linux
+
+image_resource:
+  type: registry_image
+  source:
+    repository: openjdk
+
+run:
+  path: dillo-bot/cicd/tasks/stop-bot.sh
