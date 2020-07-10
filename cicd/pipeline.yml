@@ -28,10 +28,9 @@ resources:
 jobs:
   - name: where-am-i
     plan:
+      - get: dillo-bot
       - task: where-am-i
         file: dillo-bot/cicd/tasks/where-am-i.yml
-  - name: test-bot
-    plan:
       - get: dillo-bot
       - task: test-bot
         file: dillo-bot/cicd/tasks/test-bot.yml
@@ -42,8 +41,6 @@ jobs:
             title: FAIL
             message: |
               New DilloBot failed his tests
-  - name: build-bot
-    plan:
       - task: build-bot
         file: dillo-bot/cicd/tasks/build-bot.yml
         on_failure:
@@ -53,8 +50,6 @@ jobs:
             title: FAIL
             message: |
               New DilloBot could not be built
-  - name: stop-bot
-    plan:
       - task: stop-bot
         file: dillo-bot/cicd/tasks/stop-bot.yml
         on_failure:
@@ -64,8 +59,6 @@ jobs:
             title: FAIL
             message: |
               Previos DilloBot refused to die
-  - name: start-bot
-    plan:
       - task: start-bot
         file: dillo-bot/cicd/tasks/start-bot.yml
         on_failure:
