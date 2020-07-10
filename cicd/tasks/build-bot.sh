@@ -9,4 +9,4 @@ else
     exit 1
 fi
 
-mvnw package -Dmaven.test.skip=true
+./mvnw package -Dmaven.test.skip=true

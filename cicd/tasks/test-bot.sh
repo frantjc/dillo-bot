@@ -9,7 +9,7 @@ else
     exit 1
 fi
 
-mvwn clean
-mvnw validate
-mvwn compile
-mvnw test
+./mvnw clean
+./mvnw validate
+./mvnw compile
+./mvnw test

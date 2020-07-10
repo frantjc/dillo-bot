@@ -8,4 +8,4 @@ image_resource:
 
 run:
   path: /bin/sh
-  args: [" dillo-bot/cicd/tasks/stop-bot.sh"]
+  args: ["dillo-bot/cicd/tasks/stop-bot.sh"]

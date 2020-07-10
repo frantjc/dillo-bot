@@ -14,4 +14,4 @@ outputs:
 
 run:
   path: /bin/sh
-  args: [" dillo-bot/cicd/tasks/build-bot.sh"]
+  args: ["dillo-bot/cicd/tasks/build-bot.sh"]

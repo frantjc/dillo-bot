@@ -27,7 +27,6 @@ resources:
 
 jobs:
   - name: test-bot
-    serial: true
     plan:
       - get: dillo-bot
         trigger: true
@@ -41,7 +40,6 @@ jobs:
             message: |
               New DilloBot failed his tests
   - name: build-bot
-    serial: true
     plan:
       - task: build-bot
         file: dillo-bot/cicd/tasks/build-bot.yml
@@ -53,7 +51,6 @@ jobs:
             message: |
               New DilloBot could not be built
   - name: stop-bot
-    serial: true
     plan:
       - task: stop-bot
         file: dillo-bot/cicd/tasks/stop-bot.yml
@@ -65,7 +62,6 @@ jobs:
             message: |
               Previos DilloBot refused to die
   - name: start-bot
-    serial: true
     plan:
       - task: start-bot
         file: dillo-bot/cicd/tasks/start-bot.yml
