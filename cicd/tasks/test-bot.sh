@@ -9,6 +9,8 @@ else
     exit 1
 fi
 
+chmod +x mvnw
+
 ./mvnw clean
 ./mvnw validate
 ./mvnw compile
