@@ -16,4 +16,4 @@ caches:
 run:
     path: /bin/bash
     args:
-        - dillo-bot/cicd/scripts/cp-dockerfile-to-root.sh
+        - "dillo-bot/cicd/scripts/cp-dockerfile-to-root.sh"
