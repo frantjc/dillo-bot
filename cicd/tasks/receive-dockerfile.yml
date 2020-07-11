@@ -10,4 +10,6 @@ inputs:
     - name: dillo-bot-dockerfile
 
 run:
-    path: dillo-bot/cicd/scripts/receive-dockerfile.sh
+    path: /bin/bash
+    args:
+        - dillo-bot/cicd/scripts/receive-dockerfile.sh
