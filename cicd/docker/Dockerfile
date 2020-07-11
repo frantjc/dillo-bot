@@ -1,16 +1,16 @@
 FROM openjdk:11.0.7-jdk-slim as build
 WORKDIR /dillo-bot
 
-COPY ../../mvwn .
-COPY ../../.mvn .mvn
-COPY ../../pom.xml .
-COPY ../../src src
+COPY mvwn .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
 
 RUN ./mvwn install -DskipTests
 
 FROM openjdk:11.0.7-jdk-slim
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
-ARG JAR=../../target/*.jar
+ARG JAR=target/*.jar
 COPY ${JAR} dillo-bot.jar
 ENTRYPOINT ["java", "-jar", "/dillo-bot.jar"]

@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resources:
+    type: registry-image
+    source:
+        repository: ubuntu
+
+inputs:
+    - name: dillo-bot
+
+outputs:
+    - name: dillo-bot-dockerfile
+    - path: dillo-bot
+
+run:
+    path: dillo-bot/cicd/scripts/cp-dockerfile-to-root.sh

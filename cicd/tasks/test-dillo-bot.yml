@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resources:
+    type: registry-image
+    source:
+        repository: openjdk
+        tag: 11.0.7-jdk-slim
+        
+inputs:
+    - name: dillo-bot
+
+caches:
+    - path: .m2/
+
+run:
+    path: dillo-bot/cicd/scripts/copy-dockerfile-to-root.sh

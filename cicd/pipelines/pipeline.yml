@@ -16,45 +16,29 @@ resources:
     icon: discord
     source:
       token: ((concourse.discord.token))
-  - name: dillo-bot-image
-    type: docker-image
-    icon: docker
-    source: 
-      email: ((docker.email))
-      username: ((docker.username))
-      password: ((docker.password))
-      repository: ((docker.username))/dillo-bot-image
+  # - name: dillo-bot-image
+  #   type: docker-image
+  #   icon: docker
+  #   source: 
+  #     email: ((docker.email))
+  #     username: ((docker.username))
+  #     password: ((docker.password))
+  #     repository: ((docker.username))/dillo-bot-image
 
 anchors:
-  - set_pipeline_vars: &set_pipeline_vars
-    github: ((github))
-    discord: ((discord))
-    concourse: ((concourse))
-    docker: ((docker))
   - env_vars: &env_vars
     DISCORD_TOKEN: ((discord.token))
     DISCORD_CLIENT_ID: ((discord.client.id))
     GITHUB_TOKEN: ((github.token))
 
 jobs:
-  - name: update-pipeline
-    plan:
-      - get: dillo-bot
-        trigger: true
-      - set_pipeline: dillo-bot
-        file: dillo-bot/cicd/pipelines/pipeline.yml
-        vars: *set_pipeline_vars
-  - name: dillo-bot-image
-    plan:
-      - get: dillo-bot
-        trigger: true
-      - put: dillo-bot-image
-        params:
-          build: dillo-bot/cicd/docker
   - name: test-dillo-bot
     plan:
-      - get: dillo-bot-image
+      - get: dillo-bot
         trigger: true
+      - task: unit-test
+        file: dillo-bot/cicd/tasks/test-dillo-bot.yml
+        params: *env_vars
     on_failure:
       put: notify
       params:
@@ -62,3 +46,17 @@ jobs:
         title: FAIL
         message: |
           The new DilloBot failed his tests!
+  - name: dillo-bot-image
+    plan:
+      - get: dillo-bot
+        trigger: true
+        passed: [test-dillo-bot]
+      - task: cp-dockerfile-to-root
+        file: dillo-bot/cicd/tasks/cp-dockerfile-to-root.yml
+      - task: receive-dockerfile
+        file: dillo-bot/cicd/tasks/receive-dockerfile.yml
+      # - put: dillo-bot-image
+      #   inputs:
+      #     - name: dillo-bot-dockerfile
+      #   params:
+      #     build: dillo-bot/
