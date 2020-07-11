@@ -10,7 +10,7 @@ inputs:
   - name: dillo-bot
 
 outputs:
-  - name: dillo-bot
+  - name: dillo-bot-dockerfil
 
 run:
   path: /bin/bash
