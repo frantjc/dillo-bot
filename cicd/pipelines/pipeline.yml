@@ -49,15 +49,16 @@ resources:
 
 
 anchors:
-  - env_vars: &env-vars
-    DISCORD_TOKEN: ((discord.token))
-    DISCORD_CLIENT_ID: ((discord.client.id))
-    GITHUB_TOKEN: ((github.token))
+  - build_log_retention: &build_log_retention
+    days: 1
+    builds: 10
+    minimum_succeeded_builds: 1
   
 
 
 jobs:
   - name: update-pipeline
+    build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
         trigger: true
@@ -88,6 +89,7 @@ jobs:
 
 
   - name: test-dillo-bot
+    build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
         trigger: true
@@ -108,6 +110,7 @@ jobs:
 
 
   - name: build-dillo-bot
+    build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
         passed: [test-dillo-bot]
@@ -133,6 +136,7 @@ jobs:
 
 
   - name: containerize-dillo-bot
+    build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-bucket
         passed: [build-dillo-bot]
