@@ -6,6 +6,9 @@ image_resource:
     source:
         repository: ubuntu
 
+inputs:
+    - name: dillo-bot
+
 outputs:
     - name: vars
 

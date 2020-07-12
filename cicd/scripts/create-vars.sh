@@ -18,3 +18,5 @@ docker:
         username: ((docker.username))
         password: ((docker.password))
 EOF
+
+cat vars/set_pipeline-vars.yml
