@@ -1,3 +1,5 @@
 #!/bin/bash
 
-cp dillo-bot/cicd/docker/Dockerfile dillo-bot-dockerfile/
+cp -r dillo-bot/ dillo-bot-dockerfile/
+
+mv dillo-bot-dockerfile/cicd/docker/Dockerfile dillo-bot-dockerfile/
