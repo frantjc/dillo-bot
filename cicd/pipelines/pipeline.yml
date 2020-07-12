@@ -5,6 +5,7 @@ resource_types:
       repository: trivigy/discord-resource
 
 
+
 resources:
   - name: dillo-bot
     type: git
@@ -46,6 +47,7 @@ resources:
   #     private_key: ((github.key))
 
 
+
 anchors:
   - env_vars: &env-vars
     DISCORD_TOKEN: ((discord.token))
@@ -61,15 +63,35 @@ jobs:
         trigger: true
       - task: create-vars
         file: dillo-bot/cicd/tasks/create-vars.yml
+        vars:
+          concourse:
+            discord:
+              token: ((concourse.discord.token))
+              channel: ((concourse.discord.channel))
+          discord:
+            token: ((discord.token))
+            client:
+              id: ((discord.client.id))
+          github:
+            uri: ((github.uri))
+            branch: ((github.branch))
+            token: ((github.token))
+          docker:
+            email: ((docker.email))
+            username: ((docker.username))
+            password: ((docker.password))
+
   #     - set_pipeline: dillo-bot 
   #       file: dillo-bot/cicd/pipelines/pipeline.yml
   #       var_files:
   #         - vars/set_pipeline-vars.yml
 
+
   - name: test-dillo-bot
     plan:
       - get: dillo-bot
         trigger: true
+
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
         params:
@@ -84,11 +106,13 @@ jobs:
             message: |
               The new DilloBot failed his tests
 
+
   - name: build-dillo-bot
     plan:
       - get: dillo-bot
         passed: [test-dillo-bot]
         trigger: true
+
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
         params:
@@ -102,9 +126,11 @@ jobs:
             title: FAIL
             message: |
               Failed to build new DilloBot
+
       - put: dillo-bot-bucket
         params:
           file: target/dillo-bot.jar
+
 
   - name: containerize-dillo-bot
     plan:

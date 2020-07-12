@@ -5,3 +5,5 @@ cd dillo-bot/
 chmod +x mvnw
 
 ./mvnw test
+
+cd ..
