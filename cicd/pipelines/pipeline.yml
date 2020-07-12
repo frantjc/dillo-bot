@@ -69,6 +69,7 @@ jobs:
   - name: test-dillo-bot
     plan:
       - get: dillo-bot
+        trigger: true
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
         params:
@@ -87,6 +88,7 @@ jobs:
     plan:
       - get: dillo-bot
         passed: [test-dillo-bot]
+        trigger: true
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
         params:
