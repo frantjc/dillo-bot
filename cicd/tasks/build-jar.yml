@@ -7,6 +7,11 @@ image_resource:
         repository: openjdk
         tag: 11.0.7-jdk-slim
 
+params:
+    DISCORD_TOKEN:
+    DISCORD_CLIENT_ID:
+    GITHUB_TOKEN:
+
 inputs:
     - name: dillo-bot
 
