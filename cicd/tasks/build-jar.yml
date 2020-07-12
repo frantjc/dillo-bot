@@ -19,4 +19,4 @@ caches:
 run:
     path: /bin/bash
     args:
-        - "dillo-bot/cicd/scripts/build-dillo-bot.sh"
+        - "dillo-bot/cicd/scripts/build-jar.sh"

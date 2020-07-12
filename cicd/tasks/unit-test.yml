@@ -16,4 +16,4 @@ caches:
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/test-dillo-bot.sh"
+    - "dillo-bot/cicd/scripts/unit-test.sh"

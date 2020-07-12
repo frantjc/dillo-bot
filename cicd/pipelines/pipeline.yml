@@ -69,7 +69,7 @@ jobs:
     plan:
       - get: dillo-bot
       - task: unit-test
-        file: dillo-bot/cicd/tasks/test-dillo-bot.yml
+        file: dillo-bot/cicd/tasks/unit-test.yml
         params: *env-vars
         on_failure:
           put: notify
@@ -84,7 +84,7 @@ jobs:
       - get: dillo-bot
         passed: [test-dillo-bot]
       - task: build-dillo-bot-jar
-        file: dillo-bot/cicd/tasks/build-dillo-bot-jar.yml
+        file: dillo-bot/cicd/tasks/build-jar.yml
         params: *env-vars
         on_failure:
           put: notify
