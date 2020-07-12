@@ -8,8 +8,6 @@ chmod +x mvnw
 
 cd ..
 
-ls -a
-
-la -a version/
+ls -a version/
 
 cp dillo-bot/target/*.jar target/dillo-bot.jar
