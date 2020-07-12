@@ -51,6 +51,7 @@ anchors:
     DISCORD_TOKEN: ((discord.token))
     DISCORD_CLIENT_ID: ((discord.client.id))
     GITHUB_TOKEN: ((github.token))
+  
 
 
 jobs:
@@ -83,7 +84,7 @@ jobs:
     plan:
       - get: dillo-bot
         passed: [test-dillo-bot]
-      - task: build-dillo-bot-jar
+      - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
         params: *env-vars
         on_failure:
