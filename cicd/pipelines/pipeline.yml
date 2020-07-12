@@ -36,15 +36,14 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-image
 
-  # - name: version
-  #   type: semver
-  #   source:
-  #     initial_version: 0.0.1
-  #     driver: git
-  #     uri: ((github.uri))
-  #     branch: ((github.branch))
-  #     file: cicd/version/version
-  #     private_key: ((github.key))
+  - name: version
+    type: semver
+    source:
+      initial_version: 0.0.1
+      driver: git
+      uri: ((github.uri))
+      branch: ((github.branch))
+      file: cicd/version
 
 
 
@@ -66,6 +65,7 @@ jobs:
     plan:
       - get: dillo-bot
         trigger: true
+
       - task: create-vars
         file: dillo-bot/cicd/tasks/create-vars.yml
         params:
@@ -80,10 +80,10 @@ jobs:
           DOCKER_USERNAME: ((docker.username))
           DOCKER_PASSWORD: ((docker.password))
 
-  #     - set_pipeline: dillo-bot 
-  #       file: dillo-bot/cicd/pipelines/pipeline.yml
-  #       var_files:
-  #         - vars/set_pipeline-vars.yml
+      - set_pipeline: dillo-bot 
+        file: dillo-bot/cicd/pipelines/pipeline.yml
+        var_files:
+          - vars/set_pipeline-vars.yml
 
 
   - name: test-dillo-bot
@@ -110,6 +110,10 @@ jobs:
       - get: dillo-bot
         passed: [test-dillo-bot]
 
+      - get: version
+        params:
+          bump: minor
+
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
         params: *env_vars
@@ -120,10 +124,14 @@ jobs:
             title: FAIL
             message: |
               Failed to build new DilloBot
+      
+      - put: version
+        params:
+          file: version/cicd/version
 
       - put: dillo-bot-bucket
         params:
-          file: target/dillo-bot.jar
+          file: target/dillo-bot*.jar
 
 
   - name: containerize-dillo-bot
