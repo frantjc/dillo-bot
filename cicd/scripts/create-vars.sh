@@ -3,20 +3,20 @@
 cat << EOF > vars/set_pipeline-vars.yml
 concourse:
         discord:
-                token: ((concourse.discord.token))
-                channel: ((concourse.discord.channel))
+                token: $CONCOURSE_DISCORD_TOKEN
+                channel: $CONCOURSE_DISCORD_CHANNEL
 discord:
-        token: ((discord.token))
+        token: $DISCORD_TOKEN
         client:
-                id: ((discord.client.id))
+                id: $DISCORD_CLIENT_ID
 github:
-        uri: ((github.uri))
-        branch: ((github.branch))
-        token: ((github.token))
+        uri: $GITHUB_URI
+        branch: $GITHUB_BRANCH
+        token: $GITHUB_TOKEN
 docker:
-        email: ((docker.email))
-        username: ((docker.username))
-        password: ((docker.password))
+        email: $DOCKER_EMAIL
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
 EOF
 
 cat vars/set_pipeline-vars.yml

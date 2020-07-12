@@ -48,13 +48,15 @@ resources:
 
 
 
-anchors:
-  - build_log_retention: &build_log_retention
-    days: 1
-    builds: 10
-    minimum_succeeded_builds: 1
-  
+build_log_retention: &build_log_retention
+  days: 1
+  builds: 10
+  minimum_succeeded_builds: 1
 
+env_vars: &env_vars
+  DISCORD_TOKEN: ((discord.token))
+  DISCORD_CLIENT_ID: ((discord.client.id))
+  GITHUB_TOKEN: ((github.token))
 
 jobs:
   - name: update-pipeline
@@ -64,23 +66,17 @@ jobs:
         trigger: true
       - task: create-vars
         file: dillo-bot/cicd/tasks/create-vars.yml
-        vars:
-          concourse:
-            discord:
-              token: ((concourse.discord.token))
-              channel: ((concourse.discord.channel))
-          discord:
-            token: ((discord.token))
-            client:
-              id: ((discord.client.id))
-          github:
-            uri: ((github.uri))
-            branch: ((github.branch))
-            token: ((github.token))
-          docker:
-            email: ((docker.email))
-            username: ((docker.username))
-            password: ((docker.password))
+        params:
+          CONCOURSE_DISCORD_TOKEN: ((concourse.discord.token))
+          CONCOURSE_DISCORD_CHANNEL: ((concourse.discord.channel))
+          DISCORD_TOKEN: ((discord.token))
+          DISCORD_CLIENT_ID: ((discord.client.id))
+          GITHUB_URI: ((github.uri))
+          GITHUB_BRANCH: ((github.branch))
+          GITHUB_TOKEN: ((github.token))
+          DOCKER_EMAIL: ((docker.email))
+          DOCKER_USERNAME: ((docker.username))
+          DOCKER_PASSWORD: ((docker.password))
 
   #     - set_pipeline: dillo-bot 
   #       file: dillo-bot/cicd/pipelines/pipeline.yml
@@ -96,10 +92,7 @@ jobs:
 
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
-        params:
-          DISCORD_TOKEN: ((discord.token))
-          DISCORD_CLIENT_ID: ((discord.client.id))
-          GITHUB_TOKEN: ((github.token))
+        params: *env_vars
         on_failure:
           put: notify
           params:
@@ -118,10 +111,7 @@ jobs:
 
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
-        params:
-          DISCORD_TOKEN: ((discord.token))
-          DISCORD_CLIENT_ID: ((discord.client.id))
-          GITHUB_TOKEN: ((github.token))
+        params: *env_vars
         on_failure:
           put: notify
           params:

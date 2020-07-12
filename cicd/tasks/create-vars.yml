@@ -6,6 +6,18 @@ image_resource:
     source:
         repository: ubuntu
 
+params:
+    CONCOURSE_DISCORD_TOKEN:
+    CONCOURSE_DISCORD_CHANNEL:
+    DISCORD_TOKEN:
+    DISCORD_CLIENT_ID:
+    GITHUB_URI:
+    GITHUB_BRANCH:
+    GITHUB_TOKEN:
+    DOCKER_EMAIL:
+    DOCKER_USERNAME:
+    DOCKER_PASSWORD:
+
 inputs:
     - name: dillo-bot
 
