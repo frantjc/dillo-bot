@@ -8,9 +8,11 @@ image_resource:
 
 inputs:
   - name: dillo-bot
+
+outputs:
   - name: dillo-bot-dockerfile
 
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/receive-dockerfile.sh"
+    - "dillo-bot/cicd/scripts/cp-dockerfile-to-root.sh"
