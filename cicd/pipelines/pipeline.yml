@@ -4,6 +4,7 @@ resource_types:
     source:
       repository: trivigy/discord-resource
 
+
 resources:
   - name: dillo-bot
     type: git
@@ -11,52 +12,106 @@ resources:
     source:
       uri: ((github.uri))
       branch: ((github.branch))
+
   - name: notify
     type: discord-resource
     icon: discord
     source:
       token: ((concourse.discord.token))
-  # - name: dillo-bot-image
-  #   type: docker-image
-  #   icon: docker
-  #   source: 
-  #     email: ((docker.email))
-  #     username: ((docker.username))
-  #     password: ((docker.password))
-  #     repository: ((docker.username))/dillo-bot-image
+
+  - name: dillo-bot-bucket
+    type: s3
+    icon: aws
+    source:
+      bucket: dillo-bot-bucket
+      regexp: dillo-bot*.jar
+
+  - name: dillo-bot-image
+    type: docker-image
+    icon: docker
+    source: 
+      email: ((docker.email))
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/dillo-bot-image
+
+  # - name: version
+  #   type: semver
+  #   source:
+  #     initial_version: 0.0.1
+  #     driver: git
+  #     uri: ((github.uri))
+  #     branch: ((github.branch))
+  #     file: cicd/version/version
+  #     private_key: ((github.key))
+
 
 anchors:
-  - env_vars: &env_vars
+  - env_vars: &env-vars
     DISCORD_TOKEN: ((discord.token))
     DISCORD_CLIENT_ID: ((discord.client.id))
     GITHUB_TOKEN: ((github.token))
 
+
 jobs:
+  - name: update-pipeline
+    plan:
+      - get: dillo-bot
+        trigger: true
+      - task: create-vars
+        file: dillo-bot/cicd/tasks/create-vars.yml
+  #     - set_pipeline: dillo-bot 
+  #       file: dillo-bot/cicd/pipelines/pipeline.yml
+  #       var_files:
+  #         - vars/set_pipeline-vars.yml
+
   - name: test-dillo-bot
     plan:
       - get: dillo-bot
-        trigger: true
       - task: unit-test
         file: dillo-bot/cicd/tasks/test-dillo-bot.yml
-        params: *env_vars
-    on_failure:
-      put: notify
-      params:
-        channel: ((concourse.discord.channel))
-        title: FAIL
-        message: |
-          The new DilloBot failed his tests!
-  - name: dillo-bot-image
+        params: *env-vars
+        on_failure:
+          put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: |
+              The new DilloBot failed his tests
+
+  - name: build-dillo-bot
     plan:
       - get: dillo-bot
-        trigger: true
         passed: [test-dillo-bot]
-      - task: cp-dockerfile-to-root
-        file: dillo-bot/cicd/tasks/cp-dockerfile-to-root.yml
-      - task: receive-dockerfile
-        file: dillo-bot/cicd/tasks/receive-dockerfile.yml
-      - put: dillo-bot-image
-        inputs:
-          - name: dillo-bot-dockerfile
+      - task: build-dillo-bot-jar
+        file: dillo-bot/cicd/tasks/build-dillo-bot-jar.yml
+        params: *env-vars
+        on_failure:
+          put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: |
+              Failed to build new DilloBot
+      - put: dillo-bot-bucket
         params:
-          build: dillo-bot-dockerfile/
+          file: target/dillo-bot.jar
+
+  - name: containerize-dillo-bot
+    plan:
+      - get: dillo-bot-bucket
+        passed: [build-dillo-bot]
+        on_failure:
+          do:
+            - get: dillo-bot
+            - put: notify
+              params:
+                channel: ((concourse.discord.channel))
+                title: FAIL
+                message: |
+                  Failed to pull DilloBot jar from s3, building container from source
+            - task: cp-dockerfile-to-root
+              file: dillo-bot/cicd/tasks/cp-dockerfile-to-root.yml
+            - put: dillo-bot-image
+              params:
+                build: dillo-bot-dockerfile/

@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.entities.User;
 @Component
 public class SimpleCommands {
     
-    private final Logger log = LoggerFactory.getLogger(SimpleCommands.class);
+    Logger log = LoggerFactory.getLogger(SimpleCommands.class);
 
     @Command("/log {string}")
     public void log(

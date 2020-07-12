@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GitHubUserService {
     
-    private final Logger log = LoggerFactory.getLogger(GitHubUserService.class);
+    Logger log = LoggerFactory.getLogger(GitHubUserService.class);
 
     GitHubUserRepository gitHubUserRepository;
 
