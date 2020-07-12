@@ -112,7 +112,7 @@ jobs:
 
       - get: version
         params:
-          bump: minor
+          bump: patch
 
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
