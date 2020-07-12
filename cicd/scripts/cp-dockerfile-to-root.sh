@@ -1,8 +1,5 @@
 #!/bin/bash
 
-rm -rf dillo-bot-dockerfile/
-mkdir dillo-bot-dockerfile/
-
 cp -r dillo-bot/src dillo-bot-dockerfile/
 cp -r dillo-bot/.mvn dillo-bot-dockerfile/
 cp dillo-bot/mvnw dillo-bot-dockerfile/

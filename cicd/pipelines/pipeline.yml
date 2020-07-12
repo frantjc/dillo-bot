@@ -55,8 +55,8 @@ jobs:
         file: dillo-bot/cicd/tasks/cp-dockerfile-to-root.yml
       - task: receive-dockerfile
         file: dillo-bot/cicd/tasks/receive-dockerfile.yml
-      # - put: dillo-bot-image
-      #   inputs:
-      #     - name: dillo-bot-dockerfile
-      #   params:
-      #     build: dillo-bot/
+      - put: dillo-bot-image
+        inputs:
+          - name: dillo-bot-dockerfile
+        params:
+          build: dillo-bot-dockerfile/
