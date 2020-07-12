@@ -109,7 +109,6 @@ jobs:
     plan:
       - get: dillo-bot
         passed: [test-dillo-bot]
-        trigger: true
 
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
