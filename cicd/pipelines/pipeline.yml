@@ -71,7 +71,10 @@ jobs:
       - get: dillo-bot
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
-        params: *env-vars
+        params:
+          DISCORD_TOKEN: ((discord.token))
+          DISCORD_CLIENT_ID: ((discord.client.id))
+          GITHUB_TOKEN: ((github.token))
         on_failure:
           put: notify
           params:
@@ -86,7 +89,10 @@ jobs:
         passed: [test-dillo-bot]
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
-        params: *env-vars
+        params:
+          DISCORD_TOKEN: ((discord.token))
+          DISCORD_CLIENT_ID: ((discord.client.id))
+          GITHUB_TOKEN: ((github.token))
         on_failure:
           put: notify
           params:
