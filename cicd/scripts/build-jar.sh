@@ -4,7 +4,7 @@ cd dillo-bot/
 
 chmod +x mvnw
 
-./mvnw install
+./mvnw install -DskipTests
 
 cd ..
 
