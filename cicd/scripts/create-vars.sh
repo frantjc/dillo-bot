@@ -10,7 +10,9 @@ discord:
         client:
                 id: "$DISCORD_CLIENT_ID"
 github:
-        uri: $GITHUB_URI
+        uri: 
+                https: $GITHUB_HTTPS_URI
+                git: $GITHUB_GIT_URI
         branch: $GITHUB_BRANCH
         token: $GITHUB_TOKEN
         private_key: |

@@ -11,7 +11,7 @@ resources:
     type: git
     icon: github
     source:
-      uri: ((github.uri))
+      uri: ((github.uri.https))
       branch: ((github.branch))
 
   - name: notify
@@ -41,7 +41,7 @@ resources:
     source:
       initial_version: 0.0.1
       driver: git
-      uri: ((github.uri))
+      uri: ((github.uri.git))
       branch: version
       file: version
       private_key: ((github.private_key))
@@ -73,7 +73,8 @@ jobs:
           CONCOURSE_DISCORD_CHANNEL: ((concourse.discord.channel))
           DISCORD_TOKEN: ((discord.token))
           DISCORD_CLIENT_ID: ((discord.client.id))
-          GITHUB_URI: ((github.uri))
+          GITHUB_HTTPS_URI: ((github.uri.https))
+          GITHUB_GIT_URI: ((github.uri.git))
           GITHUB_BRANCH: ((github.branch))
           GITHUB_TOKEN: ((github.token))
           GITHUB_PRIVATE_KEY: ((github.private_key))
