@@ -20,5 +20,5 @@ docker:
 aws:
         key:
                 secret: $SECRET_ACCESS_KEY
-                id: ACCESS_KEY_ID
+                id: $ACCESS_KEY_ID
 EOF
