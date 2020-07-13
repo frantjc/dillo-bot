@@ -38,15 +38,15 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-image
 
-  # - name: version
-  #   type: semver
-  #   source:
-  #     initial_version: 0.0.1
-  #     driver: s3
-  #     bucket: dillo-bot-bucket
-  #     key: version
-  #     access_key_id: ((aws.key.id))
-  #     secret_access_key: ((aws.key.secret))
+  - name: version
+    type: semver
+    source:
+      initial_version: 0.0.1
+      driver: s3
+      bucket: dillo-bot-bucket
+      key: version
+      access_key_id: ((aws.key.id))
+      secret_access_key: ((aws.key.secret))
 
 
 
@@ -114,6 +114,10 @@ jobs:
       - get: dillo-bot
         passed: [test-dillo-bot]
 
+      - get: version
+        params:
+          bump: patch
+
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
         params: *env_vars
@@ -124,6 +128,10 @@ jobs:
             title: FAIL
             message: |
               Failed to build new DilloBot
+
+      - put: version
+        params:
+          file: version/version
 
       - put: dillo-bot-bucket
         params:
