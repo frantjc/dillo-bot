@@ -14,7 +14,6 @@ params:
 
 inputs:
     - name: dillo-bot
-    - name: version
 
 outputs:
     - name: target
