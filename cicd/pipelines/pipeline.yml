@@ -36,15 +36,15 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-image
 
-  - name: version
-    type: semver
-    source:
-      initial_version: 0.0.1
-      driver: s3
-      bucket: dillo-bot-bucket
-      key: version
-      access_key_id:
-      secret_access_key:
+  # - name: version
+  #   type: semver
+  #   source:
+  #     initial_version: 0.0.1
+  #     driver: s3
+  #     bucket: dillo-bot-bucket
+  #     key: version
+  #     access_key_id:
+  #     secret_access_key:
 
 
 
