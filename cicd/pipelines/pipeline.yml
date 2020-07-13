@@ -11,7 +11,7 @@ resources:
     type: git
     icon: github
     source:
-      uri: ((github.uri.https))
+      uri: ((github.uri))
       branch: ((github.branch))
 
   - name: notify
@@ -43,6 +43,8 @@ resources:
       driver: s3
       bucket: dillo-bot-bucket
       key: version
+      access_key_id:
+      secret_access_key:
 
 
 
@@ -71,11 +73,9 @@ jobs:
           CONCOURSE_DISCORD_CHANNEL: ((concourse.discord.channel))
           DISCORD_TOKEN: ((discord.token))
           DISCORD_CLIENT_ID: ((discord.client.id))
-          GITHUB_HTTPS_URI: ((github.uri.https))
-          GITHUB_GIT_URI: ((github.uri.git))
+          GITHUB_URI: ((github.uri))
           GITHUB_BRANCH: ((github.branch))
           GITHUB_TOKEN: ((github.token))
-          GITHUB_PRIVATE_KEY: ((github.private_key))
           DOCKER_EMAIL: ((docker.email))
           DOCKER_USERNAME: ((docker.username))
           DOCKER_PASSWORD: ((docker.password))
@@ -110,10 +110,6 @@ jobs:
       - get: dillo-bot
         passed: [test-dillo-bot]
 
-      - get: version
-        params:
-          bump: patch
-
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
         params: *env_vars
@@ -124,10 +120,6 @@ jobs:
             title: FAIL
             message: |
               Failed to build new DilloBot
-      
-      - put: version
-        params:
-          file: version/version
 
       - put: dillo-bot-bucket
         params:
