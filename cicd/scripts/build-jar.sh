@@ -8,8 +8,6 @@ cd ..
 
 ls -a version/
 
-cat version/number
+ls -a version/number
 
-cat version/version
-
-cp dillo-bot/target/*.jar target/dillo-bot.jar
+ls -a version/version
