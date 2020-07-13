@@ -4,14 +4,8 @@ cd dillo-bot/
 
 chmod +x mvnw
 
+./mvnw install
+
 cd ..
 
-ls -a version/
-
-ls -a version/number
-
-cat version/number
-
-ls -a version/version
-
-cat version/version
+cp dillo-bot/target/*.jar target/dillo-bot.jar
