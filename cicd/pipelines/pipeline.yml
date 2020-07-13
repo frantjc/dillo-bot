@@ -40,11 +40,9 @@ resources:
     type: semver
     source:
       initial_version: 0.0.1
-      driver: git
-      uri: ((github.uri.git))
-      branch: version
-      file: version
-      private_key: ((github.private_key))
+      driver: s3
+      bucket: dillo-bot-bucket
+      key: version
 
 
 
