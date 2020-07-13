@@ -26,6 +26,8 @@ resources:
     source:
       bucket: dillo-bot-bucket
       regexp: dillo-bot*.jar
+      access_key_id: ((aws.key.id))
+      secret_access_key: ((aws.key.secret))
 
   - name: dillo-bot-image
     type: docker-image
@@ -43,8 +45,8 @@ resources:
   #     driver: s3
   #     bucket: dillo-bot-bucket
   #     key: version
-  #     access_key_id:
-  #     secret_access_key:
+  #     access_key_id: ((aws.key.id))
+  #     secret_access_key: ((aws.key.secret))
 
 
 
@@ -79,6 +81,8 @@ jobs:
           DOCKER_EMAIL: ((docker.email))
           DOCKER_USERNAME: ((docker.username))
           DOCKER_PASSWORD: ((docker.password))
+          ACCESS_KEY_ID: ((aws.key.id))
+          SECRET_ACCESS_KEY: ((aws.key.secret))
 
       - set_pipeline: dillo-bot 
         file: dillo-bot/cicd/pipelines/pipeline.yml

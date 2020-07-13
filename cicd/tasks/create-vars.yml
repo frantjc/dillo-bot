@@ -18,6 +18,8 @@ params:
     DOCKER_EMAIL:
     DOCKER_USERNAME:
     DOCKER_PASSWORD:
+    ACCESS_KEY_ID:
+    SECRET_ACCESS_KEY:
 
 inputs:
     - name: dillo-bot
