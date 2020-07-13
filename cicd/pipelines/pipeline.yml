@@ -48,7 +48,6 @@ resources:
 
 
 build_log_retention: &build_log_retention
-  days: 1
   builds: 10
   minimum_succeeded_builds: 1
 
@@ -127,7 +126,7 @@ jobs:
       
       - put: version
         params:
-          file: version/cicd/version
+          file: version/version
 
       - put: dillo-bot-bucket
         params:

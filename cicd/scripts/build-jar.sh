@@ -4,10 +4,12 @@ cd dillo-bot/
 
 chmod +x mvnw
 
-./mvnw install -DskipTests
-
 cd ..
 
 ls -a version/
+
+cat version/number
+
+cat version/version
 
 cp dillo-bot/target/*.jar target/dillo-bot.jar
