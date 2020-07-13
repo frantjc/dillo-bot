@@ -42,7 +42,7 @@ resources:
       initial_version: 0.0.1
       driver: git
       uri: ((github.uri))
-      branch: ((github.branch))
+      branch: version
       file: cicd/version
 
 
