@@ -43,7 +43,8 @@ resources:
       driver: git
       uri: ((github.uri))
       branch: version
-      file: cicd/version
+      file: version
+      private_key: ((github.private_key))
 
 
 
@@ -75,6 +76,7 @@ jobs:
           GITHUB_URI: ((github.uri))
           GITHUB_BRANCH: ((github.branch))
           GITHUB_TOKEN: ((github.token))
+          GITHUB_PRIVATE_KEY: ((github.private_key))
           DOCKER_EMAIL: ((docker.email))
           DOCKER_USERNAME: ((docker.username))
           DOCKER_PASSWORD: ((docker.password))

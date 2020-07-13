@@ -13,6 +13,8 @@ github:
         uri: $GITHUB_URI
         branch: $GITHUB_BRANCH
         token: $GITHUB_TOKEN
+        private_key: |
+                $GITHUB_PRIVATE_KEY
 docker:
         email: $DOCKER_EMAIL
         username: $DOCKER_USERNAME
