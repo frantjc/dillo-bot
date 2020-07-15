@@ -8,7 +8,7 @@ chmod +x mvnw
 
 cd ..
 
-VERSION=$(cat version)
+VERSION=$(cat version/version)
 
 echo $VERSION
 
