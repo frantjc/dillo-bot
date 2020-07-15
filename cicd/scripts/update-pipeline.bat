@@ -1,1 +1,0 @@
-fly -t dillo-bot set-pipeline -p dillo-bot -c cicd\pipelines\pipeline.yml -l ..\..\concourse\dillo-bot\env-vars.yml

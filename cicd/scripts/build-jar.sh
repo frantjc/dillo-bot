@@ -10,6 +10,4 @@ cd ..
 
 VERSION=$(cat version/version)
 
-echo $VERSION
-
 cp dillo-bot/target/*.jar target/dillo-bot-$VERSION.jar

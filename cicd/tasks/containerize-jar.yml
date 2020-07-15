@@ -1,0 +1,18 @@
+---
+platform: linux
+
+image_resource:
+    type: registry-image
+    source:
+        repository: ubuntu
+
+inputs:
+    - name: dillo-bot-bucket
+
+outputs:
+    - name: docker
+
+run:
+    path: /bin/bash
+    args:
+        - "dillo-bot/cicd/scripts/containerize-jar.sh"

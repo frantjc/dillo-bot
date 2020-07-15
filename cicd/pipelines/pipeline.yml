@@ -41,6 +41,7 @@ resources:
 
   - name: version
     type: semver
+    icon: aws
     source:
       initial_version: 0.0.1
       driver: s3
@@ -115,6 +116,7 @@ jobs:
     plan:
       - get: dillo-bot
         passed: [test-dillo-bot]
+        trigger: true
 
       - get: version
         params:
@@ -142,20 +144,47 @@ jobs:
 
   - name: containerize-dillo-bot
     build_log_retention: *build_log_retention
+    on_success:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: SUCCESS
+        message: |
+          New DilloBot has been containerized
+
+    on_failure:
+      do:
+        - get: dillo-bot
+        - put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: WARN
+            message: |
+              Failed to pull DilloBot jar from s3, building container from source
+
+        - task: cp-dockerfile-to-root
+          file: dillo-bot/cicd/tasks/cp-dockerfile-to-root.yml
+
+        - put: dillo-bot-image
+          params:
+            build: dillo-bot-dockerfile/
+          on_success:
+            put: notify
+            params:
+              channel: ((concourse.discord.channel))
+              title: SUCCESS
+              message: |
+                New DilloBot has been containerized 
+
     plan:
-      - get: dillo-bot-bucket
+      - get: dillo-bot
         passed: [build-dillo-bot]
-        on_failure:
-          do:
-            - get: dillo-bot
-            - put: notify
-              params:
-                channel: ((concourse.discord.channel))
-                title: WARN
-                message: |
-                  Failed to pull DilloBot jar from s3, building container from source
-            - task: cp-dockerfile-to-root
-              file: dillo-bot/cicd/tasks/cp-dockerfile-to-root.yml
-            - put: dillo-bot-image
-              params:
-                build: dillo-bot-dockerfile/
+
+      - get: dillo-bot-bucket
+
+      - task: containerize-jar
+        file: dillo-bot/cicd/tasks/containerize-jar.yml
+
+      - put: dillo-bot-image
+        params:
+          build: docker/
