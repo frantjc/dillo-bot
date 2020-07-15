@@ -1,7 +1,7 @@
 FROM openjdk:11.0.7-jdk-slim as build
 WORKDIR /dillo-bot
 
-COPY mvwn .
+COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src

@@ -66,6 +66,7 @@ env_vars: &env_vars
 
 jobs:
   - name: update-pipeline
+    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
@@ -94,6 +95,7 @@ jobs:
 
 
   - name: test-dillo-bot
+    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
@@ -112,6 +114,7 @@ jobs:
 
 
   - name: build-dillo-bot
+    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
@@ -143,6 +146,7 @@ jobs:
 
 
   - name: containerize-dillo-bot
+    serial: true
     build_log_retention: *build_log_retention
     on_success:
       put: notify
@@ -180,6 +184,7 @@ jobs:
         passed: [build-dillo-bot]
 
       - get: dillo-bot-bucket
+        passed: [build-dillo-bot]
 
       - task: containerize-jar
         file: dillo-bot/cicd/tasks/containerize-jar.yml

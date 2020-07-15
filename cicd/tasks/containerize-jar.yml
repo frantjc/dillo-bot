@@ -8,6 +8,7 @@ image_resource:
 
 inputs:
     - name: dillo-bot-bucket
+    - name: dillo-bot
 
 outputs:
     - name: docker
