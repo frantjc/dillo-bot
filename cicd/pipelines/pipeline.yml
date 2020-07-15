@@ -28,6 +28,7 @@ resources:
       regexp: dillo-bot*.jar
       access_key_id: ((aws.key.id))
       secret_access_key: ((aws.key.secret))
+      region_name: us-east-2
 
   - name: dillo-bot-image
     type: docker-image
