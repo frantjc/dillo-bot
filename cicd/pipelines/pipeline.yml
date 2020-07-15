@@ -25,7 +25,7 @@ resources:
     icon: aws
     source:
       bucket: dillo-bot-bucket
-      regexp: dillo-bot*.jar
+      regexp: dillo-bot(.*).jar
       access_key_id: ((aws.key.id))
       secret_access_key: ((aws.key.secret))
       region_name: us-east-2
