@@ -8,4 +8,8 @@ chmod +x mvnw
 
 cd ..
 
-cp dillo-bot/target/*.jar target/dillo-bot.jar
+VERSION=$(cat version)
+
+echo $VERSION
+
+cp dillo-bot/target/*.jar target/dillo-bot-$VERSION.jar
