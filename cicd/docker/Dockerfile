@@ -6,6 +6,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
+RUN chmod +x mvnw
 RUN ./mvnw install -DskipTests
 
 FROM openjdk:11.0.7-jdk-slim
