@@ -154,7 +154,6 @@ jobs:
 
     on_failure:
       do:
-        - get: dillo-bot
         - put: notify
           params:
             channel: ((concourse.discord.channel))
