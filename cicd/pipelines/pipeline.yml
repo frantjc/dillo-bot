@@ -47,6 +47,7 @@ resources:
       key: version
       access_key_id: ((aws.key.id))
       secret_access_key: ((aws.key.secret))
+      region_name: us-east-2
 
 
 
@@ -149,7 +150,7 @@ jobs:
             - put: notify
               params:
                 channel: ((concourse.discord.channel))
-                title: FAIL
+                title: WARN
                 message: |
                   Failed to pull DilloBot jar from s3, building container from source
             - task: cp-dockerfile-to-root
