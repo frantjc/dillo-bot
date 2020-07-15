@@ -1,5 +1,10 @@
 #!/bin/bash
 
+pwd
+ls -al
+echo ''
+
+echo 'moving dillo-bot/cicd/docker/Dockerfile to dillo-bot/Dockerfile...'
 cp -r dillo-bot/src dillo-bot-dockerfile/
 cp -r dillo-bot/.mvn dillo-bot-dockerfile/
 cp dillo-bot/mvnw dillo-bot-dockerfile/
