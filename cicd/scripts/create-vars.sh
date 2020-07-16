@@ -19,7 +19,6 @@ github:
         branch: $GITHUB_BRANCH
         token: $GITHUB_TOKEN
 docker:
-        email: $DOCKER_EMAIL
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
 aws:
@@ -27,3 +26,4 @@ aws:
                 secret: $SECRET_ACCESS_KEY
                 id: $ACCESS_KEY_ID
 EOF
+echo 'passed'

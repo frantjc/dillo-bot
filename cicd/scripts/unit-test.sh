@@ -10,5 +10,6 @@ chmod +x mvnw
 
 echo 'testing...'
 ./mvnw test
+echo 'passed'
 
 cd ..
