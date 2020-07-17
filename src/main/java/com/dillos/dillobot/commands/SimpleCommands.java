@@ -39,5 +39,4 @@ public class SimpleCommands {
     ) {
         channel.sendMessage("squirrel").queue();
     }
-
 }

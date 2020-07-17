@@ -10,5 +10,4 @@ import java.lang.annotation.ElementType;
 public @interface Command {
 
     String value() default "";
-
 }

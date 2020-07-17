@@ -14,3 +14,4 @@ ARG JAR=*dillo-bot*.jar
 COPY ${JAR} dillo-bot.jar
 ENTRYPOINT["java", "-jar", "/dillo-bot.jar"]
 EOF
+echo 'created'
