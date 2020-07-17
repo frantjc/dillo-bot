@@ -17,4 +17,4 @@ inputs:
 run:
     path: /bin/sh
     args:
-        - "dillo-bot/cicd/scripts/stop-container.sh"
+        - "dillo-bot/cicd/scripts/ssh-and-stop-container.sh"

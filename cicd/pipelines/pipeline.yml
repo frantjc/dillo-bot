@@ -97,28 +97,55 @@ jobs:
       - get: dillo-bot
         trigger: true
 
-      - task: create-vars
-        file: dillo-bot/cicd/tasks/create-vars.yml
-        params:
-          CONCOURSE_DISCORD_TOKEN: ((concourse.discord.token))
-          CONCOURSE_DISCORD_CHANNEL: ((concourse.discord.channel))
-          DISCORD_TOKEN: ((discord.token))
-          DISCORD_CLIENT_ID: ((discord.client.id))
-          GITHUB_URI: ((github.uri))
-          GITHUB_BRANCH: ((github.branch))
-          GITHUB_TOKEN: ((github.token))
-          DOCKER_USERNAME: ((docker.username))
-          DOCKER_PASSWORD: ((docker.password))
-          S3_ACCESS_KEY_ID: ((aws.s3.key.id))
-          S3_SECRET_ACCESS_KEY: ((aws.s3.key.secret))
-          EC2_KEY: ((aws.ec2.key))
-          EC2_USER: ((aws.ec2.user))
-          EC2_PUBLIC_DNS: ((aws.ec2.public_dns))
+      # - task: create-vars
+      #   file: dillo-bot/cicd/tasks/create-vars.yml
+      #   params:
+      #     CONCOURSE_DISCORD_TOKEN: ((concourse.discord.token))
+      #     CONCOURSE_DISCORD_CHANNEL: ((concourse.discord.channel))
+      #     DISCORD_TOKEN: ((discord.token))
+      #     DISCORD_CLIENT_ID: ((discord.client.id))
+      #     GITHUB_URI: ((github.uri))
+      #     GITHUB_BRANCH: ((github.branch))
+      #     GITHUB_TOKEN: ((github.token))
+      #     DOCKER_USERNAME: ((docker.username))
+      #     DOCKER_PASSWORD: ((docker.password))
+      #     S3_ACCESS_KEY_ID: ((aws.s3.key.id))
+      #     S3_SECRET_ACCESS_KEY: ((aws.s3.key.secret))
+      #     EC2_KEY: ((aws.ec2.key))
+      #     EC2_USER: ((aws.ec2.user))
+      #     EC2_PUBLIC_DNS: ((aws.ec2.public_dns))
 
       - set_pipeline: dillo-bot 
         file: dillo-bot/cicd/pipelines/pipeline.yml
-        var_files:
-          - vars/set_pipeline-vars.yml
+        vars:
+          concourse:
+            discord:
+              token: ((concourse.discord.token))
+              channel: "((concourse.discord.channel))"
+          discord:
+            token: ((discord.token))
+            client:
+              id: "((discord.client.id))"
+          github:
+            uri: ((github.uri))
+            branch: ((github.branch))
+            token: ((github.token))
+          docker:
+            username: ((docker.username))
+            password: ((docker.password))
+          aws:
+            s3:
+              key:
+                secret: ((aws.s3.key.secret))
+                id: $((aws.s3.key.id))
+            ec2:
+              user: ((aws.ec2.user))
+              public_dns: ((aws.ec2.public_dns))
+              key: |
+                ((aws.ec2.key))
+
+        # var_files:
+        #   - vars/set_pipeline-vars.yml
 
 
   - name: test-dillo-bot

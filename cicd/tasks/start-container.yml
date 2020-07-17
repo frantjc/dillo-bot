@@ -20,4 +20,4 @@ inputs:
 run:
     path: /bin/sh
     args:
-        - "dillo-bot/cicd/scripts/start-container.sh"
+        - "dillo-bot/cicd/scripts/ssh-and-start-container.sh"
