@@ -70,7 +70,7 @@ public class JDAService {
 
     public void addCommands(Object... commands) throws InvalidCommandPrefixException {
         for (Object command : commands) {
-            Method[] methods = command.getClass().getMethods();
+			Method[] methods = command.getClass().getMethods();
 
             for (Method method : methods) {
                 if (method.isAnnotationPresent(Command.class)) {

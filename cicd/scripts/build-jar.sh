@@ -8,19 +8,19 @@ cd dillo-bot/
 
 chmod +x mvnw
 
-echo 'building artifact...'
+echo "building artifact..."
 ./mvnw install -DskipTests
-echo 'built'
+echo "built"
 
-echo ''
+echo ""
 cd ..
 
-echo 'getting version...'
+echo "getting version..."
 VERSION=$(cat version/version)
+echo "version:$VERSION"
 
-echo ''
+echo ""
 
-echo 'versioning artifact...'
+echo "versioning artifact..."
 cp dillo-bot/target/*.jar target/dillo-bot-$VERSION.jar
-echo 'created:'
-ls target/
+echo "created: dillo-bot-$VERSION.jar"

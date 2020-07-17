@@ -65,6 +65,18 @@ As a SpringBoot/Maven project, dillo-bot can be ran in a number of ways.  The ea
 $ .\mvnw spring-boot:run
 ```
 
+Or, to run it inside of Docker from source:
+```
+$ cp cicd\docker\Dockerfile .
+$ docker build .
+```
+
+Or, to run it inside of Docker from source:
+```
+$ cp cicd\docker\Dockerfile .
+$ docker build .
+```
+
 For the app to successfully connect to a dillo-bot (and for some of dillo-bot's commands to successfully run), the file `src/main/resources/application.yml` must have some secret tokens and ids in it. Ask the owner of this repository about that.
 
 ## Developing a command
@@ -110,7 +122,7 @@ Add your commands to the bot:
 		this.gitHubCommands = gitHubCommands;
 		this.simpleCommands = simpleCommands;
         this.informationCommands = informationCommands;
-        this.myCommands = myCommands; // instantite your commands
+        this.myCommands = myCommands; // instantiate your commands
     }
     
 ...
