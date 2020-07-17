@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+    type: registry-image
+    source:
+        repository: ubuntu
+
+params:
+    USER:
+    PUBLIC_DNS:
+    DISCORD_TOKEN:
+    GITHUB_TOKEN:
+    DISCORD_CLIENT_ID:
+
+inputs:
+    - name: key
+    - name: dillo-bot
+
+run:
+    path: /bin/bash
+    args:
+        - "dillo-bot/cicd/scripts/start-container.sh"

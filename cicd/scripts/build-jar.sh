@@ -2,7 +2,7 @@
 
 pwd
 ls -al
-echo ''
+echo ""
 
 cd dillo-bot/
 
