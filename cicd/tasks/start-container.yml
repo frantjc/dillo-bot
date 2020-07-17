@@ -4,7 +4,7 @@ platform: linux
 image_resource:
     type: registry-image
     source:
-        repository: kroniak/ssh-client
+        repository: ubuntu
 
 params:
     USER:
