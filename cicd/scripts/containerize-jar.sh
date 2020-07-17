@@ -8,7 +8,7 @@ cp dillo-bot-bucket/dillo-bot*.jar docker/dillo-bot.jar
 
 echo 'creating Dockerfile...'
 cat << EOF > docker/Dockerfile
-FROM openjkd:11.0.7-jdk-slim
+FROM openjdk:11.0.7-jdk-slim
 
 COPY dillo-bot.jar .
 ENTRYPOINT ["java", "-jar", "/dillo-bot.jar"]

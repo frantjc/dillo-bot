@@ -15,4 +15,4 @@ outputs:
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/cp-dockerfile-to-root.sh"
+    - "dillo-bot/cicd/scripts/copy-dockerfile-to-root.sh"
