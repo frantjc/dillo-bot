@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get install openssh
+apt-get install openssh-client
 
 ssh key/dillo-key.pem $USER@$HOST <<- ENDSSH
     docker kill dillo_bot

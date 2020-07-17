@@ -29,6 +29,7 @@ aws:
         ec2:
                 user: $EC2_USER
                 public_dns: $EC2_PUBLIC_DNS
-                key: $EC2_KEY
+                key: |
+                        $EC2_KEY
 EOF
 echo "passed"
