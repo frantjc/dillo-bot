@@ -80,14 +80,15 @@ jobs:
         params:
           USER: ((aws.ec2.user))
           HOST: ((aws.ec2.public_dns))
+
+      - task: start-container
+        file: dillo-bot/cicd/tasks/start-container.yml
+        params:
+          USER: ((aws.ec2.user))
+          HOST: ((aws.ec2.public_dns))
           DISCORD_TOKEN: ((discord.token))
           DISCORD_CLIENT_ID: ((discord.client.id))
           GITHUB_TOKEN: ((github.token))
-
-      - task: create-key
-        file: dillo-bot/cicd/tasks/create-key.yml
-        params:
-          KEY: ((aws.ec2.key))
 
   - name: update-pipeline
     serial: true

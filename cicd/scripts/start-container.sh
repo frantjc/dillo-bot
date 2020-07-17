@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get install ssh
+apt-get install openssh
 
 ssh key/dillo-key.pem $USER@$HOST DISCORD_TOKEN=$DISCORD_TOKEN GITHUB_TOKEN=$GITHUB_TOKEN DISCORD_CLIENT_ID=$DISCORD_CLIENT_ID <<- 'ENDSSH'
     sudo su
