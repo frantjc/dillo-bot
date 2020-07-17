@@ -127,7 +127,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        trigger: true
+        # trigger: true
 
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
@@ -224,14 +224,14 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed:
-          - containerize-dillo-bot
+        # passed:
+        #   - containerize-dillo-bot
         trigger: true
 
-      - get: dillo-bot-image
-        passed:
-          - containerize-dillo-bot
-        trigger: true
+      # - get: dillo-bot-image
+      #   passed:
+      #     - containerize-dillo-bot
+      #   trigger: true
 
       - task: create-key
         file: dillo-bot/cicd/tasks/create-key.yml
