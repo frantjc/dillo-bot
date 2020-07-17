@@ -101,11 +101,10 @@ public class JDAService {
                                     log.warn("@Commands can't be sent by bots");
                                     return;
                                 }
-                                event.getChannel().sendTyping();
 
                                 List<String> args = Arrays.stream(
                                     Commandline.translateCommandline(
-                                        event.getMessage().getContentRaw()
+                                        event.getMessage().getContentRaw().replace('“', '"')
                                     )
                                 ).collect(Collectors.toList());
 
@@ -171,7 +170,6 @@ public class JDAService {
                                                 .build()
                                             ).queue();
                                 }
-                                event.getChannel().sendTyping().complete();
                             }
                         }
                     });
