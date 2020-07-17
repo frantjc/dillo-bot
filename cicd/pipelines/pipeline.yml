@@ -163,9 +163,12 @@ jobs:
             message: |
               Failed to pull DilloBot jar from s3, building container from source
 
+        - task: cp-dockerfile-to-root
+          file: dillo-bot/cicd/tasks/cp-dockerfile-to-root.yml
+
         - put: dillo-bot-image
           params:
-            build: dillo-bot/cicd/docker
+            build: dillo-bot-dockerfile/
           on_success:
             put: notify
             params:
