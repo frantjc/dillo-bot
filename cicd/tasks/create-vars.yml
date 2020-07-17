@@ -1,0 +1,33 @@
+---
+platform: linux
+
+image_resource:
+    type: registry-image
+    source:
+        repository: ubuntu
+
+params:
+    CONCOURSE_DISCORD_TOKEN:
+    CONCOURSE_DISCORD_CHANNEL:
+    DISCORD_TOKEN:
+    DISCORD_CLIENT_ID:
+    GITHUB_URI:
+    GITHUB_BRANCH:
+    GITHUB_TOKEN:
+    GITHUB_PRIVATE_KEY:
+    DOCKER_EMAIL:
+    DOCKER_USERNAME:
+    DOCKER_PASSWORD:
+    ACCESS_KEY_ID:
+    SECRET_ACCESS_KEY:
+
+inputs:
+    - name: dillo-bot
+
+outputs:
+    - name: vars
+
+run:
+    path: /bin/bash
+    args:
+        - "dillo-bot/cicd/scripts/create-vars.sh"

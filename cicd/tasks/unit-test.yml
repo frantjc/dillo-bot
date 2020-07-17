@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: openjdk
+    tag: 11.0.7-jdk-slim
+        
+params:
+  DISCORD_TOKEN:
+  DISCORD_CLIENT_ID:
+  GITHUB_TOKEN:
+
+inputs:
+  - name: dillo-bot
+
+caches:
+  - path: .m2/
+
+run:
+  path: /bin/bash
+  args:
+    - "dillo-bot/cicd/scripts/unit-test.sh"

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class GitHubUserService {
     
-    private final Logger log = LoggerFactory.getLogger(GitHubUserService.class);
+    Logger log = LoggerFactory.getLogger(GitHubUserService.class);
 
     GitHubUserRepository gitHubUserRepository;
 
@@ -30,15 +30,19 @@ public class GitHubUserService {
         return gitHubUserRepository.save(user);
     }
 
+    public List<GitHubUser> saveAll(List<GitHubUser> users) {
+        return gitHubUserRepository.saveAll(users);
+    }
+
     public List<GitHubUser> saveUsersFrom(IssueResponse response) {
         List<GitHubUser> savedUsers = new ArrayList<GitHubUser>();
         
         savedUsers.add(
-            gitHubUserRepository.save(new GitHubUser(response.getUser()))
+            save(new GitHubUser(response.getUser()))
         );
 
         savedUsers.addAll(
-            gitHubUserRepository.saveAll(
+            saveAll(
                 response.getAsignees().parallelStream().map(asignee -> {
                     return new GitHubUser(asignee);
                 }).collect(Collectors.toList())

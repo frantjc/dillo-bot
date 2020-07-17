@@ -23,7 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class GitHubService {
 
-    private final Logger log = LoggerFactory.getLogger(GitHubService.class);
+    Logger log = LoggerFactory.getLogger(GitHubService.class);
 
     @Value("${github.repository.api}")
     String api;

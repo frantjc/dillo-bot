@@ -22,7 +22,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 @Component
 public class GitHubCommands {
 
-    private final Logger log = LoggerFactory.getLogger(GitHubCommands.class);
+    Logger log = LoggerFactory.getLogger(GitHubCommands.class);
 
     @Value("${github.mark_uri}")
     String githubMarkUri;
@@ -106,5 +106,4 @@ public class GitHubCommands {
     // @Command("/issueAsignees {id}")
 
     // @Command("/issueComments {id}")
-    
 }
