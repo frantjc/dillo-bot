@@ -13,5 +13,4 @@ public class RestService {
     public RestTemplate getRest() {
 		return this.rest;
 	}
-    
 }

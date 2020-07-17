@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DiscordUserService {
 
-    private final Logger log = LoggerFactory.getLogger(DiscordUserService.class);
+    Logger log = LoggerFactory.getLogger(DiscordUserService.class);
 
     DiscordUserRepository discordUserRepository;
 

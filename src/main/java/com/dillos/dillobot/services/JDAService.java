@@ -38,7 +38,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 @Service("jdaService")
 public class JDAService {
 
-    private final Logger log = LoggerFactory.getLogger(JDAService.class);
+    Logger log = LoggerFactory.getLogger(JDAService.class);
 
     @Value("${discord.bot.prefix}")
     String prefix;

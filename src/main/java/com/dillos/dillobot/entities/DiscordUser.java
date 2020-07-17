@@ -10,6 +10,7 @@ import com.dillos.dillobot.builders.UserBuilder;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
+import net.dv8tion.jda.api.entities.User;
 
 @Entity
 @Data
@@ -31,6 +32,12 @@ public class DiscordUser {
         this.id = builder.getId();
         this.name = builder.getName();
         this.discriminator = builder.getDiscriminator();
+    }
+
+    public DiscordUser(User user) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.discriminator = user.getDiscriminator();
     }
 
     public DiscordUser() {}
