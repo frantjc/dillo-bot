@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo $DISCORD_TOKEN
+
 sudo su
 
 if [[ $(docker ps -a | grep dillo_bot) ]]; then

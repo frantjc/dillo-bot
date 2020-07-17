@@ -224,6 +224,9 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
+        passed:
+          - containerize-dillo-bot
+        trigger: true
 
       - get: dillo-bot-image
         passed:
