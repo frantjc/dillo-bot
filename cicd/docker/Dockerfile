@@ -2,7 +2,7 @@ FROM openjdk:11.0.7-jdk-slim AS builder
 
 RUN mkdir dillo-bot/
 
-WORKDIR dillo-bot/
+WORKDIR dillo-bot
 
 COPY src/ src/
 COPY .mvn/ .mvn/

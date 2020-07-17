@@ -17,10 +17,10 @@ cd ..
 
 echo 'getting version...'
 VERSION=$(cat version/version)
-echo 'version: $VERSION'
 
 echo ''
 
 echo 'versioning artifact...'
 cp dillo-bot/target/*.jar target/dillo-bot-$VERSION.jar
-echo 'created: dillo-bot-$VERSION.jar'
+echo 'created:'
+ls target/

@@ -11,7 +11,7 @@ cat << EOF > docker/Dockerfile
 FROM openjkd:11.0.7-jdk-slim
 
 COPY dillo-bot.jar .
-ENTRYPOINT["java", "-jar", "/dillo-bot.jar"]
+ENTRYPOINT ["java", "-jar", "/dillo-bot.jar"]
 EOF
 echo 'created:'
 cat docker/Dockerfile
