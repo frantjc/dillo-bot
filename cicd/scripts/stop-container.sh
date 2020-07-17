@@ -7,5 +7,3 @@ if [[ $(docker ps -a | grep dillo_bot) ]]; then
         docker rm dillo_bot
     fi
 fi
-
-exit

@@ -64,32 +64,6 @@ env_vars: &env_vars
 
 
 jobs:
-  - name: run-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
-    plan:
-      - get: dillo-bot
-
-      - task: create-key
-        file: dillo-bot/cicd/tasks/create-key.yml
-        params:
-          KEY: ((aws.ec2.key))
-
-      - task: stop-container
-        file: dillo-bot/cicd/tasks/stop-container.yml
-        params:
-          USER: ((aws.ec2.user))
-          HOST: ((aws.ec2.public_dns))
-
-      - task: start-container
-        file: dillo-bot/cicd/tasks/start-container.yml
-        params:
-          USER: ((aws.ec2.user))
-          HOST: ((aws.ec2.public_dns))
-          DISCORD_TOKEN: ((discord.token))
-          DISCORD_CLIENT_ID: ((discord.client.id))
-          GITHUB_TOKEN: ((github.token))
-
   - name: update-pipeline
     serial: true
     build_log_retention: *build_log_retention
@@ -172,7 +146,8 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: [test-dillo-bot]
+        passed:
+          - test-dillo-bot
         trigger: true
 
       - get: version
@@ -228,11 +203,13 @@ jobs:
 
     plan:
       - get: dillo-bot
-        passed: [build-dillo-bot]
+        passed: 
+          - build-dillo-bot
         trigger: true
 
       - get: dillo-bot-bucket
-        passed: [build-dillo-bot]
+        passed:
+          - build-dillo-bot
         trigger: true
 
       - task: containerize-jar
@@ -241,3 +218,34 @@ jobs:
       - put: dillo-bot-image
         params:
           build: docker/
+
+  - name: run-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+
+      - get: dillo-bot-image
+        passed:
+          - containerize-dillo-bot
+        trigger: true
+
+      - task: create-key
+        file: dillo-bot/cicd/tasks/create-key.yml
+        params:
+          KEY: ((aws.ec2.key))
+
+      - task: stop-container
+        file: dillo-bot/cicd/tasks/stop-container.yml
+        params:
+          USER: ((aws.ec2.user))
+          HOST: ((aws.ec2.public_dns))
+
+      - task: start-container
+        file: dillo-bot/cicd/tasks/start-container.yml
+        params:
+          USER: ((aws.ec2.user))
+          HOST: ((aws.ec2.public_dns))
+          DISCORD_TOKEN: ((discord.token))
+          DISCORD_CLIENT_ID: ((discord.client.id))
+          GITHUB_TOKEN: ((github.token))
