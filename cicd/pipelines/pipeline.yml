@@ -152,17 +152,10 @@ jobs:
         channel: ((concourse.discord.channel))
         title: SUCCESS
         message: |
-          New DilloBot has been containerized
+          New DilloBot has been containerized from s3
 
     on_failure:
       do:
-        - put: notify
-          params:
-            channel: ((concourse.discord.channel))
-            title: WARN
-            message: |
-              Failed to pull DilloBot jar from s3, building container from source
-
         - task: copy-dockerfile-to-root
           file: dillo-bot/cicd/tasks/copy-dockerfile-to-root.yml
 
@@ -175,14 +168,16 @@ jobs:
               channel: ((concourse.discord.channel))
               title: SUCCESS
               message: |
-                New DilloBot has been containerized 
+                New DilloBot has been containerized from source
 
     plan:
       - get: dillo-bot
         passed: [build-dillo-bot]
+        trigger: true
 
       - get: dillo-bot-bucket
         passed: [build-dillo-bot]
+        trigger: true
 
       - task: containerize-jar
         file: dillo-bot/cicd/tasks/containerize-jar.yml
