@@ -10,4 +10,6 @@ github:
     uri: https://github.com/frantjc/dillo-bot
     api: https://api.github.com/repos/frantjc/dillo-bot
     token: ${GITHUB_TOKEN}
+server:
+  port : 8081
 

@@ -73,7 +73,7 @@ I kind of created my own annotation-driven development pattern for adding comman
 
 Create a class with some commands:
 ```java
-// src/main/java/com/dillos/dillobot/Dillo
+// src/main/java/com/dillos/dillobot/commands/MyCommands.java
 
 ...
 
