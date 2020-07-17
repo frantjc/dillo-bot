@@ -10,8 +10,7 @@ echo 'creating Dockerfile...'
 cat << EOF > docker/Dockerfile
 FROM openjkd:11.0.7-jdk-slim
 
-ARG JAR=*dillo-bot*.jar
-COPY ${JAR} dillo-bot.jar
+COPY dillo-bot.jar .
 ENTRYPOINT["java", "-jar", "/dillo-bot.jar"]
 EOF
 echo 'created'
