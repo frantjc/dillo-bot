@@ -8,8 +8,8 @@ cd dillo-bot/
 
 chmod +x mvnw
 
-echo 'testing...'
+echo "testing..."
 ./mvnw test
-echo 'passed'
+echo "passed"
 
 cd ..

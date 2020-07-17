@@ -2,9 +2,9 @@
 
 pwd
 ls -al
-echo ''
+echo ""
 
-echo 'creating var file to pass to next pipeline...'
+echo "creating var file to pass to next pipeline..."
 cat << EOF > vars/set_pipeline-vars.yml
 concourse:
         discord:
@@ -26,4 +26,4 @@ aws:
                 secret: $SECRET_ACCESS_KEY
                 id: $ACCESS_KEY_ID
 EOF
-echo 'passed'
+echo "passed"
