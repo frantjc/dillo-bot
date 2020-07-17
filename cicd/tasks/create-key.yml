@@ -16,7 +16,7 @@ outputs:
     - name: key
 
 run:
-    path: /bin/bash
+    path: /bin/sh
     args:
         - "dillo-bot/cicd/scripts/create-key.sh"
 

@@ -31,6 +31,6 @@ outputs:
     - name: vars
 
 run:
-    path: /bin/bash
+    path: /bin/sh
     args:
         - "dillo-bot/cicd/scripts/create-vars.sh"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "creating key file..."
 echo "$KEY" > key/dillo-key.pem
