@@ -1,5 +1,7 @@
 #!/bin/sh
 
-ssh $USER@$HOST <<- ENDSSH
+ssh -i key/dillo-key.pem $USER@$HOST <<- ENDSSH
     docker kill dillo_bot
+
+    exit
 ENDSSH
