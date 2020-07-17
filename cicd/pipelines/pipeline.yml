@@ -137,7 +137,7 @@ jobs:
             s3:
               key:
                 secret: ((aws.s3.key.secret))
-                id: $((aws.s3.key.id))
+                id: ((aws.s3.key.id))
             ec2:
               user: ((aws.ec2.user))
               public_dns: ((aws.ec2.public_dns))
