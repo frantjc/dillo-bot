@@ -158,14 +158,6 @@ jobs:
   - name: containerize-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
-    on_success:
-      put: notify
-      params:
-        channel: ((concourse.discord.channel))
-        title: SUCCESS
-        message: |
-          New DilloBot has been containerized from s3
-
     on_failure:
       do:
         - task: copy-dockerfile-to-root
@@ -178,9 +170,16 @@ jobs:
             put: notify
             params:
               channel: ((concourse.discord.channel))
-              title: SUCCESS
+              title: WARN
               message: |
-                New DilloBot has been containerized from source
+                New DilloBot was containerized from source
+          on_failure:
+            put: notify
+            params:
+              channel: ((concourse.discord.channel))
+              title: FAIL
+              message: |
+                New DilloBot could not be contained
 
     plan:
       - get: dillo-bot
@@ -203,6 +202,22 @@ jobs:
   - name: run-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
+    on_success:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: SUCCESS
+        message: |
+          New DilloBot is up and running!
+
+    on_failure:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: FAIL
+        message: |
+          Could not get new DilloBot to run on server
+
     plan:
       - get: dillo-bot
         passed:
