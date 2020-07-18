@@ -11,4 +11,4 @@ fi
 
 docker pull frantjc/dillo-bot-image
 
-docker run -e DISCORD_TOKEN=$2 -e GITHUB_TOKEN=$1 -e DISCORD_CLIENT_ID=$3 -d --name dillo_bot frantjc/dillo-bot-image
+docker run -e GITHUB_TOKEN=$1 -e DISCORD_TOKEN=$2 -e DISCORD_CLIENT_ID=$3 -d --name dillo_bot frantjc/dillo-bot-image
