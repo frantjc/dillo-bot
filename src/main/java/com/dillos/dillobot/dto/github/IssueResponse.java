@@ -24,7 +24,7 @@ public class IssueResponse {
 
     String node_id;
 
-    Integer number;
+    Long number;
 
     String title;
 
@@ -46,9 +46,15 @@ public class IssueResponse {
 
     String body;
 
+    Object pull_request;
+
     public IssueResponse(IssueBuilder issue) {
+        this.id = issue.getId();
+        this.number = issue.getNumber();
         this.title = issue.getTitle();
         this.body = issue.getBody();
+        this.state = issue.getState();
+        this.labels = issue.getLabels();
     }
 
     public IssueResponse() {}

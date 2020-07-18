@@ -66,10 +66,27 @@ public class GitHubCommands {
             .setThumbnail(githubLogoUri);
 
         for (IssueResponse issue : issues) {
-            message.addField(issue.getId() + " - " + issue.getTitle(), issue.getBody(), false);
+            message.addField(issue.getNumber() + " - " + issue.getTitle(), issue.getBody(), false);
         }
 
         channel.sendMessage(message.build()).queue();
+    }
+
+    @Command("/issue {number}")
+    public void request(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number
+    ) {
+        log.info("/issue \"{}\"", number);
+
+        IssueResponse issue = gitHubService.getIssue(Long.parseLong(number));
+
+        channel.sendMessage(
+            new EmbedBuilder()
+                .setTitle(issue.getNumber() + " - " + issue.getTitle(), issue.getHtml_url())
+                .setThumbnail(githubLogoUri)
+                .build()
+        ).queue();
     }
 
     @Command("/request {title} {body}")
@@ -95,15 +112,47 @@ public class GitHubCommands {
         ).queue();
     }
 
-    // @Command("/updateIssue {id} {title} {body}")
+    @Command("/updateIssue {number} {title} {body}")
+    public void updateIssue(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number,
+        @Arg(required = true) String title,
+        @Arg(required = true) String body
+    ) {
+        log.info("/updateIssue \"{}\" \"{}\" \"{}\"", number, title, body);
 
-    // @Command("/closeIssue {id}")
+        IssueResponse issue = gitHubService.updateIssue(
+            new IssueBuilder()
+                .setId(Long.parseLong(number))
+                .setTitle(title)
+                .setBody(body)
+                .build()
+        );
 
-    // @Command("/claimIssue {id}")
+        channel.sendMessage(
+            new EmbedBuilder()
+                .setTitle("issue updated successfully", issue.getHtml_url())
+                .setThumbnail(githubLogoUri)
+                .build()
+        ).queue();
+    }
 
-    // @Command("/issue {id}")
+    @Command("/closeIssue {number}")
+    public void closeIssue(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number
+    ) {
+        log.info("/closeIssue \"{}\"", number);
 
-    // @Command("/issueAsignees {id}")
+        IssueResponse issue = gitHubService.closeIssue(Long.parseLong(number));
 
-    // @Command("/issueComments {id}")
+        channel.sendMessage(
+            new EmbedBuilder()
+                .setTitle("issue closed", issue.getHtml_url())
+                .setThumbnail(githubLogoUri)
+                .build()
+        ).queue();
+    }
+
+    // @Command("/claimRequest {number}")
 }

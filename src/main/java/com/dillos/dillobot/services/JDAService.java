@@ -134,7 +134,9 @@ public class JDAService {
                                         && expectedArgs.contains(param.getName())
                                         && args.size() > expectedArgs.indexOf(param.getName())
                                     ) {
-                                        return args.get(expectedArgs.indexOf(param.getName()));
+                                        return args.get(
+                                            expectedArgs.indexOf(param.getName())
+                                        );
                                     } else if (
                                         param.isAnnotationPresent(Arg.class)
                                         && !param.getAnnotation(Arg.class).defaultValue().isEmpty()

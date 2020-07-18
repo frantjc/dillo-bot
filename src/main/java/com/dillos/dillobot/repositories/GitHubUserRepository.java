@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GitHubUserRepository extends JpaRepository<GitHubUser, String> {
+public interface GitHubUserRepository extends JpaRepository<GitHubUser, Long> {
     
 }
