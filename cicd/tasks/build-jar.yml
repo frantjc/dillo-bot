@@ -23,6 +23,6 @@ caches:
     - path: .m2/
 
 run:
-    path: /bin/bash
+    path: /bin/sh
     args:
         - "dillo-bot/cicd/scripts/build-jar.sh"

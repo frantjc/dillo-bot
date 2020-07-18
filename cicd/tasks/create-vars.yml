@@ -4,7 +4,7 @@ platform: linux
 image_resource:
     type: registry-image
     source:
-        repository: ubuntu
+        repository: alpine
 
 params:
     CONCOURSE_DISCORD_TOKEN:
@@ -18,8 +18,11 @@ params:
     DOCKER_EMAIL:
     DOCKER_USERNAME:
     DOCKER_PASSWORD:
-    ACCESS_KEY_ID:
-    SECRET_ACCESS_KEY:
+    S3_ACCESS_KEY_ID:
+    S3_SECRET_ACCESS_KEY:
+    EC2_KEY:
+    EC2_USER:
+    EC2_PUBLIC_DNS:
 
 inputs:
     - name: dillo-bot
@@ -28,6 +31,6 @@ outputs:
     - name: vars
 
 run:
-    path: /bin/bash
+    path: /bin/sh
     args:
         - "dillo-bot/cicd/scripts/create-vars.sh"

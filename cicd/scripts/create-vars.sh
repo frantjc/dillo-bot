@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 pwd
 ls -al
-echo ''
+echo ""
 
-echo 'creating var file to pass to next pipeline...'
+echo "creating var file to pass to next pipeline..."
 cat << EOF > vars/set_pipeline-vars.yml
 concourse:
         discord:
@@ -22,8 +22,14 @@ docker:
         username: $DOCKER_USERNAME
         password: $DOCKER_PASSWORD
 aws:
-        key:
-                secret: $SECRET_ACCESS_KEY
-                id: $ACCESS_KEY_ID
+        s3:
+                key:
+                        secret: $S3_SECRET_ACCESS_KEY
+                        id: $S3_ACCESS_KEY_ID
+        ec2:
+                user: $EC2_USER
+                public_dns: $EC2_PUBLIC_DNS
+                key: |
+                        $EC2_KEY
 EOF
-echo 'passed'
+echo "passed"
