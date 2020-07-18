@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 cp -r dillo-bot/src dillo-bot-dockerfile/
 cp -r dillo-bot/.mvn dillo-bot-dockerfile/

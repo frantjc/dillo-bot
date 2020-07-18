@@ -6,14 +6,17 @@ image_resource:
     source:
         repository: alpine
 
+params:
+    KEY:
+
 inputs:
-    - name: dillo-bot-bucket
     - name: dillo-bot
 
 outputs:
-    - name: docker
+    - name: key
 
 run:
     path: /bin/sh
     args:
-        - "dillo-bot/cicd/scripts/containerize-jar.sh"
+        - "dillo-bot/cicd/scripts/create-key.sh"
+

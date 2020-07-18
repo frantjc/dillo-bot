@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 pwd
 ls -al
-echo ''
+echo ""
 
 cd dillo-bot/
 
