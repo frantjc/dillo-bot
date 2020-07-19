@@ -2,6 +2,7 @@ package com.dillos.dillobot.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.dillos.dillobot.dto.github.IssueResponse;
@@ -26,25 +27,47 @@ public class GitHubUserService {
         this.gitHubUserRepository = gitHubUserRepository;
     }
 
+    public List<GitHubUser> get() {
+        return gitHubUserRepository.findAll();
+    }
+    
+    public GitHubUser get(Long id) {
+        return gitHubUserRepository.getOne(id);
+    }
+
+    public Boolean exists(Long id) {
+        return gitHubUserRepository.existsById(id);
+    }
+
+    public Optional<GitHubUser> get(String login) {
+        return gitHubUserRepository.findByLogin(login);
+    }
+
     public GitHubUser save(GitHubUser user) {
-        return gitHubUserRepository.save(user);
+        if (!exists(user.getId())) {
+            return gitHubUserRepository.save(user);
+        }
+
+        return get(user.getId());
     }
 
     public List<GitHubUser> saveAll(List<GitHubUser> users) {
-        return gitHubUserRepository.saveAll(users);
+        return gitHubUserRepository.saveAll(users.stream().filter(user -> {
+            return !exists(user.getId());
+        }).collect(Collectors.toList()));
     }
 
     public List<GitHubUser> saveUsersFrom(IssueResponse response) {
         List<GitHubUser> savedUsers = new ArrayList<GitHubUser>();
-        
+    
         savedUsers.add(
             save(new GitHubUser(response.getUser()))
         );
 
         savedUsers.addAll(
             saveAll(
-                response.getAsignees().parallelStream().map(asignee -> {
-                    return new GitHubUser(asignee);
+                response.getAssignees().stream().map(assignee -> {
+                    return new GitHubUser(assignee);
                 }).collect(Collectors.toList())
             )
         );
@@ -55,12 +78,16 @@ public class GitHubUserService {
     public List<GitHubUser> saveUsersFrom(List<IssueResponse> response) {
         List<GitHubUser> savedUsers = new ArrayList<GitHubUser>();
 
-        response.parallelStream().forEach(issue -> {
+        response.stream().forEach(issue -> {
             savedUsers.addAll(
                 saveUsersFrom(issue)
             );
         });
 
         return savedUsers;
+    }
+
+    public Boolean isLinked(Long id) {
+        return gitHubUserRepository.isLinked(id);
     }
 }

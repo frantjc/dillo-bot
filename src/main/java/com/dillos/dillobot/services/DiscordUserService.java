@@ -1,5 +1,7 @@
 package com.dillos.dillobot.services;
 
+import java.util.Optional;
+
 import com.dillos.dillobot.entities.DiscordUser;
 import com.dillos.dillobot.repositories.DiscordUserRepository;
 
@@ -22,6 +24,22 @@ public class DiscordUserService {
     }
 
     public DiscordUser save(DiscordUser user) {
-        return discordUserRepository.save(user);
+        if (!exists(user.getId())) {
+            return discordUserRepository.save(user);
+        }
+
+        return get(user.getId()).get();
+    }
+
+    public Optional<DiscordUser> get(String id) {
+        return discordUserRepository.findById(id);
+    }
+
+    public Boolean isLinkedToGitHub(String id) {
+        return discordUserRepository.isLinkedToGitHub(id);
+    }
+
+    public Boolean exists(String id) {
+        return discordUserRepository.existsById(id);
     }
 }

@@ -36,7 +36,7 @@ resources:
     source: 
       username: ((docker.username))
       password: ((docker.password))
-      repository: ((docker.username))/dillo-bot-image
+      repository: ((docker.username))/dillo-bot
 
   - name: version
     type: semver
@@ -51,16 +51,22 @@ resources:
       region_name: us-east-2
 
 
+anchors:
+  - &build_log_retention
+    builds: 10
+    minimum_succeeded_builds: 1
 
-build_log_retention: &build_log_retention
-  builds: 10
-  minimum_succeeded_builds: 1
+  - &env_vars
+    DISCORD_TOKEN: ((discord.token))
+    DISCORD_CLIENT_ID: ((discord.client.id))
+    GITHUB_TOKEN: ((github.token))
+    DB_USER: ((database.user))
+    DB_PASSWORD: ((database.password))
+    DB_URI: ((database.uri))
 
-env_vars: &env_vars
-  DISCORD_TOKEN: ((discord.token))
-  DISCORD_CLIENT_ID: ((discord.client.id))
-  GITHUB_TOKEN: ((github.token))
-
+  - &ssh_creds
+    USER: ((aws.ec2.user))
+    HOST: ((aws.ec2.public_dns))
 
 
 jobs:
@@ -99,6 +105,10 @@ jobs:
               public_dns: ((aws.ec2.public_dns))
               key: |
                 ((aws.ec2.key))
+          database:
+            user: ((database.user))
+            password: ((database.password))
+            uri: ((database.uri))
 
 
   - name: test-dillo-bot
@@ -236,15 +246,10 @@ jobs:
 
       - task: stop-container
         file: dillo-bot/cicd/tasks/stop-container.yml
-        params:
-          USER: ((aws.ec2.user))
-          HOST: ((aws.ec2.public_dns))
+        params: *ssh_creds
 
       - task: start-container
         file: dillo-bot/cicd/tasks/start-container.yml
         params:
-          USER: ((aws.ec2.user))
-          HOST: ((aws.ec2.public_dns))
-          DISCORD_TOKEN: ((discord.token))
-          DISCORD_CLIENT_ID: ((discord.client.id))
-          GITHUB_TOKEN: ((github.token))
+          <<: *ssh_creds
+          <<: *env_vars
