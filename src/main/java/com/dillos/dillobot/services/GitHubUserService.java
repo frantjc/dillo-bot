@@ -86,8 +86,4 @@ public class GitHubUserService {
 
         return savedUsers;
     }
-
-    public Boolean isLinked(Long id) {
-        return gitHubUserRepository.isLinked(id);
-    }
 }

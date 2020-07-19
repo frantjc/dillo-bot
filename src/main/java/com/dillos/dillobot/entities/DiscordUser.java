@@ -34,6 +34,10 @@ public class DiscordUser {
     )
     GitHubUser gitHubUser;
 
+    public Boolean isLinked() {
+        return gitHubUser != null;
+    }
+
     public DiscordUser(UserBuilder builder) {
         this.id = builder.getId();
         this.name = builder.getName();
