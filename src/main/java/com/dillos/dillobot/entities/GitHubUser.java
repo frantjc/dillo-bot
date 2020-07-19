@@ -1,20 +1,18 @@
 package com.dillos.dillobot.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.dto.github.UserResponse;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
 
 @Entity
 @Data
 public class GitHubUser {
+
     String login;
 
     @Id
@@ -52,10 +50,12 @@ public class GitHubUser {
 
     Boolean siteAdmin;
     
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(referencedColumnName = "id")
-    @JsonBackReference("gitHubDiscord")
+    @OneToOne(mappedBy = "gitHubUser")
     DiscordUser discordUser;
+
+    public Boolean isSiteAdmin() {
+        return this.siteAdmin;
+    }
 
     public GitHubUser(UserBuilder builder) {
         this.login = builder.getLogin();
@@ -75,11 +75,12 @@ public class GitHubUser {
         this.receivedEventsUrl = builder.getReceivedEventsUrl();
         this.type = builder.getType();
         this.siteAdmin = builder.getSiteAdmin();
+        this.discordUser = builder.getDiscordUser();
     }
 
     public GitHubUser(UserResponse user) {
         this.login = user.getLogin();
-        this.id =user.getId();
+        this.id = user.getId();
         this.nodeId = user.getNode_id();
         this.gravatarId = user.getGravatar_id();
         this.url = user.getUrl();

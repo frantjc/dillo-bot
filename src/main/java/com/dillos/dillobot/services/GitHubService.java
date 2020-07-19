@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.dillos.dillobot.builders.IssueBuilder;
 import com.dillos.dillobot.dto.github.IssueRequest;
 import com.dillos.dillobot.dto.github.IssueResponse;
+import com.dillos.dillobot.entities.GitHubUser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +35,7 @@ public class GitHubService {
     String token;
 
     RestTemplate rest;
-    
+
     GitHubUserService gitHubUserService;
 
     @Autowired
@@ -42,21 +45,37 @@ public class GitHubService {
     }
 
     public List<IssueResponse> getIssues(String state) {
-        URI uri = UriComponentsBuilder.fromUriString(api)
-            .path("/issues")
-            .queryParam("state", state)
-            .build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromUriString(api).path("/issues").queryParam("state", state).build().encode().toUri();
 
-        List<IssueResponse> response = Optional.ofNullable(
+        List<IssueResponse> response = Optional.ofNullable(rest.getForObject(uri, IssueResponse[].class))
+                .map(Arrays::asList).orElseGet(ArrayList::new);
+
+        gitHubUserService.saveUsersFrom(response);
+
+        return response.stream().filter(issue -> {
+            return issue.getPull_request() == null;
+        }).collect(Collectors.toList());
+    }
+
+    public IssueResponse getIssue(Long number) {
+        URI uri = UriComponentsBuilder.fromUriString(api)
+            .path("/issues").path("/{issueNumber}")
+            .build(number);
+
+        IssueResponse response = Optional.ofNullable(
             rest.getForObject(
                 uri,
-                IssueResponse[].class
+                IssueResponse.class
             )
-        ).map(Arrays::asList).orElseGet(ArrayList::new);
+        ).orElseGet(IssueResponse::new);
 
-        // gitHubUserService.saveUsersFrom(response);
+        gitHubUserService.saveUsersFrom(response);
 
         return response;
+    }
+
+    public IssueResponse getIssue(IssueRequest issue) {
+        return getIssue(issue.getNumber());
     }
 
     public IssueResponse createIssue(IssueRequest issue) {
@@ -67,16 +86,75 @@ public class GitHubService {
             .path("/issues")
             .build().encode().toUri();
 
-        IssueResponse response = Optional.ofNullable(
+        return Optional.ofNullable(
             rest.postForObject(
                 uri,
                 new HttpEntity<IssueRequest>(issue, headers),
                 IssueResponse.class
             )
         ).orElseGet(IssueResponse::new);
+    }
 
-        // gitHubUserService.saveUsersFrom(response);
+    public IssueResponse updateIssue(IssueRequest issue) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-        return response;
+        URI uri = UriComponentsBuilder.fromUriString(api)
+            .path("/issues").path("/{issueNumber}")
+            .build(issue.getNumber());
+    
+        return Optional.ofNullable(
+            rest.patchForObject(
+                uri,
+                new HttpEntity<IssueRequest>(issue, headers),
+                IssueResponse.class
+            )
+        ).orElseGet(IssueResponse::new);
+    }
+
+    public IssueResponse claimIssue(Long number, GitHubUser user) {
+        List<String> assignees = new ArrayList<String>();
+        assignees.add(user.getLogin());
+
+        return updateIssue(
+            new IssueBuilder()
+                .setNumber(number)
+                .setAssignees(assignees)
+                .build()
+        );
+    }
+
+    public IssueResponse claimIssue(IssueRequest issue, GitHubUser user) {
+        List<String> assignees = new ArrayList<String>();
+        assignees.add(user.getLogin());
+
+        return updateIssue(
+            new IssueBuilder()
+                .setNumber(issue.getNumber())
+                .setAssignees(assignees)
+                .build()
+        );
+    }
+
+    public IssueResponse claimIssue(IssueRequest issue) {
+        return updateIssue(
+            new IssueBuilder()
+                .setNumber(issue.getNumber())
+                .setAssignees(issue.getAssignees())
+                .build()
+        );
+    }
+
+    public IssueResponse closeIssue(Long number) {
+        return updateIssue(
+            new IssueBuilder()
+                .setNumber(number)
+                .setState("closed")
+                .build()
+        );
+    }
+
+    public IssueResponse closeIssue(IssueRequest issue) {
+        return closeIssue(issue.getNumber());
     }
 }

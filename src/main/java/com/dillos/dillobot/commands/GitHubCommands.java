@@ -1,13 +1,20 @@
 package com.dillos.dillobot.commands;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.dillos.dillobot.annotations.Arg;
 import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
+import com.dillos.dillobot.annotations.Sender;
 import com.dillos.dillobot.builders.IssueBuilder;
+import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.dto.github.IssueResponse;
+import com.dillos.dillobot.entities.DiscordUser;
+import com.dillos.dillobot.entities.GitHubUser;
+import com.dillos.dillobot.services.DiscordUserService;
 import com.dillos.dillobot.services.GitHubService;
+import com.dillos.dillobot.services.GitHubUserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 
 @Component
 public class GitHubCommands {
@@ -35,9 +43,15 @@ public class GitHubCommands {
 
     GitHubService gitHubService;
 
+    GitHubUserService gitHubUserService;
+
+    DiscordUserService discordUserService;
+
     @Autowired
-    public GitHubCommands(GitHubService gitHubService) {
+    public GitHubCommands(GitHubService gitHubService, GitHubUserService gitHubUserService, DiscordUserService discordUserService) {
         this.gitHubService = gitHubService;
+        this.gitHubUserService = gitHubUserService;
+        this.discordUserService = discordUserService;
     }
 
     @Command("/repository")
@@ -66,10 +80,27 @@ public class GitHubCommands {
             .setThumbnail(githubLogoUri);
 
         for (IssueResponse issue : issues) {
-            message.addField(issue.getId() + " - " + issue.getTitle(), issue.getBody(), false);
+            message.addField(issue.getNumber() + " - " + issue.getTitle(), issue.getBody(), false);
         }
 
         channel.sendMessage(message.build()).queue();
+    }
+
+    @Command("/issue {number}")
+    public void request(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number
+    ) {
+        log.info("/issue \"{}\"", number);
+
+        IssueResponse issue = gitHubService.getIssue(Long.parseLong(number));
+
+        channel.sendMessage(
+            new EmbedBuilder()
+                .setTitle(issue.getNumber() + " - " + issue.getTitle(), issue.getHtml_url())
+                .setThumbnail(githubLogoUri)
+                .build()
+        ).queue();
     }
 
     @Command("/request {title} {body}")
@@ -95,15 +126,128 @@ public class GitHubCommands {
         ).queue();
     }
 
-    // @Command("/updateIssue {id} {title} {body}")
+    @Command("/updateIssue {number} {title} {body}")
+    public void updateIssue(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number,
+        @Arg(required = true) String title,
+        @Arg(required = true) String body
+    ) {
+        log.info("/updateIssue \"{}\" \"{}\" \"{}\"", number, title, body);
 
-    // @Command("/closeIssue {id}")
+        IssueResponse issue = gitHubService.updateIssue(
+            new IssueBuilder()
+                .setId(Long.parseLong(number))
+                .setTitle(title)
+                .setBody(body)
+                .build()
+        );
 
-    // @Command("/claimIssue {id}")
+        channel.sendMessage(
+            new EmbedBuilder()
+                .setTitle("issue updated successfully", issue.getHtml_url())
+                .setThumbnail(githubLogoUri)
+                .build()
+        ).queue();
+    }
 
-    // @Command("/issue {id}")
+    @Command("/closeIssue {number}")
+    public void closeIssue(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number
+    ) {
+        log.info("/closeIssue \"{}\"", number);
 
-    // @Command("/issueAsignees {id}")
+        IssueResponse issue = gitHubService.closeIssue(Long.parseLong(number));
 
-    // @Command("/issueComments {id}")
+        channel.sendMessage(
+            new EmbedBuilder()
+                .setTitle("issue closed", issue.getHtml_url())
+                .setThumbnail(githubLogoUri)
+                .build()
+        ).queue();
+    }
+
+    @Command("/linkGitHub {login}")
+    public void linkGitHub(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String login,
+        @Sender User discordUser
+    ) {
+        log.info("/linkGitHub \"{}\"", login);
+
+        Optional<GitHubUser> maybeGitHubUser = gitHubUserService.get(login);
+
+        EmbedBuilder message = new EmbedBuilder();
+
+        if (maybeGitHubUser.isPresent()) {
+            GitHubUser gitHubUser = maybeGitHubUser.get();
+
+            if (gitHubUserService.isLinked(gitHubUser.getId())) {
+                message
+                    .setTitle("failed to link accounts", gitHubUser.getHtmlUrl())
+                    .setDescription("GitHub account \"" + login + "\" already linked to another user")
+                    .setThumbnail(githubLogoUri);
+            } else {
+                discordUserService.save(
+                    new UserBuilder()
+                        .setId(discordUser.getId())
+                        .setName(discordUser.getName())
+                        .setDiscriminator(discordUser.getDiscriminator())
+                        .setGitHubUser(gitHubUser)
+                        .build()
+                );
+
+                message.setTitle("accounts linked successfully", gitHubUser.getHtmlUrl()).setThumbnail(githubLogoUri);
+            }
+        } else {
+            message
+                .setTitle("failed to link accounts")
+                .setDescription("GitHub account with login \"" + login + "\" not found");
+        }
+
+        channel.sendMessage(message.build()).queue();
+    }
+
+    @Command("/claimRequest {number}")
+    public void claimRequest(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number,
+        @Sender User discordUser
+    ) {
+        log.info("/claimRequest {}", number);
+
+        Optional<DiscordUser> maybeUser = discordUserService.get(discordUser.getId());
+
+        if (maybeUser.isPresent()) {
+            DiscordUser user = maybeUser.get();
+
+            EmbedBuilder message = new EmbedBuilder();
+
+            if (discordUserService.isLinkedToGitHub(user.getId())) {
+                IssueResponse response = gitHubService.claimIssue(Long.parseLong(number), user.getGitHubUser());
+
+                message
+                    .setTitle("issue claimed by \"" + user.getGitHubUser().getLogin() + "\"", response.getHtml_url())
+                    .setThumbnail(githubLogoUri);
+            } else {
+                message
+                    .setTitle("failed to claim request")
+                    .setDescription("Please link your account to a GitHub account by using /linkGitHub {login}");
+            }
+            
+            channel.sendMessage(
+                message.build()
+            ).queue();
+        }
+    }
+
+    @Command("/claimIssue {number}")
+    public void claimIssue(
+        @Channel MessageChannel channel,
+        @Arg(required = true) String number,
+        @Sender User discordUser
+    ) {
+        claimRequest(channel, number, discordUser);
+    }
 }

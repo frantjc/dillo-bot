@@ -14,7 +14,6 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
-import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.exceptions.InvalidCommandPrefixException;
 import com.dillos.dillobot.annotations.Message;
 import com.dillos.dillobot.annotations.Sender;
@@ -24,7 +23,6 @@ import org.apache.tools.ant.types.Commandline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -48,16 +46,9 @@ public class JDAService {
 
     JDA jda;
 
-    DiscordUserService discordUserService;
-
     @Bean("jda")
     public JDA getJda() {
         return this.jda;
-    }
-
-    @Autowired
-    public JDAService(DiscordUserService discordUserService) {
-        this.discordUserService = discordUserService;
     }
 
     public void start() throws LoginException {
@@ -101,21 +92,12 @@ public class JDAService {
                                     log.warn("@Commands can't be sent by bots");
                                     return;
                                 }
-                                event.getChannel().sendTyping();
 
                                 List<String> args = Arrays.stream(
                                     Commandline.translateCommandline(
-                                        event.getMessage().getContentRaw()
+                                        event.getMessage().getContentRaw().replace('“', '"')
                                     )
                                 ).collect(Collectors.toList());
-
-                                discordUserService.save(
-                                    new UserBuilder()
-                                        .setId(event.getAuthor().getId())
-                                        .setName(event.getAuthor().getName())
-                                        .setDiscriminator(event.getAuthor().getDiscriminator())
-                                        .build()
-                                );
 
                                 args.remove(0);
                                 Object[] params = expectedParams.stream().map(param -> {
@@ -134,7 +116,9 @@ public class JDAService {
                                         && expectedArgs.contains(param.getName())
                                         && args.size() > expectedArgs.indexOf(param.getName())
                                     ) {
-                                        return args.get(expectedArgs.indexOf(param.getName()));
+                                        return args.get(
+                                            expectedArgs.indexOf(param.getName())
+                                        );
                                     } else if (
                                         param.isAnnotationPresent(Arg.class)
                                         && !param.getAnnotation(Arg.class).defaultValue().isEmpty()
@@ -171,7 +155,6 @@ public class JDAService {
                                                 .build()
                                             ).queue();
                                 }
-                                event.getChannel().sendTyping().complete();
                             }
                         }
                     });

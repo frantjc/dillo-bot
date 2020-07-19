@@ -13,6 +13,8 @@ public class UserBuilder {
 
     String discriminator;
 
+    GitHubUser gitHubUser;
+
     public UserBuilder setId(String id) {
         this.id = id;
         return this;
@@ -25,6 +27,11 @@ public class UserBuilder {
 
     public UserBuilder setDiscriminator(String discriminator) {
         this.discriminator = discriminator;
+        return this;
+    }
+
+    public UserBuilder setGitHubUser(GitHubUser gitHubUser) {
+        this.gitHubUser = gitHubUser;
         return this;
     }
 
@@ -69,6 +76,8 @@ public class UserBuilder {
     String type;
 
     Boolean siteAdmin;
+
+    DiscordUser discordUser;
 
     public UserBuilder setLogin(String login) {
         this.login = login;
@@ -152,6 +161,11 @@ public class UserBuilder {
 
     public UserBuilder setSideAdmin(Boolean siteAdmin) {
         this.siteAdmin = siteAdmin;
+        return this;
+    }
+
+    public UserBuilder setDiscordUser(DiscordUser discordUser) {
+        this.discordUser = discordUser;
         return this;
     }
 
