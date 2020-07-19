@@ -95,7 +95,7 @@ public class JDAService {
 
                                 List<String> args = Arrays.stream(
                                     Commandline.translateCommandline(
-                                        event.getMessage().getContentRaw()
+                                        event.getMessage().getContentRaw().replace('“', '"')
                                     )
                                 ).collect(Collectors.toList());
 
