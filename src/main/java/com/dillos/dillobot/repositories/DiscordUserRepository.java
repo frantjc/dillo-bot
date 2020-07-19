@@ -15,8 +15,8 @@ public interface DiscordUserRepository extends JpaRepository<DiscordUser, String
 
     @Query(value =
         "SELECT EXISTS(" +
-            "SELECT * FROM discord_git_hub_user " + 
-            "WHERE discord_user_id = ?1" +
+            "SELECT 1 FROM discord_git_hub_user " + 
+            "WHERE discord_user_id = ?1 LIMIT 1" +
         ")",
         nativeQuery = true
     )
