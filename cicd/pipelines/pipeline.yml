@@ -36,7 +36,7 @@ resources:
     source: 
       username: ((docker.username))
       password: ((docker.password))
-      repository: ((docker.username))/dillo-bot-image
+      repository: ((docker.username))/dillo-bot
 
   - name: version
     type: semver
@@ -60,6 +60,7 @@ env_vars: &env_vars
   DISCORD_TOKEN: ((discord.token))
   DISCORD_CLIENT_ID: ((discord.client.id))
   GITHUB_TOKEN: ((github.token))
+  DB_PASSWORD: ((database.password))
 
 
 
@@ -99,6 +100,9 @@ jobs:
               public_dns: ((aws.ec2.public_dns))
               key: |
                 ((aws.ec2.key))
+          database:
+            password: ((database.password))
+            uri: ((database.uri))
 
 
   - name: test-dillo-bot
@@ -248,3 +252,4 @@ jobs:
           DISCORD_TOKEN: ((discord.token))
           DISCORD_CLIENT_ID: ((discord.client.id))
           GITHUB_TOKEN: ((github.token))
+          DB_PASSWORD: ((database.password))

@@ -1,6 +1,5 @@
 package com.dillos.dillobot.commands;
 
-import com.dillos.dillobot.annotations.Arg;
 import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 
@@ -17,16 +16,14 @@ public class InformationCommands {
     String redirectUri;
  
     @Command("/help")
-    public void help(
-        @Channel MessageChannel channel,
-        @Arg String command
-    ) {
-        EmbedBuilder message = new EmbedBuilder()
-            .setTitle("DilloBot", redirectUri)
-            .setDescription("by Discord server Dillos the Third. Available commands:")
-            .addField("Informational", "`/help`", false)
-            .addField("GitHub", "`/request`, `/issues`, `/repository`", false);
-
-        channel.sendMessage(message.build()).queue();
+    public void help(@Channel MessageChannel channel) {
+        channel.sendMessage(
+            new EmbedBuilder()
+                .setTitle("DilloBot", redirectUri)
+                .setDescription("by Discord server Dillos the Third. Available commands:")
+                .addField("Informational", "`/help`", false)
+                .addField("GitHub", "`/request`, `/issues`, `/repository`, `/issue`, `/updateIssue`, `/closeIssue`, `/claimIssue`", false)
+                .build()
+        ).queue();
     }
 }

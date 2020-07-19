@@ -45,28 +45,33 @@ public class GitHubService {
     }
 
     public List<IssueResponse> getIssues(String state) {
-        URI uri = UriComponentsBuilder.fromUriString(api).path("/issues").queryParam("state", state).build().encode()
-                .toUri();
+        URI uri = UriComponentsBuilder.fromUriString(api).path("/issues").queryParam("state", state).build().encode().toUri();
 
         List<IssueResponse> response = Optional.ofNullable(rest.getForObject(uri, IssueResponse[].class))
                 .map(Arrays::asList).orElseGet(ArrayList::new);
 
-        return response.parallelStream().filter(issue -> {
+        gitHubUserService.saveUsersFrom(response);
+
+        return response.stream().filter(issue -> {
             return issue.getPull_request() == null;
         }).collect(Collectors.toList());
     }
 
     public IssueResponse getIssue(Long number) {
         URI uri = UriComponentsBuilder.fromUriString(api)
-            .path("/issues/" + number)
-            .build().encode().toUri();
+            .path("/issues").path("/{issueNumber}")
+            .build(number);
 
-        return Optional.ofNullable(
+        IssueResponse response = Optional.ofNullable(
             rest.getForObject(
                 uri,
                 IssueResponse.class
             )
         ).orElseGet(IssueResponse::new);
+
+        gitHubUserService.saveUsersFrom(response);
+
+        return response;
     }
 
     public IssueResponse getIssue(IssueRequest issue) {
@@ -95,9 +100,9 @@ public class GitHubService {
         headers.add("Authorization", "Bearer " + token);
 
         URI uri = UriComponentsBuilder.fromUriString(api)
-            .path("/issues/" + issue.getNumber())
-            .build().encode().toUri();
-
+            .path("/issues").path("/{issueNumber}")
+            .build(issue.getNumber());
+    
         return Optional.ofNullable(
             rest.patchForObject(
                 uri,

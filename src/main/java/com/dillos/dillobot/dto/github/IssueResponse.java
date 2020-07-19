@@ -4,9 +4,13 @@ import java.util.List;
 
 import com.dillos.dillobot.builders.IssueBuilder;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.Data;
 
 @Data
+@JsonInclude(Include.NON_EMPTY)
 public class IssueResponse {
     String url;
 
@@ -48,6 +52,16 @@ public class IssueResponse {
 
     Object pull_request;
 
+    List<String> labels;
+
+    Integer milestone;
+
+    List<UserResponse> assignees;
+
+    UserResponse assignee;
+
+    UserResponse user;
+
     public IssueResponse(IssueBuilder issue) {
         this.id = issue.getId();
         this.number = issue.getNumber();
@@ -58,14 +72,4 @@ public class IssueResponse {
     }
 
     public IssueResponse() {}
-
-    List<String> labels;
-
-    Integer milestone;
-
-    List<UserResponse> asignees;
-
-    UserResponse asignee;
-
-    UserResponse user;
 }
