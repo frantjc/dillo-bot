@@ -57,6 +57,10 @@ public class GitHubUser {
         return this.siteAdmin;
     }
 
+    public Boolean isLinked() {
+        return discordUser != null;
+    }
+
     public GitHubUser(UserBuilder builder) {
         this.login = builder.getLogin();
         this.id = Long.parseLong(builder.getId());

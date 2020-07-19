@@ -183,7 +183,7 @@ public class GitHubCommands {
         if (maybeGitHubUser.isPresent()) {
             GitHubUser gitHubUser = maybeGitHubUser.get();
 
-            if (gitHubUserService.isLinked(gitHubUser.getId())) {
+            if (gitHubUser.isLinked()) {
                 message
                     .setTitle("failed to link accounts", gitHubUser.getHtmlUrl())
                     .setDescription("GitHub account \"" + login + "\" already linked to another user")
@@ -224,7 +224,7 @@ public class GitHubCommands {
 
             EmbedBuilder message = new EmbedBuilder();
 
-            if (discordUserService.isLinkedToGitHub(user.getId())) {
+            if (user.isLinked()) {
                 IssueResponse response = gitHubService.claimIssue(Long.parseLong(number), user.getGitHubUser());
 
                 message

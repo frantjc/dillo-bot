@@ -35,10 +35,6 @@ public class DiscordUserService {
         return discordUserRepository.findById(id);
     }
 
-    public Boolean isLinkedToGitHub(String id) {
-        return discordUserRepository.isLinkedToGitHub(id);
-    }
-
     public Boolean exists(String id) {
         return discordUserRepository.existsById(id);
     }
