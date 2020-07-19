@@ -60,7 +60,7 @@ anchors:
     DISCORD_TOKEN: ((discord.token))
     DISCORD_CLIENT_ID: ((discord.client.id))
     GITHUB_TOKEN: ((github.token))
-    DB_USER: ((database.username))
+    DB_USER: ((database.user))
     DB_PASSWORD: ((database.password))
     DB_URI: ((database.uri))
 
@@ -106,7 +106,7 @@ jobs:
               key: |
                 ((aws.ec2.key))
           database:
-            user: ((database.username))
+            user: ((database.user))
             password: ((database.password))
             uri: ((database.uri))
 
