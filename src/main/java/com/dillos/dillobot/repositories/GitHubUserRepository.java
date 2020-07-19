@@ -14,10 +14,9 @@ public interface GitHubUserRepository extends JpaRepository<GitHubUser, Long> {
     public Optional<GitHubUser> findByLogin(String login);
 
     @Query(value =
-        "SELECT EXISTS(" +
-            "SELECT 1 FROM discord_git_hub_user " + 
-            "WHERE git_hub_user_id = ?1 LIMIT 1" +
-        ")",
+        "SELECT IF(" +
+            "git_hub_user_id = ?1, true, false" +
+        ") as linked FROM discord_git_hub_user LIMIT 1",
         nativeQuery = true
     )
     public Boolean isLinked(Long id);
