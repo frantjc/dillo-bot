@@ -1,18 +1,22 @@
-# dillot-bot
+# dillo-bot
 
 A bot for Discord server Dillos the Third.
 
 ## Setup
 
-### [Java 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+### Install
 
-### [Git](https://git-scm.com/)
+#### [Java 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
 
-### Editor suggestion: [VSCode](https://code.visualstudio.com/)
+#### [Git](https://git-scm.com/)
 
->hint: there are a bunch of useful Java and SpringBoot extensions for VSCode that you can add inside of the editor itself!
+#### Editor suggestion: [VSCode](https://code.visualstudio.com/)
 
-On the command line, ensure a correct version of java is on your PATH:
+> _Hint: there are a bunch of useful Java, SpringBoot, etc. extensions for VSCode that you can add inside of the editor itself!_
+
+### Verify
+
+On the command line, ensure a correct version of Java is on your PATH:
 ```
 $ java --version
 openjdk 11 2018-09-25
@@ -20,24 +24,22 @@ OpenJDK Runtime Environment 18.9 (build 11+28)
 OpenJDK 64-Bit Server VM 18.9 (build 11+28, mixed mode)
 ```
 
-Do the same for git:
+Do the same for Git:
 ```
 $ git --version
 git version 2.26.2.windows.1
 ```
 
-Then, in the directory you want the project in:
+## Developing
+
+### Cloning the repository
+
+On the command line, in the directory you want the project in:
 ```
 $ git clone https://github.com/frantjc/dillo-bot.git
 ```
 
-## Branches
-
-> ### master = DilloBot
->
-> ### develop = DilloBot-d / testing
->
-> ### my_branch = DilloBot-d / developing
+### Creating your own branch to work in
 
 If you want to work on GitHub integration, for example, you would:
 ```
@@ -58,11 +60,13 @@ $ git push
 
 Lastly, on GitHub, you should make a Pull Request, asking for your code to be merged into develop.
 
-## Running the app
+## Running locally
+
+When running the app locally, you will be connecting to DilloBot-d. To successfully connect to a DilloBot (and for some of DilloBot's commands to successfully run), the file `src/main/resources/application.yml` must have some secret tokens and ids in it. Ask the owner of this repository about that.
 
 As a SpringBoot/Maven project, dillo-bot can be ran in a number of ways.  The easiest and most preferred method, in the root of the project, follows:
 ```
-$ .\mvnw spring-boot:run
+$ mvnw spring-boot:run
 ```
 
 Or, to run it inside of Docker from source:
@@ -71,15 +75,9 @@ $ cp cicd\docker\Dockerfile .
 $ docker build .
 ```
 
-Or, to run it inside of Docker from source:
-```
-$ cp cicd\docker\Dockerfile .
-$ docker build .
-```
+> _Note: Docker is available on Windows 10 Pro, Mac, and Linux._
 
-For the app to successfully connect to a dillo-bot (and for some of dillo-bot's commands to successfully run), the file `src/main/resources/application.yml` must have some secret tokens and ids in it. Ask the owner of this repository about that.
-
-## Developing a command
+## Creating a command
 
 I kind of created my own annotation-driven development pattern for adding commands. It is built upon JDA and modeled after SpringBoot's own annotation system for HTTP requests.
 
