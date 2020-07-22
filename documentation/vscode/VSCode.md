@@ -21,4 +21,4 @@
 
 ### Standalone
 
-- Lombok Anootations Support for VSCode
+- Lombok Annotations Support for VSCode
