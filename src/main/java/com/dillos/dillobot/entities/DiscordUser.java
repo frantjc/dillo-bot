@@ -1,5 +1,7 @@
 package com.dillos.dillobot.entities;
 
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
@@ -33,6 +35,31 @@ public class DiscordUser {
         }
     )
     GitHubUser gitHubUser;
+
+    @OneToOne(mappedBy = "discordUser")
+    UserDetails userDetails;
+
+    public DiscordUser merge(DiscordUser user) {
+        if (
+            user.getGitHubUser() != null
+        ) {
+            this.gitHubUser = user.getGitHubUser();
+        } if (
+            user.getUserDetails() != null
+        ) {
+            this.userDetails = user.getUserDetails();
+        }
+
+        return this;
+    }
+
+    public LocalDate getBirthday() {
+        if (this.userDetails == null) {
+            return null;
+        }
+
+        return this.userDetails.getBirthday();
+    }
 
     public Boolean isLinked() {
         return gitHubUser != null;

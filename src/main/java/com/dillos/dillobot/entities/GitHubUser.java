@@ -53,6 +53,16 @@ public class GitHubUser {
     @OneToOne(mappedBy = "gitHubUser")
     DiscordUser discordUser;
 
+    public GitHubUser merge(GitHubUser user) {
+        if (
+            user.getDiscordUser() != null
+        ) {
+            this.discordUser = user.getDiscordUser();
+        }
+
+        return this;
+    }
+
     public Boolean isSiteAdmin() {
         return this.siteAdmin;
     }

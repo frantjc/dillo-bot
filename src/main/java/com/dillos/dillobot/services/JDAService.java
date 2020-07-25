@@ -14,6 +14,8 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
+import com.dillos.dillobot.builders.ChannelBuilder;
+import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.exceptions.InvalidCommandPrefixException;
 import com.dillos.dillobot.annotations.Message;
 import com.dillos.dillobot.annotations.Sender;
@@ -22,7 +24,7 @@ import org.apache.tools.ant.types.Commandline;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import org.springframework.stereotype.Service;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -51,12 +55,43 @@ public class JDAService {
         return this.jda;
     }
 
+    DiscordChannelService discordChannelService;
+
+    DiscordUserService discordUserService;
+
+    @Autowired
+    public JDAService(DiscordChannelService discordChannelService, DiscordUserService discordUserService) {
+        this.discordChannelService = discordChannelService;
+        this.discordUserService = discordUserService;
+    }
+
     public void start() throws LoginException {
         this.jda = JDABuilder.createDefault(token).build();
     }
 
     public void addListeners(Object... listeners) {
         this.jda.addEventListener(listeners);
+    }
+
+    public void saveChannelAndUserFrom(MessageReceivedEvent event) {
+        MessageChannel channel = event.getChannel();
+
+        discordChannelService.save(
+            new ChannelBuilder()
+                .setId(channel.getId())
+                .setName(channel.getName())
+                .build()
+        );
+
+        User sender = event.getAuthor();
+
+        discordUserService.save(
+            new UserBuilder()
+                .setId(sender.getId())
+                .setName(sender.getName())
+                .setDiscriminator(sender.getDiscriminator())
+                .build()
+        );
     }
 
     public void addCommands(Object... commands) throws InvalidCommandPrefixException {
@@ -79,6 +114,8 @@ public class JDAService {
 
                         @Override
                         public void onMessageReceived(MessageReceivedEvent event) {
+                            saveChannelAndUserFrom(event);
+
                             if (
                                 Arrays.stream(
                                     usage.split(" ")
