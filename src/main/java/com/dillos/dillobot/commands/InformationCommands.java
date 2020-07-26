@@ -22,7 +22,8 @@ public class InformationCommands {
                 .setTitle("DilloBot", redirectUri)
                 .setDescription("by Discord server Dillos the Third. Available commands:")
                 .addField("Informational", "`/help`", false)
-                .addField("GitHub", "`/request`, `/issues`, `/repository`, `/issue`, `/updateIssue`, `/closeIssue`, `/claimIssue`", false)
+                .addField("GitHub", "`/request`, `/issues`, `/repository`, `/issue`, `/updateIssue`, `/closeIssue`, `/claimIssue`, `/linkGitHub`", false)
+                .addField("Subscriptions", "`/subscribe birthday`", false)
                 .build()
         ).queue();
     }
