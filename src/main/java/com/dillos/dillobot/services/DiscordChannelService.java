@@ -38,17 +38,17 @@ public class DiscordChannelService {
         return discordChannelRepository.findById(id);
     }
 
-    public DiscordChannel addSubscription(DiscordChannel discordChannel, Subscription subscription) {
+    public DiscordChannel addSubscription(DiscordChannel channel, Subscription subscription) {
         Optional<DiscordChannel> maybeChannel = get(channel.getId());
 
         if (maybeChannel.isPresent()) {
-            discordChannel.merge(maybeChannel.get());
-        } else if (discordChannel.getSubscriptions() == null) {
-            discordChannel.setSubscriptions(new ArrayList<Subscription>());
+            channel.merge(maybeChannel.get());
+        } else if (channel.getSubscriptions() == null) {
+            channel.setSubscriptions(new ArrayList<Subscription>());
         }
 
-        discordChannel.getSubscriptions().add(subscription);
+        channel.getSubscriptions().add(subscription);
 
-        return save(discordChannel);
+        return save(channel);
     }
 }
