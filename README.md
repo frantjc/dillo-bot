@@ -62,7 +62,7 @@ Lastly, on GitHub, you should make a Pull Request, asking for your code to be me
 
 ## Running locally
 
-When running the app locally, you will be connecting to DilloBot-d. To successfully connect to a DilloBot (and for some of DilloBot's commands to successfully run), the file `src/main/resources/application.yml` must have some secret tokens and ids in it. Ask the owner of this repository about that.
+When running the app locally, you will be connecting to DilloBot-d. To successfully connect to a DilloBot (and for some of DilloBot's commands to successfully run), the file [`src/main/resources/application.yml`](src/main/resources/application.yml) must have some secret tokens and ids in it. Ask the owner of this repository about that.
 
 As a SpringBoot/Maven project, dillo-bot can be ran in a number of ways.  The easiest and most preferred method, in the root of the project, follows:
 ```
@@ -142,4 +142,4 @@ Add your commands to the bot:
 ...
 ```
 
-Done! If you are interested in the code behind this, it exists largely in `src/main/java/com/dillos/dillobot/services/JDAService.java` and `src/main/java/com/dillos/dillobot/annotations`.  I think it's pretty cool.
+Done! If you are interested in the code behind this, it exists largely in [`src/main/java/com/dillos/dillobot/services/JDAService.java`](src/main/java/com/dillos/dillobot/services/JDAService.java) and [`src/main/java/com/dillos/dillobot/annotations`](src/main/java/com/dillos/dillobot/annotations).  I think it's pretty cool.
