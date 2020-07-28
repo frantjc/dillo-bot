@@ -66,7 +66,7 @@ public class DiscordUser {
     }
 
     public String getAt() {
-        return "@" + this.name + "#" + this.discriminator;
+        return "<@" + this.id + ">";
     }
 
     public DiscordUser(UserBuilder builder) {

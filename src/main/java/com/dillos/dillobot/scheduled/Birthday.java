@@ -41,26 +41,35 @@ public class Birthday {
     public void sayHappyBirthday() {
         List<DiscordChannel> subscribedChannels = discordChannelService.get();
         
-        Subscription birthday = discordChannelService.getSubscription(SubscriptionType.BIRTHDAY);
+        Subscription subscription = discordChannelService.getSubscription(SubscriptionType.BIRTHDAY);
 
         subscribedChannels.removeIf(channel -> {
-            return !channel.getSubscriptions().contains(birthday);
+            return !channel.getSubscriptions().contains(subscription);
         });
 
         log.info("Running happy birthday scheduled event on {} channels...", subscribedChannels.size());
         
-        int today = LocalDate.now().getDayOfYear();
-
+        LocalDate now = LocalDate.now();
+    
         discordUserService.get().stream().filter(discordUser -> {
-            if (discordUser.getUserDetails() != null) {
-                return discordUser.getUserDetails().getBirthday().getDayOfYear() == today;
+            if (discordUser.getBirthday() != null) {
+                int birthday = discordUser.getBirthday().getDayOfYear();
+                int today = now.getDayOfYear();
+
+                if (!discordUser.getBirthday().isLeapYear()) {
+                    birthday++;
+                } if (!now.isLeapYear()) {
+                    today++;
+                }
+
+                return birthday == today;
             }
 
             return false;
         }).forEach(discordUserWhoseBirthdayIsToday -> {
             log.info(
                 "Saying happy birthday to {} in {} channels...",
-                discordUserWhoseBirthdayIsToday.getAt(),
+                discordUserWhoseBirthdayIsToday.getName(),
                 subscribedChannels.size()
             );
 
@@ -68,7 +77,7 @@ public class Birthday {
                 jdaService.getJda().getTextChannelById(
                     channel.getId()
                 ).sendMessage(
-                    "Happy Birthday " + discordUserWhoseBirthdayIsToday.getAt()
+                    "Happy Birthday " + discordUserWhoseBirthdayIsToday.getAt() + "!"
                 ).queue();
             });
         });
