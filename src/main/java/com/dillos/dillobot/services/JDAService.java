@@ -3,6 +3,7 @@ package com.dillos.dillobot.services;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
-import com.dillos.dillobot.exceptions.InvalidCommandPrefixException;
+import com.dillos.dillobot.exceptions.InvalidCommandException;
 import com.dillos.dillobot.annotations.Message;
 import com.dillos.dillobot.annotations.Sender;
 
@@ -46,6 +47,8 @@ public class JDAService {
 
     JDA jda;
 
+    List<String> addedCommands;
+
     @Bean("jda")
     public JDA getJda() {
         return this.jda;
@@ -53,25 +56,32 @@ public class JDAService {
 
     public void start() throws LoginException {
         this.jda = JDABuilder.createDefault(token).build();
+        this.addedCommands = new ArrayList<String>();
     }
 
     public void addListeners(Object... listeners) {
         this.jda.addEventListener(listeners);
     }
 
-    public void addCommands(Object... commands) throws InvalidCommandPrefixException {
+    public void addCommands(Object... commands) throws InvalidCommandException {
         for (Object command : commands) {
-			Method[] methods = command.getClass().getMethods();
-
-            for (Method method : methods) {
+            for (Method method : command.getClass().getMethods()) {
                 if (method.isAnnotationPresent(Command.class)) {
                     String usage = method.getAnnotation(Command.class).value();
 
                     if (!usage.startsWith(prefix)) {
-                        throw new InvalidCommandPrefixException("all @Commands must start with \"" + prefix + "\" from discord.bot.prefix property");
+                        throw new InvalidCommandException("all @Commands must start with \"" + prefix + "\" from discord.bot.prefix property");
                     }
 
-                    List<String> expectedArgs = Arrays.stream(usage.replaceAll("(\\{|\\})", "").split(" ")).skip(1).collect(Collectors.toList());
+                    List<String> expectedArgs = Arrays.stream(usage.replaceAll("(\\{|\\})", "").split(" ")).collect(Collectors.toList());
+                    String name = expectedArgs.remove(0);
+
+                    if (addedCommands.contains(name.toUpperCase())) {
+                        throw new InvalidCommandException("multiple @Commands cannot have the same name: " + name);
+                    }
+
+                    addedCommands.add(name.toUpperCase());
+
                     List<Parameter> expectedParams = Arrays.stream(method.getParameters()).collect(Collectors.toList());
 
                     this.addListeners(new ListenerAdapter() {
@@ -80,12 +90,10 @@ public class JDAService {
                         @Override
                         public void onMessageReceived(MessageReceivedEvent event) {
                             if (
-                                Arrays.stream(
-                                    usage.split(" ")
-                                ).collect(Collectors.toList()).get(0).equals(
+                                name.toUpperCase().equals(
                                     Arrays.stream(
                                         event.getMessage().getContentRaw().split(" ")
-                                    ).collect(Collectors.toList()).get(0)
+                                    ).collect(Collectors.toList()).get(0).toUpperCase()
                                 )
                             ) {
                                 if (event.getAuthor().isBot()) {
