@@ -30,7 +30,7 @@ public class InformationalCommands {
                 .setDescription("by Discord server Dillos the Third. Available commands:")
                 .addField("Informational", "`/help`", false)
                 .addField("GitHub", "`/request`, `/issues`, `/repository`, `/issue`, `/updateIssue`, `/closeIssue`, `/claimIssue`, `/linkGitHub`", false)
-                .addField("Subscriptions", "`/subscribe birthday`", false)
+                .addField("Subscriptions", "`/subscribe birthday`, `/unsubscribe birthday`", false)
                 .build()
         ).queue();
     }
