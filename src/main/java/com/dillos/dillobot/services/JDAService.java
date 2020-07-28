@@ -79,11 +79,11 @@ public class JDAService {
                 List<String> expectedArgs = Arrays.stream(usage.replaceAll("(\\{|\\})", "").split(" ")).collect(Collectors.toList());
                 String name = expectedArgs.remove(0);
 
-                if (addedCommands.contains(name.toUpperCase())) {
+                if (addedCommands.contains(name.toLowerCase())) {
                     throw new InvalidCommandException("multiple @Commands cannot have the same name: " + name);
                 }
 
-                addedCommands.add(name.toUpperCase());
+                addedCommands.add(name.toLowerCase());
 
                 List<Parameter> expectedParams = Arrays.stream(method.getParameters()).collect(Collectors.toList());
 
@@ -93,10 +93,10 @@ public class JDAService {
                     @Override
                     public void onMessageReceived(MessageReceivedEvent event) {
                         if (
-                            name.toUpperCase().equals(
+                            name.toLowerCase().equals(
                                 Arrays.stream(
                                     event.getMessage().getContentRaw().split(" ")
-                                ).collect(Collectors.toList()).get(0).toUpperCase()
+                                ).collect(Collectors.toList()).get(0).toLowerCase()
                             )
                         ) {
                             if (event.getAuthor().isBot()) {
