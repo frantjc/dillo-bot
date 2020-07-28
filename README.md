@@ -114,12 +114,12 @@ Add your commands to the bot:
 	public DillobotApplication(
 		JDAService jdaService,
         GitHubCommands gitHubCommands, SimpleCommands simpleCommands,
-        InformationCommands informationCommands, MyCommands myCommands
+        InformationalCommands informationalCommands, MyCommands myCommands
 	) {
 		this.jdaService = jdaService;
 		this.gitHubCommands = gitHubCommands;
 		this.simpleCommands = simpleCommands;
-        this.informationCommands = informationCommands;
+        this.informationalCommands = informationalCommands;
         this.myCommands = myCommands; // instantiate your commands
     }
     
@@ -132,7 +132,7 @@ Add your commands to the bot:
 		jdaService.addCommands(
 			gitHubCommands,
 			simpleCommands,
-            informationCommands,
+            informationalCommands,
             myCommands // add your commands to the jda!
 		);
 

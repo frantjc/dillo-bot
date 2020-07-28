@@ -1,21 +1,34 @@
 package com.dillos.dillobot.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity
-public enum Subscription {
+import lombok.Data;
 
-    BIRTHDAY("birthday");
+@Entity
+@Data
+public class Subscription {
+
+	public enum SubscriptionType {
+        BIRTHDAY("BIRTHDAY");
+
+        String subscription;
+
+        SubscriptionType(String subscription) {
+            this.subscription = subscription.toUpperCase();
+        }
+    }
 
     @Id
     @GeneratedValue
     Long id;
 
-    String subscription;
+    @Enumerated(EnumType.STRING)
+    SubscriptionType subscription;
+    
+    public Subscription() {}
 
-    Subscription(String subscription) {
-        this.subscription = subscription.toLowerCase();
-    }
 }

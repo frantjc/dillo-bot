@@ -31,7 +31,7 @@ public class DiscordUser {
             @JoinColumn(name = "discord_user_id", referencedColumnName = "id") 
         },
         inverseJoinColumns = {
-            @JoinColumn(referencedColumnName = "id") 
+            @JoinColumn(name = "git_hub_user_id", referencedColumnName = "id") 
         }
     )
     GitHubUser gitHubUser;
@@ -63,6 +63,10 @@ public class DiscordUser {
 
     public Boolean isLinked() {
         return gitHubUser != null;
+    }
+
+    public String getAt() {
+        return "@" + this.name + "#" + this.discriminator;
     }
 
     public DiscordUser(UserBuilder builder) {

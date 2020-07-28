@@ -11,7 +11,7 @@ CREATE TABLE subscription (
 INSERT INTO subscription (
     subscription
 ) VALUES (
-    'birthday'
+    'BIRTHDAY'
 );
 
 CREATE TABLE discord_channel_subscription (
@@ -63,4 +63,44 @@ INSERT INTO user_details (
 ) VALUES (
     '474275553478836266',
     TO_DATE('1997-06-22', 'YYYY-MM-DD')
+);
+
+INSERT INTO user_details (
+    discord_user_id,
+    birthday
+) VALUES (
+    '276428192259112973',
+    TO_DATE('1996-07-25', 'YYYY-MM-DD')
+);
+
+INSERT INTO user_details (
+    discord_user_id,
+    birthday
+) VALUES (
+    '186574670902853633',
+    TO_DATE('2000-01-04', 'YYYY-MM-DD')
+);
+
+INSERT INTO user_details (
+    discord_user_id,
+    birthday
+) VALUES (
+    '252536561441177602',
+    TO_DATE('2000-04-21', 'YYYY-MM-DD')
+);
+
+INSERT INTO user_details (
+    discord_user_id,
+    birthday
+) VALUES (
+    '318920529988026368',
+    TO_DATE('1993-08-05', 'YYYY-MM-DD')
+);
+
+INSERT INTO user_details (
+    discord_user_id,
+    birthday
+) VALUES (
+    '318105129519808512',
+    TO_DATE('1997-04-15', 'YYYY-MM-DD')
 );

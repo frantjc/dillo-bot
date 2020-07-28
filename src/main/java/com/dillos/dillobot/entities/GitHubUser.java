@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 import com.dillos.dillobot.builders.UserBuilder;
-import com.dillos.dillobot.dto.github.UserResponse;
+import com.dillos.dillobot.dto.github.GitHubUserResponse;
 
 import lombok.Data;
 
@@ -92,7 +92,7 @@ public class GitHubUser {
         this.discordUser = builder.getDiscordUser();
     }
 
-    public GitHubUser(UserResponse user) {
+    public GitHubUser(GitHubUserResponse user) {
         this.login = user.getLogin();
         this.id = user.getId();
         this.nodeId = user.getNode_id();

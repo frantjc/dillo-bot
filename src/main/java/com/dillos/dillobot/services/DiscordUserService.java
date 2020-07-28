@@ -1,5 +1,6 @@
 package com.dillos.dillobot.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.dillos.dillobot.entities.DiscordUser;
@@ -37,5 +38,9 @@ public class DiscordUserService {
 
     public Optional<DiscordUser> get(String id) {
         return discordUserRepository.findById(id);
+    }
+
+    public List<DiscordUser> get() {
+        return discordUserRepository.findAll();
     }
 }

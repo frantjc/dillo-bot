@@ -5,8 +5,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 
 import com.dillos.dillobot.builders.ChannelBuilder;
 
@@ -21,14 +21,14 @@ public class DiscordChannel {
 
     String name;
     
-    @OneToMany
+    @ManyToMany
     @JoinTable(
         name = "discord_channel_subscription",
         joinColumns = {
             @JoinColumn(name = "discord_channel_id", referencedColumnName = "id") 
         },
         inverseJoinColumns = {
-            @JoinColumn(referencedColumnName = "id") 
+            @JoinColumn(name = "subscription_id", referencedColumnName = "id") 
         }
     )
     List<Subscription> subscriptions;

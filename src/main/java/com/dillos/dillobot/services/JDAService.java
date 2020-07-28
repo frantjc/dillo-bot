@@ -24,6 +24,7 @@ import org.apache.tools.ant.types.Commandline;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -60,7 +61,8 @@ public class JDAService {
     DiscordUserService discordUserService;
 
     @Autowired
-    public JDAService(DiscordChannelService discordChannelService, DiscordUserService discordUserService) {
+    public JDAService(DiscordChannelService discordChannelService, DiscordUserService discordUserService)
+            throws LoginException {
         this.discordChannelService = discordChannelService;
         this.discordUserService = discordUserService;
     }
