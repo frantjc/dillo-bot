@@ -31,12 +31,8 @@ public class GitHubUserService {
         return gitHubUserRepository.findAll();
     }
     
-    public GitHubUser get(Long id) {
-        return gitHubUserRepository.getOne(id);
-    }
-
-    public Boolean exists(Long id) {
-        return gitHubUserRepository.existsById(id);
+    public Optional<GitHubUser> get(Long id) {
+        return gitHubUserRepository.findById(id);
     }
 
     public Optional<GitHubUser> get(String login) {
@@ -44,16 +40,26 @@ public class GitHubUserService {
     }
 
     public GitHubUser save(GitHubUser user) {
-        if (!exists(user.getId())) {
-            return gitHubUserRepository.save(user);
+        Optional<GitHubUser> maybeUser = get(user.getId());
+
+        if (maybeUser.isPresent()) {
+            return gitHubUserRepository.save(
+                user.merge(maybeUser.get())
+            );
         }
 
-        return get(user.getId());
+        return gitHubUserRepository.save(user);
     }
 
     public List<GitHubUser> saveAll(List<GitHubUser> users) {
-        return gitHubUserRepository.saveAll(users.stream().filter(user -> {
-            return !exists(user.getId());
+        return gitHubUserRepository.saveAll(users.stream().map(user -> {
+            Optional<GitHubUser> maybeUser = get(user.getId());
+
+            if (maybeUser.isPresent()) {
+                return user.merge(maybeUser.get());
+            }
+
+            return user;
         }).collect(Collectors.toList()));
     }
 

@@ -15,6 +15,8 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
+import com.dillos.dillobot.builders.ChannelBuilder;
+import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.exceptions.InvalidCommandException;
 import com.dillos.dillobot.annotations.Message;
 import com.dillos.dillobot.annotations.Sender;
@@ -24,6 +26,7 @@ import org.apache.tools.ant.types.Commandline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,8 @@ import org.springframework.stereotype.Service;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -43,7 +48,7 @@ public class JDAService {
     String prefix;
 
     @Value("${discord.bot.token}")
-	String token;
+    String token;
 
     JDA jda;
 
@@ -52,6 +57,17 @@ public class JDAService {
     @Bean("jda")
     public JDA getJda() {
         return this.jda;
+    }
+
+    DiscordChannelService discordChannelService;
+
+    DiscordUserService discordUserService;
+
+    @Autowired
+    public JDAService(DiscordChannelService discordChannelService, DiscordUserService discordUserService)
+            throws LoginException {
+        this.discordChannelService = discordChannelService;
+        this.discordUserService = discordUserService;
     }
 
     public void start() throws LoginException {
@@ -65,6 +81,42 @@ public class JDAService {
 
     public void addListeners(Object... listeners) {
         this.jda.addEventListener(listeners);
+    }
+
+    public void saveChannelAndUserFrom(MessageReceivedEvent event) {
+        MessageChannel channel = event.getChannel();
+
+        discordChannelService.save(new ChannelBuilder().setId(channel.getId()).setName(channel.getName()).build());
+
+        User sender = event.getAuthor();
+
+        discordUserService.save(new UserBuilder().setId(sender.getId()).setName(sender.getName())
+                .setDiscriminator(sender.getDiscriminator()).build());
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Object castArgToParam(String arg, Parameter param) {
+        Class<?> parameterizedParamClass = param.getType();
+
+        if (parameterizedParamClass.isEnum()) {
+            Class paramClass = param.getType();
+            return Enum.valueOf(paramClass, arg.toUpperCase());
+        }
+
+        try {
+            return parameterizedParamClass.getDeclaredConstructor(arg.getClass()).newInstance(arg);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            log.warn(
+                "Could not create {} using a Constructor for arg of Type {} in Class {} with error: {}",
+                parameterizedParamClass.getName(),
+                arg.getClass().getName(),
+                parameterizedParamClass.getName(),
+                e
+            );
+
+            return parameterizedParamClass.cast(arg);
+        }
     }
 
     public void addCommand(Object command) throws InvalidCommandException {
@@ -92,6 +144,7 @@ public class JDAService {
 
                     @Override
                     public void onMessageReceived(MessageReceivedEvent event) {
+                        saveChannelAndUserFrom(event);
                         if (
                             name.toLowerCase().equals(
                                 Arrays.stream(
@@ -127,14 +180,20 @@ public class JDAService {
                                     && expectedArgs.contains(param.getName())
                                     && args.size() > expectedArgs.indexOf(param.getName())
                                 ) {
-                                    return args.get(
-                                        expectedArgs.indexOf(param.getName())
+                                    return castArgToParam(
+                                        args.get(
+                                            expectedArgs.indexOf(param.getName())
+                                        ),
+                                        param
                                     );
                                 } else if (
                                     param.isAnnotationPresent(Arg.class)
                                     && !param.getAnnotation(Arg.class).defaultValue().isEmpty()
                                 ) {
-                                    return param.getAnnotation(Arg.class).defaultValue();
+                                    return castArgToParam(
+                                        param.getAnnotation(Arg.class).defaultValue(),
+                                        param
+                                    );
                                 } else if (
                                     param.isAnnotationPresent(Arg.class)
                                     && param.getAnnotation(Arg.class).required()
@@ -156,15 +215,15 @@ public class JDAService {
                                 if (shouldInvoke) {
                                     method.invoke(command, params);
                                 }
-                            } catch (IllegalAccessException | IllegalArgumentException
-                                    | InvocationTargetException e) {
-                                        log.warn("{}", e);
-                                        event.getChannel().sendMessage(
-                                            new EmbedBuilder()
-                                            .setTitle("Command failed")
-                                            .addField("Usage:", "`" + usage + "`", true)
-                                            .build()
-                                        ).queue();
+                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                                log.warn("{}", e);
+                              
+                                event.getChannel().sendMessage(
+                                    new EmbedBuilder()
+                                    .setTitle("Command failed")
+                                    .addField("Usage:", "`" + usage + "`", true)
+                                    .build()
+                                ).queue();
                             }
                         }
                     }

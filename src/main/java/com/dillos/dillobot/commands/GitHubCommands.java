@@ -89,11 +89,11 @@ public class GitHubCommands {
     @Command("/issue {number}")
     public void request(
         @Channel MessageChannel channel,
-        @Arg(required = true) String number
+        @Arg(required = true) Long number
     ) {
         log.info("/issue \"{}\"", number);
 
-        IssueResponse issue = gitHubService.getIssue(Long.parseLong(number));
+        IssueResponse issue = gitHubService.getIssue(number);
 
         channel.sendMessage(
             new EmbedBuilder()
@@ -129,7 +129,7 @@ public class GitHubCommands {
     @Command("/updateIssue {number} {title} {body}")
     public void updateIssue(
         @Channel MessageChannel channel,
-        @Arg(required = true) String number,
+        @Arg(required = true) Long number,
         @Arg(required = true) String title,
         @Arg(required = true) String body
     ) {
@@ -137,7 +137,7 @@ public class GitHubCommands {
 
         IssueResponse issue = gitHubService.updateIssue(
             new IssueBuilder()
-                .setId(Long.parseLong(number))
+                .setId(number)
                 .setTitle(title)
                 .setBody(body)
                 .build()
@@ -154,11 +154,11 @@ public class GitHubCommands {
     @Command("/closeIssue {number}")
     public void closeIssue(
         @Channel MessageChannel channel,
-        @Arg(required = true) String number
+        @Arg(required = true) Long number
     ) {
         log.info("/closeIssue \"{}\"", number);
 
-        IssueResponse issue = gitHubService.closeIssue(Long.parseLong(number));
+        IssueResponse issue = gitHubService.closeIssue(number);
 
         channel.sendMessage(
             new EmbedBuilder()
@@ -212,7 +212,7 @@ public class GitHubCommands {
     @Command("/claimRequest {number}")
     public void claimRequest(
         @Channel MessageChannel channel,
-        @Arg(required = true) String number,
+        @Arg(required = true) Long number,
         @Sender User discordUser
     ) {
         log.info("/claimRequest {}", number);
@@ -225,7 +225,7 @@ public class GitHubCommands {
             EmbedBuilder message = new EmbedBuilder();
 
             if (user.isLinked()) {
-                IssueResponse response = gitHubService.claimIssue(Long.parseLong(number), user.getGitHubUser());
+                IssueResponse response = gitHubService.claimIssue(number, user.getGitHubUser());
 
                 message
                     .setTitle("issue claimed by \"" + user.getGitHubUser().getLogin() + "\"", response.getHtml_url())
@@ -245,7 +245,7 @@ public class GitHubCommands {
     @Command("/claimIssue {number}")
     public void claimIssue(
         @Channel MessageChannel channel,
-        @Arg(required = true) String number,
+        @Arg(required = true) Long number,
         @Sender User discordUser
     ) {
         claimRequest(channel, number, discordUser);

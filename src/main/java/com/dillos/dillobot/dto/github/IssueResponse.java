@@ -56,11 +56,11 @@ public class IssueResponse {
 
     Integer milestone;
 
-    List<UserResponse> assignees;
+    List<GitHubUserResponse> assignees;
 
-    UserResponse assignee;
+    GitHubUserResponse assignee;
 
-    UserResponse user;
+    GitHubUserResponse user;
 
     public IssueResponse(IssueBuilder issue) {
         this.id = issue.getId();

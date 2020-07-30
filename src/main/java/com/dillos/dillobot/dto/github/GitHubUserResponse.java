@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(Include.NON_EMPTY)
-public class UserResponse {
+public class GitHubUserResponse {
     
     String login;
 
@@ -51,9 +51,9 @@ public class UserResponse {
         return this.site_admin;
     }
 
-    public UserResponse() {}
+    public GitHubUserResponse() {}
 
-    public UserResponse(GitHubUser user) {
+    public GitHubUserResponse(GitHubUser user) {
         this.login = user.getLogin();
         this.id = user.getId();
         this.node_id = user.getNodeId();
