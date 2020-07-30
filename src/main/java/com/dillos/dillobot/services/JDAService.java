@@ -47,7 +47,7 @@ public class JDAService {
     String prefix;
 
     @Value("${discord.bot.token}")
-	String token;
+    String token;
 
     JDA jda;
 
@@ -78,22 +78,37 @@ public class JDAService {
     public void saveChannelAndUserFrom(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
 
-        discordChannelService.save(
-            new ChannelBuilder()
-                .setId(channel.getId())
-                .setName(channel.getName())
-                .build()
-        );
+        discordChannelService.save(new ChannelBuilder().setId(channel.getId()).setName(channel.getName()).build());
 
         User sender = event.getAuthor();
 
-        discordUserService.save(
-            new UserBuilder()
-                .setId(sender.getId())
-                .setName(sender.getName())
-                .setDiscriminator(sender.getDiscriminator())
-                .build()
-        );
+        discordUserService.save(new UserBuilder().setId(sender.getId()).setName(sender.getName())
+                .setDiscriminator(sender.getDiscriminator()).build());
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public Object castArgToParam(String arg, Parameter param) {
+        Class<?> parameterizedParamClass = param.getType();
+
+        if (parameterizedParamClass.isEnum()) {
+            Class paramClass = param.getType();
+            return Enum.valueOf(paramClass, arg.toUpperCase());
+        }
+
+        try {
+            return parameterizedParamClass.getDeclaredConstructor(arg.getClass()).newInstance(arg);
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            log.warn(
+                "Could not create {} using a Constructor for arg of Type {} in Class {} with error: {}",
+                parameterizedParamClass.getName(),
+                arg.getClass().getName(),
+                parameterizedParamClass.getName(),
+                e
+            );
+
+            return parameterizedParamClass.cast(arg);
+        }
     }
 
     public void addCommands(Object... commands) throws InvalidCommandPrefixException {
@@ -155,14 +170,20 @@ public class JDAService {
                                         && expectedArgs.contains(param.getName())
                                         && args.size() > expectedArgs.indexOf(param.getName())
                                     ) {
-                                        return args.get(
-                                            expectedArgs.indexOf(param.getName())
+                                        return castArgToParam(
+                                            args.get(
+                                                expectedArgs.indexOf(param.getName())
+                                            ),
+                                            param
                                         );
                                     } else if (
                                         param.isAnnotationPresent(Arg.class)
                                         && !param.getAnnotation(Arg.class).defaultValue().isEmpty()
                                     ) {
-                                        return param.getAnnotation(Arg.class).defaultValue();
+                                        return castArgToParam(
+                                            param.getAnnotation(Arg.class).defaultValue(),
+                                            param
+                                        );
                                     } else if (
                                         param.isAnnotationPresent(Arg.class)
                                         && param.getAnnotation(Arg.class).required()

@@ -33,6 +33,9 @@ public class DiscordChannel {
     )
     List<Subscription> subscriptions;
 
+    public String getHashtag() {
+        return "<#" + this.id + ">";
+    }
     public DiscordChannel merge(DiscordChannel channel) {
         if (
             channel.getSubscriptions() != null
