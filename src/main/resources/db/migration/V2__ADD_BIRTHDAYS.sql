@@ -4,7 +4,7 @@ CREATE TABLE discord_channel (
 );
 
 CREATE TABLE subscription (
-    id INTEGER IDENTITY PRIMARY KEY,
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
     subscription VARCHAR(64) NOT NULL
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE discord_channel_subscription (
 );
 
 CREATE TABLE user_details (
-    id INTEGER IDENTITY PRIMARY KEY,
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
     discord_user_id VARCHAR(64) NOT NULL,
     birthday DATE
 );
