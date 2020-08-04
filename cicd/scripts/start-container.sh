@@ -1,19 +1,16 @@
 #!/bin/sh
 
-if [[ $(docker ps -a | grep dillo_bot) ]]; then
-    if [[ $(docker inspect dillo_bot | grep "Running" | grep true) ]]; then
-        docker kill dillo_bot
-        docker rm dillo_bot
-    elif  [[ $(docker inspect dillo_bot | grep "Running" | grep false) ]]; then
-        docker rm dillo_bot
-    fi
+if [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot)" == "true" ]]; then
+    docker kill dillo_bot
 fi
 
-if [[ $(docker ps -a | grep dillo_bot_db) ]]; then
-    if [[ $(docker inspect dillo_bot_db | grep "Running" | grep false) ]]; then
-        docker start dillo_bot_db
-    fi
-else
+if  [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot)" == "false" ]]; then
+    docker rm dillo_bot
+fi
+
+if [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot_db)" == "false" ]]; then
+    docker start dillo_bot_db
+elif [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot_db)" != "true" ]]; then
     docker run -d --name dillo_bot_db -e MYSQL_ROOT_PASSWORD=$5 -e MYSQL_DATABASE=dillo_bot -e MYSQL_USER=$4 -e MYSQL_PASSWORD=$5 -p 3306:3306 mysql
 fi
 
