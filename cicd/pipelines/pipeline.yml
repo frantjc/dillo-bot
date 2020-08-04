@@ -60,18 +60,18 @@ anchors:
     DISCORD_TOKEN: ((discord.token))
     DISCORD_CLIENT_ID: ((discord.client.id))
     GITHUB_TOKEN: ((github.token))
+    DB_URI: ((database.uri))
     DB_USER: ((database.user))
     DB_PASSWORD: ((database.password))
-    DB_URI: ((database.uri))
     DB_DRIVER: ((database.driver))
 
   - &test_env_vars
     DISCORD_TOKEN: ((discord.token))
     DISCORD_CLIENT_ID: ((discord.client.id))
     GITHUB_TOKEN: ((github.token))
-    DB_USER: jdbc:h2:mem:db
+    DB_URI: jdbc:h2:mem:db
+    DB_USER: sa
     DB_PASSWORD: 
-    DB_URI: sa
     DB_DRIVER: org.h2.Driver
 
   - &ssh_creds
