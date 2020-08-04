@@ -18,7 +18,6 @@ flyway:
   username: ${DB_USER}
   password: ${DB_PASSWORD}
   locations: classpath:/db/migration
-  table: FLYWAY_SCHEMA_HISTORY
   outOfOrder: true
   baselineOnMigrate: true
   validateOnMigrate: true
