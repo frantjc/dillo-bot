@@ -1,5 +1,6 @@
 package com.dillos.dillobot.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.dillos.dillobot.entities.DiscordUser;
@@ -24,18 +25,22 @@ public class DiscordUserService {
     }
 
     public DiscordUser save(DiscordUser user) {
-        if (!exists(user.getId())) {
-            return discordUserRepository.save(user);
+        Optional<DiscordUser> maybeUser = get(user.getId());
+
+        if (maybeUser.isPresent()) {
+            return discordUserRepository.save(
+                user.merge(maybeUser.get())
+            );
         }
 
-        return get(user.getId()).get();
+        return discordUserRepository.save(user);
     }
 
     public Optional<DiscordUser> get(String id) {
         return discordUserRepository.findById(id);
     }
 
-    public Boolean exists(String id) {
-        return discordUserRepository.existsById(id);
+    public List<DiscordUser> get() {
+        return discordUserRepository.findAll();
     }
 }
