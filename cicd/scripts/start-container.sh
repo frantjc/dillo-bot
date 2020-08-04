@@ -11,7 +11,8 @@ fi
 if [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot_db)" == "false" ]]; then
     docker start dillo_bot_db
 elif [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot_db)" != "true" ]]; then
-    docker run -d --name dillo_bot_db -e MYSQL_ROOT_PASSWORD=$5 -e MYSQL_DATABASE=dillo_bot -e MYSQL_USER=$4 -e MYSQL_PASSWORD=$5 -p 3306:3306 mysql
+    docker pull postgres
+    docker run -d --name dillo_bot_db -e POSTGRES_USER=$4 -e POSTGRES_PASSWORD=$5 -p 3306:3306 postgres
 fi
 
 docker pull frantjc/dillo-bot
