@@ -4,7 +4,7 @@ CREATE TABLE discord_channel (
 );
 
 CREATE TABLE subscription (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    id INTEGER IDENTITY PRIMARY KEY,
     subscription VARCHAR(64) NOT NULL
 );
 
@@ -20,7 +20,7 @@ CREATE TABLE discord_channel_subscription (
 );
 
 CREATE TABLE user_details (
-    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    id INTEGER IDENTITY PRIMARY KEY,
     discord_user_id VARCHAR(64) NOT NULL,
     birthday DATE
 );
@@ -30,7 +30,7 @@ INSERT INTO user_details (
     birthday
 ) VALUES (
     '310795041931264001',
-    TO_DATE('1997-04-29', 'YYYY-MM-DD')
+    TO_DATE('1997-4-29', 'YYYY-MM-DD')
 );
 
 INSERT INTO user_details (
