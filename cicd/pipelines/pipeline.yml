@@ -60,9 +60,19 @@ anchors:
     DISCORD_TOKEN: ((discord.token))
     DISCORD_CLIENT_ID: ((discord.client.id))
     GITHUB_TOKEN: ((github.token))
+    DB_URI: ((database.uri))
     DB_USER: ((database.user))
     DB_PASSWORD: ((database.password))
-    DB_URI: ((database.uri))
+    DB_DRIVER: ((database.driver))
+
+  - &test_env_vars
+    DISCORD_TOKEN: ((discord.token))
+    DISCORD_CLIENT_ID: ((discord.client.id))
+    GITHUB_TOKEN: ((github.token))
+    DB_URI: jdbc:h2:mem:db
+    DB_USER: sa
+    DB_PASSWORD: 
+    DB_DRIVER: org.h2.Driver
 
   - &ssh_creds
     USER: ((aws.ec2.user))
@@ -109,6 +119,7 @@ jobs:
             user: ((database.user))
             password: ((database.password))
             uri: ((database.uri))
+            driver: ((database.driver))
 
 
   - name: test-dillo-bot
@@ -122,7 +133,7 @@ jobs:
 
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
-        params: *env_vars
+        params: *test_env_vars
         on_failure:
           put: notify
           params:

@@ -13,7 +13,7 @@ github:
 server:
   port : 8081
 flyway:
-  driver: com.mysql.cj.jdbc.Driver
+  driver: ${DB_DRIVER}
   url: ${DB_URI}
   username: ${DB_USER}
   password: ${DB_PASSWORD}
@@ -24,7 +24,7 @@ flyway:
   validateOnMigrate: true
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: ${DB_DRIVER}
     url: ${DB_URI}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
@@ -37,5 +37,4 @@ spring:
   #   driver-class-name: org.h2.Driver
   #   username: sa
   #   password:
-  # jpa:
-  #   database-platform: org.hibernate.dialect.H2Dialect
+  
