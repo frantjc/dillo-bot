@@ -12,7 +12,7 @@ if [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot_db)" == "false" ]]; th
     docker start dillo_bot_db
 elif [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot_db)" != "true" ]]; then
     docker pull postgres
-    docker run -d --name dillo_bot_db -e POSTGRES_USER=$4 -e POSTGRES_PASSWORD=$5 -p 3306:3306 postgres
+    docker run -d --name dillo_bot_db -e POSTGRES_USER=$4 -e POSTGRES_PASSWORD=$5 -p 5432:5432 postgres
 fi
 
 docker pull frantjc/dillo-bot
