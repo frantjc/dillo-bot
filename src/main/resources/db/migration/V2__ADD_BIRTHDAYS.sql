@@ -30,7 +30,7 @@ INSERT INTO user_details (
     birthday
 ) VALUES (
     '310795041931264001',
-    TO_DATE('1997-4-29', 'YYYY-MM-DD')
+    TO_DATE('1997-04-29', 'YYYY-MM-DD')
 );
 
 INSERT INTO user_details (
