@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: node
+    tag: 12.16.3-slim
+
+inputs:
+  - name: dillo-bot-ui
+  
+run:
+  path: /bin/sh
+  args:
+    - "dillo-bot/cicd/scripts/unit-test-ui.sh"
