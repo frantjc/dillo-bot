@@ -9,6 +9,7 @@ image_resource:
 
 inputs:
   - name: dillo-bot-ui
+  - name: dillo-bot
   
 run:
   path: /bin/sh
