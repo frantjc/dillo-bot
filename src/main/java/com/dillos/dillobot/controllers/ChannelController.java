@@ -10,14 +10,15 @@ import com.dillos.dillobot.services.DiscordChannelService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/api/channels")
+@RestController
+@RequestMapping("api/channels")
 public class ChannelController {
     
     Logger log = LoggerFactory.getLogger(ChannelController.class);

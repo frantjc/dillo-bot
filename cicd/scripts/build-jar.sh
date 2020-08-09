@@ -4,13 +4,20 @@ pwd
 ls -al
 echo ""
 
+echo "copying ui into dillo-bot..."
+mkdir dillo-bot/src/main/resources/static
+
+cp -R dillo-bot-ui/build/* dillo-bot-src-main/resources/static/
+echo "done"
+
+echo ""
 cd dillo-bot/
 
 chmod +x mvnw
 
 echo "building artifact..."
 ./mvnw install -DskipTests
-echo "built"
+echo "done"
 
 echo ""
 cd ..

@@ -56,4 +56,5 @@ public class DillobotApplication implements CommandLineRunner {
 
 		jdaService.getJda().awaitReady();
 	}
+
 }

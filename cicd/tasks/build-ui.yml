@@ -1,0 +1,22 @@
+---
+platform: linux
+
+image_resource:
+    type: registry-image
+    source:
+        repository: node
+        tag: 12.16.3-slim
+
+inputs:
+    - name: dillo-bot-ui
+
+outputs:
+    - name: build
+
+caches:
+    - path: dillo-bot-ui/node_modules
+
+run:
+    path: /bin/sh
+    args:
+        - "dillo-bot/cicd/scripts/build-ui.sh"
