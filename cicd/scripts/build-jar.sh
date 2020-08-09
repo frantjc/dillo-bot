@@ -6,7 +6,7 @@ echo ""
 
 echo "copying ui into dillo-bot..."
 mkdir dillo-bot/src/main/resources/static
-cp -R build/* dillo-bot-src-main/resources/static/
+cp -R build/* dillo-bot/src/main/resources/static/
 echo "done"
 
 echo ""
@@ -28,7 +28,5 @@ echo "version:$VERSION"
 echo ""
 
 echo "versioning artifact..."
-rm -rf target/
-mkdir target/
 cp dillo-bot/target/*.jar target/dillo-bot-$VERSION.jar
 echo "created: dillo-bot-$VERSION.jar"
