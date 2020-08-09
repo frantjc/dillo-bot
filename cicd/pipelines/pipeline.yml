@@ -172,7 +172,7 @@ jobs:
           put: notify
           params:
             channel: ((concourse.discord.channel))
-            title: WARN
+            title: FAIL
             message: |
               The new DilloBot's ui failed its tests
 
@@ -184,6 +184,7 @@ jobs:
       - get: dillo-bot
         passed:
           - test-dillo-bot
+          - test-dillo-bot-ui
         trigger: true
         
       - get: dillo-bot-ui
@@ -240,7 +241,7 @@ jobs:
             put: notify
             params:
               channel: ((concourse.discord.channel))
-              title: WARN
+              title: FAIL
               message: |
                 New DilloBot was containerized from source
           on_failure:

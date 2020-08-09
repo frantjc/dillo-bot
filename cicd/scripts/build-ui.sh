@@ -25,5 +25,6 @@ echo "done"
 echo ""
 cd ..
 
+rm -rf build/
 mkdir build/
 cp -R dillo-bot-ui/build/* build/

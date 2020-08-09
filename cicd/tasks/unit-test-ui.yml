@@ -10,7 +10,10 @@ image_resource:
 inputs:
   - name: dillo-bot-ui
   - name: dillo-bot
-  
+
+caches:
+  - path: dillo-bot-ui/node_modules
+
 run:
   path: /bin/sh
   args:
