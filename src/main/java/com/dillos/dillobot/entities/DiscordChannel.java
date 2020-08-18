@@ -41,6 +41,10 @@ public class DiscordChannel {
             channel.getSubscriptions() != null
         ) {
             this.subscriptions = channel.getSubscriptions();
+        } if (
+            channel.getName() != null
+        ) {
+            this.name = channel.getName();
         }
 
         return this;

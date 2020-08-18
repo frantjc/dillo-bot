@@ -48,6 +48,14 @@ public class DiscordUser {
             user.getUserDetails() != null
         ) {
             this.userDetails = user.getUserDetails();
+        } if (
+            user.getName() != null
+        ) {
+            this.name = user.getName();
+        } if (
+            user.getDiscriminator() != null
+        ) {
+            this.discriminator = user.getDiscriminator();
         }
 
         return this;
@@ -59,6 +67,14 @@ public class DiscordUser {
         }
 
         return this.userDetails.getBirthday();
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        if (this.userDetails == null) {
+            this.userDetails = new UserDetails();
+        }
+
+        this.userDetails.setBirthday(birthday);
     }
 
     public Boolean isLinked() {
@@ -74,6 +90,11 @@ public class DiscordUser {
         this.name = builder.getName();
         this.discriminator = builder.getDiscriminator();
         this.gitHubUser = builder.getGitHubUser();
+        if (builder.getUserDetails() != null) {
+            this.userDetails = builder.getUserDetails();
+        } if (builder.getBirthday() != null) {
+            this.setBirthday(builder.getBirthday());
+        }
     }
 
     public DiscordUser(User user) {
