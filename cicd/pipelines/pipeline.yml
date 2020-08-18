@@ -31,8 +31,8 @@ resources:
     type: s3
     icon: aws
     source:
-      bucket: dillo-bot-bucket
-      regexp: dillo-bot-(.*).jar
+      bucket: ((aws.s3.name))
+      regexp: dillo-bot/dillo-bot-(.*).jar
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
@@ -119,6 +119,7 @@ jobs:
             password: ((docker.password))
           aws:
             s3:
+              name: ((aws.s3.name))
               key:
                 secret: ((aws.s3.key.secret))
                 id: ((aws.s3.key.id))
