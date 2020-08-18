@@ -31,13 +31,13 @@ resources:
     type: s3
     icon: aws
     source:
-      bucket: dillo-bot-bucket
-      regexp: dillo-bot-(.*).jar
+      bucket: ((aws.s3.name))
+      regexp: dillo-bot/dillo-bot-(.*).jar
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
 
-  - name: dillo-bot-image
+  - name: dillo-bot-docker
     type: docker-image
     icon: docker
     source: 
@@ -49,7 +49,7 @@ resources:
     type: semver
     icon: aws
     source:
-      initial_version: 0.0.1
+      initial_version: 0.1.0
       driver: s3
       bucket: dillo-bot-bucket
       key: version
@@ -119,6 +119,7 @@ jobs:
             password: ((docker.password))
           aws:
             s3:
+              name: ((aws.s3.name))
               key:
                 secret: ((aws.s3.key.secret))
                 id: ((aws.s3.key.id))
@@ -231,17 +232,17 @@ jobs:
     build_log_retention: *build_log_retention
     on_failure:
       do:
-        - task: copy-dockerfile-to-root
-          file: dillo-bot/cicd/tasks/copy-dockerfile-to-root.yml
+        - task: copy-src-dockerfile-to-root
+          file: dillo-bot/cicd/tasks/copy-src-dockerfile-to-root.yml
 
-        - put: dillo-bot-image
+        - put: dillo-bot-docker
           params:
             build: dillo-bot-dockerfile/
           on_success:
             put: notify
             params:
               channel: ((concourse.discord.channel))
-              title: FAIL
+              title: WARN
               message: |
                 New DilloBot was containerized from source
           on_failure:
@@ -263,12 +264,13 @@ jobs:
           - build-dillo-bot
         trigger: true
 
-      - task: containerize-jar
-        file: dillo-bot/cicd/tasks/containerize-jar.yml
+      - task: copy-jar-dockerfile-to-root
+        file: dillo-bot/cicd/tasks/copy-jar-dockerfile-to-root.yml
 
-      - put: dillo-bot-image
+      - put: dillo-bot-docker
         params:
-          build: docker/
+          build: dillo-bot-dockerfile/
+
 
   - name: run-dillo-bot
     serial: true
@@ -295,7 +297,7 @@ jobs:
           - containerize-dillo-bot
         trigger: true
 
-      - get: dillo-bot-image
+      - get: dillo-bot-docker
         passed:
           - containerize-dillo-bot
         trigger: true
