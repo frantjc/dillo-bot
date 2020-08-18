@@ -21,3 +21,4 @@ run:
     path: /bin/sh
     args:
         - "dillo-bot/cicd/scripts/build-ui.sh"
+        

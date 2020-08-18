@@ -27,3 +27,4 @@ run:
     path: /bin/sh
     args:
         - "dillo-bot/cicd/scripts/build-jar.sh"
+        

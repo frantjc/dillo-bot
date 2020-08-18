@@ -1,0 +1,18 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: alpine
+
+inputs:
+  - name: dillo-bot
+
+outputs:
+  - name: dillo-bot-dockerfile
+
+run:
+  path: /bin/sh
+  args:
+    - "dillo-bot/cicd/scripts/copy-src-dockerfile-to-root.sh"
