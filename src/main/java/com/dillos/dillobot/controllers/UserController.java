@@ -8,13 +8,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.dillos.dillobot.builders.UserBuilder;
-import com.dillos.dillobot.dto.UserDetailsRequest;
 import com.dillos.dillobot.dto.UserDetailsResponse;
 import com.dillos.dillobot.dto.discord.DiscordUserResponse;
 import com.dillos.dillobot.dto.github.GitHubUserResponse;
 import com.dillos.dillobot.entities.DiscordUser;
 import com.dillos.dillobot.entities.GitHubUser;
-import com.dillos.dillobot.entities.UserDetails;
 import com.dillos.dillobot.services.DiscordUserService;
 import com.dillos.dillobot.services.GitHubUserService;
 
