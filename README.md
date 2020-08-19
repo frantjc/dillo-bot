@@ -58,7 +58,7 @@ $ git commit -m "I integrated dillo-bot with GitHub"
 $ git push
 ```
 
-Lastly, on GitHub, you should make a Pull Request, asking for your code to be merged into develop.
+Lastly, on GitHub, you should make a [Pull Request](/pulls), asking for your code to be merged into develop.
 
 ## Running locally
 
