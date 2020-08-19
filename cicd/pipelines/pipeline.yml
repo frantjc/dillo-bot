@@ -32,7 +32,7 @@ resources:
     icon: aws
     source:
       bucket: ((aws.s3.name))
-      regexp: dillo-bot/dillo-bot-(.*).jar
+      regexp: ((aws.s3.folder))/dillo-bot-(.*).jar
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
@@ -51,8 +51,8 @@ resources:
     source:
       initial_version: 0.1.0
       driver: s3
-      bucket: dillo-bot-bucket
-      key: version
+      bucket: ((aws.s3.name))
+      key: ((aws.s3.folder))/version
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
@@ -120,6 +120,7 @@ jobs:
           aws:
             s3:
               name: ((aws.s3.name))
+              folder: ((aws.s3.folder))
               key:
                 secret: ((aws.s3.key.secret))
                 id: ((aws.s3.key.id))
