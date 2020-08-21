@@ -127,112 +127,114 @@ public class JDAService {
     public void addCommand(Object command) throws InvalidCommandException {
         for (Method method : command.getClass().getMethods()) {
             if (method.isAnnotationPresent(Command.class)) {
-                String usage = method.getAnnotation(Command.class).value();
+                String[] usages = method.getAnnotation(Command.class).value();
 
-                if (!usage.startsWith(prefix)) {
-                    throw new InvalidCommandException("all @Commands must start with \"" + prefix + "\" from discord.bot.prefix property");
-                }
+                for (String usage : usages) {
+                    if (!usage.startsWith(prefix)) {
+                        throw new InvalidCommandException("all @Commands must start with \"" + prefix + "\" from discord.bot.prefix property");
+                    }
 
-                List<String> expectedArgs = Arrays.stream(usage.replaceAll("(\\{|\\})", "").split(" ")).collect(Collectors.toList());
-                String name = expectedArgs.remove(0);
+                    List<String> expectedArgs = Arrays.stream(usage.replaceAll("(\\{|\\})", "").split(" ")).collect(Collectors.toList());
+                    String name = expectedArgs.remove(0);
 
-                if (addedCommands.contains(name.toLowerCase())) {
-                    throw new InvalidCommandException("multiple @Commands cannot have the same name: " + name);
-                }
+                    if (addedCommands.contains(name.toLowerCase())) {
+                        throw new InvalidCommandException("multiple @Commands cannot have the same name: " + name);
+                    }
 
-                addedCommands.add(name.toLowerCase());
+                    addedCommands.add(name.toLowerCase());
 
-                List<Parameter> expectedParams = Arrays.stream(method.getParameters()).collect(Collectors.toList());
+                    List<Parameter> expectedParams = Arrays.stream(method.getParameters()).collect(Collectors.toList());
 
-                this.addListeners(new ListenerAdapter() {
-                    boolean shouldInvoke = true;
+                    this.addListeners(new ListenerAdapter() {
+                        boolean shouldInvoke = true;
 
-                    @Override
-                    public void onMessageReceived(MessageReceivedEvent event) {
-                        saveChannelAndUserFrom(event);
-                        if (
-                            name.toLowerCase().equals(
-                                Arrays.stream(
-                                    event.getMessage().getContentRaw().split(" ")
-                                ).collect(Collectors.toList()).get(0).toLowerCase()
-                            )
-                        ) {
-                            if (event.getAuthor().isBot()) {
-                                log.warn("@Commands can't be sent by bots");
-                                return;
-                            }
-
-                            List<String> args = Arrays.stream(
-                                Commandline.translateCommandline(
-                                    event.getMessage().getContentRaw().replace('“', '"')
+                        @Override
+                        public void onMessageReceived(MessageReceivedEvent event) {
+                            saveChannelAndUserFrom(event);
+                            if (
+                                name.toLowerCase().equals(
+                                    Arrays.stream(
+                                        event.getMessage().getContentRaw().split(" ")
+                                    ).collect(Collectors.toList()).get(0).toLowerCase()
                                 )
-                            ).collect(Collectors.toList());
+                            ) {
+                                if (event.getAuthor().isBot()) {
+                                    log.warn("@Commands can't be sent by bots");
+                                    return;
+                                }
 
-                            args.remove(0);
-                            Object[] params = expectedParams.stream().map(param -> {
-                                if (param.isAnnotationPresent(Event.class)) {
-                                    return event;
-                                } else if (param.isAnnotationPresent(Sender.class)) {
-                                    return event.getAuthor();
-                                } else if (param.isAnnotationPresent(Message.class)) {
-                                    return event.getMessage();
-                                } else if (param.isAnnotationPresent(Channel.class)) {
-                                    return event.getChannel();
-                                } else if (param.isAnnotationPresent(Server.class)) {
-                                    return event.getGuild();
-                                } else if (
-                                    param.isAnnotationPresent(Arg.class)
-                                    && expectedArgs.contains(param.getName())
-                                    && args.size() > expectedArgs.indexOf(param.getName())
-                                ) {
-                                    return castArgToParam(
-                                        args.get(
-                                            expectedArgs.indexOf(param.getName())
-                                        ),
-                                        param
-                                    );
-                                } else if (
-                                    param.isAnnotationPresent(Arg.class)
-                                    && !param.getAnnotation(Arg.class).defaultValue().isEmpty()
-                                ) {
-                                    return castArgToParam(
-                                        param.getAnnotation(Arg.class).defaultValue(),
-                                        param
-                                    );
-                                } else if (
-                                    param.isAnnotationPresent(Arg.class)
-                                    && param.getAnnotation(Arg.class).required()
-                                    && shouldInvoke
-                                ) {
+                                List<String> args = Arrays.stream(
+                                    Commandline.translateCommandline(
+                                        event.getMessage().getContentRaw().replace('“', '"')
+                                    )
+                                ).collect(Collectors.toList());
+
+                                args.remove(0);
+                                Object[] params = expectedParams.stream().map(param -> {
+                                    if (param.isAnnotationPresent(Event.class)) {
+                                        return event;
+                                    } else if (param.isAnnotationPresent(Sender.class)) {
+                                        return event.getAuthor();
+                                    } else if (param.isAnnotationPresent(Message.class)) {
+                                        return event.getMessage();
+                                    } else if (param.isAnnotationPresent(Channel.class)) {
+                                        return event.getChannel();
+                                    } else if (param.isAnnotationPresent(Server.class)) {
+                                        return event.getGuild();
+                                    } else if (
+                                        param.isAnnotationPresent(Arg.class)
+                                        && expectedArgs.contains(param.getName())
+                                        && args.size() > expectedArgs.indexOf(param.getName())
+                                    ) {
+                                        return castArgToParam(
+                                            args.get(
+                                                expectedArgs.indexOf(param.getName())
+                                            ),
+                                            param
+                                        );
+                                    } else if (
+                                        param.isAnnotationPresent(Arg.class)
+                                        && !param.getAnnotation(Arg.class).defaultValue().isEmpty()
+                                    ) {
+                                        return castArgToParam(
+                                            param.getAnnotation(Arg.class).defaultValue(),
+                                            param
+                                        );
+                                    } else if (
+                                        param.isAnnotationPresent(Arg.class)
+                                        && param.getAnnotation(Arg.class).required()
+                                        && shouldInvoke
+                                    ) {
+                                        event.getChannel().sendMessage(
+                                            new EmbedBuilder()
+                                                .setTitle("Invalid command provided")
+                                                .addField("Usage:", "`" + usage + "`", true)
+                                                .build()
+                                        ).queue();
+                                        log.warn("Missing required @Arg on @Command");
+                                        shouldInvoke = false;
+                                    }
+                                    return null;
+                                }).toArray(Object[]::new);
+
+                                try {
+                                    if (shouldInvoke) {
+                                        method.invoke(command, params);
+                                    }
+                                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                                    log.warn("{}", e);
+                                
                                     event.getChannel().sendMessage(
                                         new EmbedBuilder()
-                                            .setTitle("Invalid command provided")
-                                            .addField("Usage:", "`" + usage + "`", true)
-                                            .build()
+                                        .setTitle("Command failed")
+                                        .addField("Usage:", "`" + usage + "`", true)
+                                        .build()
                                     ).queue();
-                                    log.warn("Missing required @Arg on @Command");
-                                    shouldInvoke = false;
                                 }
-                                return null;
-                            }).toArray(Object[]::new);
-
-                            try {
-                                if (shouldInvoke) {
-                                    method.invoke(command, params);
-                                }
-                            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                                log.warn("{}", e);
-                              
-                                event.getChannel().sendMessage(
-                                    new EmbedBuilder()
-                                    .setTitle("Command failed")
-                                    .addField("Usage:", "`" + usage + "`", true)
-                                    .build()
-                                ).queue();
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }

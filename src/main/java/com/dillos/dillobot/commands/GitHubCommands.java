@@ -33,10 +33,10 @@ public class GitHubCommands {
     Logger log = LoggerFactory.getLogger(GitHubCommands.class);
 
     @Value("${github.mark_uri}")
-    String githubMarkUri;
+    String gitHubMarkUri;
 
     @Value("${github.logo_uri}")
-    String githubLogoUri;
+    String gitHubLogoUri;
 
     @Value("${github.repository.uri}")
     String gitHubRepositoryUri;
@@ -59,14 +59,14 @@ public class GitHubCommands {
         log.info("/repository");
 
         EmbedBuilder message = new EmbedBuilder()
-            .setThumbnail(githubMarkUri)
+            .setThumbnail(gitHubMarkUri)
             .setTitle("GitHub", gitHubRepositoryUri)
             .setDescription("A link to the GitHub repository for this bot");
 
         channel.sendMessage(message.build()).queue();
     }
 
-    @Command("/issues {state}")
+    @Command({ "/issues {state}", "/requests {state}" })
     public void getIssues(
         @Channel MessageChannel channel,
         @Arg(required = false, defaultValue = "open") String state
@@ -77,30 +77,13 @@ public class GitHubCommands {
 
         EmbedBuilder message = new EmbedBuilder()
             .setTitle(state + " issues for dillo-bot")
-            .setThumbnail(githubLogoUri);
+            .setThumbnail(gitHubLogoUri);
 
         for (IssueResponse issue : issues) {
             message.addField(issue.getNumber() + " - " + issue.getTitle(), issue.getBody(), false);
         }
 
         channel.sendMessage(message.build()).queue();
-    }
-
-    @Command("/issue {number}")
-    public void request(
-        @Channel MessageChannel channel,
-        @Arg(required = true) Long number
-    ) {
-        log.info("/issue \"{}\"", number);
-
-        IssueResponse issue = gitHubService.getIssue(number);
-
-        channel.sendMessage(
-            new EmbedBuilder()
-                .setTitle(issue.getNumber() + " - " + issue.getTitle(), issue.getHtml_url())
-                .setThumbnail(githubLogoUri)
-                .build()
-        ).queue();
     }
 
     @Command("/request {title} {body}")
@@ -121,12 +104,12 @@ public class GitHubCommands {
         channel.sendMessage(
             new EmbedBuilder()
                 .setTitle("issue created successfully", issue.getHtml_url())
-                .setThumbnail(githubLogoUri)
+                .setThumbnail(gitHubLogoUri)
                 .build()
         ).queue();
     }
 
-    @Command("/updateIssue {number} {title} {body}")
+    @Command({ "/updateIssue {number} {title} {body}", "/updateRequest {number} {title} {body}" })
     public void updateIssue(
         @Channel MessageChannel channel,
         @Arg(required = true) Long number,
@@ -146,12 +129,12 @@ public class GitHubCommands {
         channel.sendMessage(
             new EmbedBuilder()
                 .setTitle("issue updated successfully", issue.getHtml_url())
-                .setThumbnail(githubLogoUri)
+                .setThumbnail(gitHubLogoUri)
                 .build()
         ).queue();
     }
 
-    @Command("/closeIssue {number}")
+    @Command({ "/closeIssue {number}", "/closeRequest {number}" })
     public void closeIssue(
         @Channel MessageChannel channel,
         @Arg(required = true) Long number
@@ -163,7 +146,7 @@ public class GitHubCommands {
         channel.sendMessage(
             new EmbedBuilder()
                 .setTitle("issue closed", issue.getHtml_url())
-                .setThumbnail(githubLogoUri)
+                .setThumbnail(gitHubLogoUri)
                 .build()
         ).queue();
     }
@@ -187,7 +170,7 @@ public class GitHubCommands {
                 message
                     .setTitle("failed to link accounts", gitHubUser.getHtmlUrl())
                     .setDescription("GitHub account \"" + login + "\" already linked to another user")
-                    .setThumbnail(githubLogoUri);
+                    .setThumbnail(gitHubLogoUri);
             } else {
                 discordUserService.save(
                     new UserBuilder()
@@ -198,7 +181,7 @@ public class GitHubCommands {
                         .build()
                 );
 
-                message.setTitle("accounts linked successfully", gitHubUser.getHtmlUrl()).setThumbnail(githubLogoUri);
+                message.setTitle("accounts linked successfully", gitHubUser.getHtmlUrl()).setThumbnail(gitHubLogoUri);
             }
         } else {
             message
@@ -209,7 +192,7 @@ public class GitHubCommands {
         channel.sendMessage(message.build()).queue();
     }
 
-    @Command("/claimRequest {number}")
+    @Command({ "/claimRequest {number}", "/claimIssue {number}" })
     public void claimRequest(
         @Channel MessageChannel channel,
         @Arg(required = true) Long number,
@@ -229,7 +212,7 @@ public class GitHubCommands {
 
                 message
                     .setTitle("issue claimed by \"" + user.getGitHubUser().getLogin() + "\"", response.getHtml_url())
-                    .setThumbnail(githubLogoUri);
+                    .setThumbnail(gitHubLogoUri);
             } else {
                 message
                     .setTitle("failed to claim request")
@@ -242,12 +225,4 @@ public class GitHubCommands {
         }
     }
 
-    @Command("/claimIssue {number}")
-    public void claimIssue(
-        @Channel MessageChannel channel,
-        @Arg(required = true) Long number,
-        @Sender User discordUser
-    ) {
-        claimRequest(channel, number, discordUser);
-    }
 }
