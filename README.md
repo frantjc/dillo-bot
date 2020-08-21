@@ -58,7 +58,17 @@ $ git commit -m "I integrated dillo-bot with GitHub"
 $ git push
 ```
 
-Lastly, on GitHub, you should make a [Pull Request](/pulls), asking for your code to be merged into develop.
+Lastly, on GitHub, you should make a [Pull Request](https://github.com/frantjc/dillo-bot/pulls), asking for your code to be merged into develop.
+
+More Reading                                         |
+-----------------------------------------------------|
+[Concourse](documentaion/concourse/Concourse.md)     |
+[Docker](documentation/docker/Docker.md)             |
+[FlyWay](documentation/flyway/FlyWay.md)             |
+[JDA](documentation/jda/JDA.md)                      |
+[Maven](documentation/maven/Maven.md)                |
+[SpringBoot](documentation/springboot/SpringBoot.md) |
+[VSCode](documentation/vscode/VSCode.md)             |
 
 ## Running locally
 
@@ -113,13 +123,11 @@ Add your commands to the bot:
     @Autowired
 	public DillobotApplication(
 		JDAService jdaService,
-        GitHubCommands gitHubCommands, SimpleCommands simpleCommands,
-        InformationalCommands informationalCommands, MyCommands myCommands
+        SimpleCommands simpleCommands,
+        MyCommands myCommands
 	) {
 		this.jdaService = jdaService;
-		this.gitHubCommands = gitHubCommands;
 		this.simpleCommands = simpleCommands;
-        this.informationalCommands = informationalCommands;
         this.myCommands = myCommands; // instantiate your commands
     }
     
@@ -130,9 +138,7 @@ Add your commands to the bot:
 		jdaService.start();
 
 		jdaService.addCommands(
-			gitHubCommands,
 			simpleCommands,
-            informationalCommands,
             myCommands // add your commands to the jda!
 		);
 

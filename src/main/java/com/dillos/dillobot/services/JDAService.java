@@ -44,7 +44,7 @@ public class JDAService {
 
     Logger log = LoggerFactory.getLogger(JDAService.class);
 
-    @Value("${discord.bot.prefix}")
+    @Value("${discord.bot.prefix:/}")
     String prefix;
 
     @Value("${discord.bot.token}")
@@ -90,8 +90,13 @@ public class JDAService {
 
         User sender = event.getAuthor();
 
-        discordUserService.save(new UserBuilder().setId(sender.getId()).setName(sender.getName())
-                .setDiscriminator(sender.getDiscriminator()).build());
+        discordUserService.save(
+            new UserBuilder()
+                .setId(sender.getId())
+                .setName(sender.getName())
+                .setDiscriminator(sender.getDiscriminator())
+                .build()
+        );
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
