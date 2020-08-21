@@ -9,6 +9,6 @@ import java.lang.annotation.ElementType;
 @Target(ElementType.METHOD)
 public @interface Command {
 
-    String value() default "";
+    String[] value() default {};
     
 }
