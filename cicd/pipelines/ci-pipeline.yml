@@ -1,0 +1,299 @@
+resource_types:
+  - name: discord-resource
+    type: registry-image
+    source:
+      repository: trivigy/discord-resource
+  
+  
+  
+resources:
+  - name: dillo-bot
+    type: git
+    icon: github
+    source:
+      uri: ((github.uri))
+      branch: ((github.branch))
+
+  - name: dillo-bot-ui
+    type: git
+    icon: github
+    source:
+      uri: ((github.ui.uri))
+      branch: ((github.ui.branch))
+
+  - name: notify
+    type: discord-resource
+    icon: discord
+    source:
+      token: ((concourse.discord.token))
+
+  - name: dillo-bot-bucket
+    type: s3
+    icon: aws
+    source:
+      bucket: ((aws.s3.name))
+      regexp: ((aws.s3.folder))/dillo-bot-(.*).jar
+      access_key_id: ((aws.s3.key.id))
+      secret_access_key: ((aws.s3.key.secret))
+      region_name: us-east-2
+
+  - name: dillo-bot-docker
+    type: docker-image
+    icon: docker
+    source: 
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/dillo-bot
+
+  - name: version
+    type: semver
+    icon: aws
+    source:
+      initial_version: 0.1.0
+      driver: s3
+      bucket: ((aws.s3.name))
+      key: ((aws.s3.folder))/version
+      access_key_id: ((aws.s3.key.id))
+      secret_access_key: ((aws.s3.key.secret))
+      region_name: us-east-2
+
+
+
+anchors:
+  - &build_log_retention
+    builds: 10
+    minimum_succeeded_builds: 1
+
+  - &env_vars
+    DISCORD_TOKEN: ((discord.token))
+    DISCORD_CLIENT_ID: ((discord.client.id))
+    GITHUB_TOKEN: ((github.token))
+    DB_URI: ((database.uri))
+    DB_USER: ((database.user))
+    DB_PASSWORD: ((database.password))
+    DB_DRIVER: ((database.driver))
+
+  - &test_env_vars
+    DISCORD_TOKEN: ((discord.token))
+    DISCORD_CLIENT_ID: ((discord.client.id))
+    GITHUB_TOKEN: ((github.token))
+    DB_URI: jdbc:h2:mem:db
+    DB_USER: sa
+    DB_PASSWORD: 
+    DB_DRIVER: org.h2.Driver
+
+
+
+jobs:
+  - name: update-pipeline
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+        trigger: true
+
+      - set_pipeline: dillo-bot-ci
+        file: dillo-bot/cicd/pipelines/ci-pipeline.yml
+        vars:
+          concourse:
+            discord:
+              token: ((concourse.discord.token))
+              channel: "((concourse.discord.channel))"
+          discord:
+            token: ((discord.token))
+            client:
+              id: "((discord.client.id))"
+          github:
+            ui:
+              uri: ((github.ui.uri))
+              branch: ((github.ui.branch))
+            uri: ((github.uri))
+            branch: ((github.branch))
+            token: ((github.token))
+          docker:
+            username: ((docker.username))
+            password: ((docker.password))
+          aws:
+            s3:
+              name: ((aws.s3.name))
+              folder: ((aws.s3.folder))
+              key:
+                secret: ((aws.s3.key.secret))
+                id: ((aws.s3.key.id))
+            ec2:
+              user: ((aws.ec2.user))
+              public_dns: ((aws.ec2.public_dns))
+              key: |
+                ((aws.ec2.key))
+          database:
+            user: ((database.user))
+            password: ((database.password))
+            uri: ((database.uri))
+            driver: ((database.driver))
+
+      - set_pipeline: dillo-bot-cd 
+        file: dillo-bot/cicd/pipelines/cd-pipeline.yml
+        vars:
+          concourse:
+            discord:
+              token: ((concourse.discord.token))
+              channel: "((concourse.discord.channel))"
+          discord:
+            token: ((discord.token))
+            client:
+              id: "((discord.client.id))"
+          github:
+            uri: ((github.uri))
+            branch: ((github.branch))
+            token: ((github.token))
+          docker:
+            username: ((docker.username))
+            password: ((docker.password))
+          aws:
+            ec2:
+              user: ((aws.ec2.user))
+              public_dns: ((aws.ec2.public_dns))
+              key: |
+                ((aws.ec2.key))
+          database:
+            user: ((database.user))
+            password: ((database.password))
+            uri: ((database.uri))
+            driver: ((database.driver))
+
+
+  - name: test-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+        passed: 
+          - update-pipeline
+        trigger: true
+
+      - task: unit-test
+        file: dillo-bot/cicd/tasks/unit-test.yml
+        params: *test_env_vars
+        on_failure:
+          put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: |
+              The new DilloBot failed his tests
+
+
+  - name: test-dillo-bot-ui
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot-ui
+        trigger: true
+
+      - get: dillo-bot
+        passed:
+          - update-pipeline
+        trigger: true
+
+      - task: unit-test-ui
+        file: dillo-bot/cicd/tasks/unit-test-ui.yml
+        on_failure:
+          put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: |
+              The new DilloBot's ui failed its tests
+
+
+  - name: build-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+        passed:
+          - test-dillo-bot
+          - test-dillo-bot-ui
+        trigger: true
+        
+      - get: dillo-bot-ui
+        passed:
+          - test-dillo-bot-ui
+        trigger: true
+
+      - get: version
+        params:
+          bump: patch
+
+      - task: build-ui
+        file: dillo-bot/cicd/tasks/build-ui.yml
+        on_failure:
+          put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: |
+              Failed to build new DilloBot's ui
+
+      - task: build-jar
+        file: dillo-bot/cicd/tasks/build-jar.yml
+        params: *env_vars
+        on_failure:
+          put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: |
+              Failed to build new DilloBot
+
+      - put: version
+        params:
+          file: version/version
+
+      - put: dillo-bot-bucket
+        params:
+          file: target/dillo-bot*.jar
+
+
+  - name: containerize-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    on_failure:
+      do:
+        - task: copy-src-dockerfile-to-root
+          file: dillo-bot/cicd/tasks/copy-src-dockerfile-to-root.yml
+
+        - put: dillo-bot-docker
+          params:
+            build: dillo-bot-dockerfile/
+          on_success:
+            put: notify
+            params:
+              channel: ((concourse.discord.channel))
+              title: WARN
+              message: |
+                New DilloBot was containerized from source
+          on_failure:
+            put: notify
+            params:
+              channel: ((concourse.discord.channel))
+              title: FAIL
+              message: |
+                New DilloBot could not be contained
+
+    plan:
+      - get: dillo-bot
+        passed: 
+          - build-dillo-bot
+        trigger: true
+
+      - get: dillo-bot-bucket
+        passed:
+          - build-dillo-bot
+        trigger: true
+
+      - task: copy-jar-dockerfile-to-root
+        file: dillo-bot/cicd/tasks/copy-jar-dockerfile-to-root.yml
+
+      - put: dillo-bot-docker
+        params:
+          build: dillo-bot-dockerfile/
