@@ -4,18 +4,19 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-      repository: alpine
+    repository: alpine
 
 params:
-  KEY:
+  ENV:
 
 inputs:
   - name: dillo-bot
+  - name: version
 
 outputs:
-  - name: key
+  - name: tags
 
 run:
   path: /bin/sh
   args:
-    - "dillo-bot/cicd/scripts/create-key.sh"
+    - "dillo-bot/cicd/scripts/create-image-labels.sh"

@@ -15,19 +15,28 @@ INFO_PREFIX="[${ECHO_PREFIX} ${INFO_COLOR}INFO${NORMAL_COLOR}]"
 
 SUCCESS=0
 
-echo "${INFO_PREFIX} creating key file..."
-echo "$KEY" > key/dillo-key.pem
+FIRST_TAG=0
+
+echo "{" >> labels/labels_file.json
+
+echo "${INFO_PREFIX} getting version..."
+VERSION=$(cat version/version)
 SUCCESS=$?
 if [ $SUCCESS -ne 0 ]; then
-  echo "${FAIL_PREFIX} failed to create .pem file"
+    echo "${FAIL_PREFIX} unable to find version"
+then
+    echo "${SUCCESS_PREFIX} version found: $VERSION"
 fi
 
-chmod 400 key/dillo-key.pem
-SUCCESS=$?
 if [ $SUCCESS -ne 0 ]; then
-  echo "${FAIL_PREFIX} failed to change access permissions of .pem file"
-else
-  echo "${SUCCESS_PREFIX} key created"
+  echo "  \"version\": \"$VERSION\"" >> labels/labels_file.json
+  FIRST_TAG=1
 fi
+
+echo "}" >> labels/labels_file.json
+
+echo "${SUCCESS_PREFIX} created: labels/labels_file.json"
+echo "${INFO_PREFIX} labels/labels_file.json"
+cat labels/labels_file.json
 
 exit 0;

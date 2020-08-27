@@ -1,0 +1,93 @@
+resource_types:
+  - name: discord-resource
+    type: registry-image
+    source:
+      repository: trivigy/discord-resource
+
+
+
+resources:
+  - name: dillo-bot
+    type: git
+    icon: github
+    source:
+      uri: ((github.uri))
+      branch: ((github.branch))
+
+  - name: notify
+    type: discord-resource
+    icon: discord
+    source:
+      token: ((concourse.discord.token))
+
+  - name: dillo-bot-docker
+    type: docker-image
+    icon: docker
+    source: 
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/dillo-bot
+
+
+
+anchors:
+  - &build_log_retention
+    builds: 10
+    minimum_succeeded_builds: 1
+
+  - &env_vars
+    DISCORD_TOKEN: ((discord.token))
+    DISCORD_CLIENT_ID: ((discord.client.id))
+    GITHUB_TOKEN: ((github.token))
+    DB_URI: ((database.uri))
+    DB_USER: ((database.user))
+    DB_PASSWORD: ((database.password))
+    DB_DRIVER: ((database.driver))
+
+  - &ssh_creds
+    USER: ((aws.ec2.user))
+    HOST: ((aws.ec2.public_dns))
+
+
+
+  jobs:
+  - name: run-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    on_success:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: SUCCESS
+        message: |
+          New DilloBot is up and running!
+
+    on_failure:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: FAIL
+        message: |
+          Could not get new DilloBot to run on server
+
+    plan:
+      - get: dillo-bot
+        trigger: true
+
+      - get: dillo-bot-docker
+        trigger: true
+
+      - task: create-key
+        file: dillo-bot/cicd/tasks/create-key.yml
+        params:
+          KEY: ((aws.ec2.key))
+
+      - task: stop-container
+        file: dillo-bot/cicd/tasks/stop-container.yml
+        params: *ssh_creds
+
+      - task: start-container
+        file: dillo-bot/cicd/tasks/start-container.yml
+        params:
+          <<: *ssh_creds
+          <<: *env_vars
