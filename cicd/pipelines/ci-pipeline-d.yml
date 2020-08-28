@@ -219,10 +219,6 @@ jobs:
           New DilloBot-d was containerized
     on_failure:
       do:
-        - get: dillo-bot
-
-        - get: version
-
         - task: copy-src-dockerfile-to-root
           file: dillo-bot/cicd/tasks/copy-src-dockerfile-to-root.yml
 
