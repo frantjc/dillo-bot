@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NORMAL_COLOR='\033[0m'
-INFO_COLOR='\033[0;36m'
+PREFIX_COLOR='\033[0;36m'
 ECHO_PREFIX="[${PREFIX_COLOR}PIPELINE${NORMAL_COLOR}]"
 
 FAIL_COLOR='\033[1;31m'
@@ -81,7 +81,7 @@ if [ $BUILD_SUCCESS -ne 0 ]; then
     exit 1;
 else
     echo "${SUCCESS_PREFIX} build successful"
-    echo "${SUCCESS_PREFIX} build/"
+    echo "${INFO_PREFIX} build/"
     ls build/
 fi
 

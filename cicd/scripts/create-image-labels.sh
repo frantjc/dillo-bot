@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NORMAL_COLOR='\033[0m'
-INFO_COLOR='\033[0;36m'
+PREFIX_COLOR='\033[0;36m'
 ECHO_PREFIX="[${PREFIX_COLOR}PIPELINE${NORMAL_COLOR}]"
 
 FAIL_COLOR='\033[1;31m'
@@ -46,8 +46,6 @@ if [ $VERSION_SUCCESS -ne 0 ]; then
 
   echo -n "  \"version\": \"$VERSION" >> labels/labels_file.json
   FIRST_LABEL=1
-    echo "" >> labels/labels_file.json
-  fi
 fi
 
 echo "}" >> labels/labels_file.json

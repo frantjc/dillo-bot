@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NORMAL_COLOR='\033[0m'
-INFO_COLOR='\033[0;36m'
+PREFIX_COLOR='\033[0;36m'
 ECHO_PREFIX="[${PREFIX_COLOR}PIPELINE${NORMAL_COLOR}]"
 
 FAIL_COLOR='\033[1;31m'
@@ -48,7 +48,7 @@ echo "${INFO_PREFIX} building artifact..."
 BUILD_SUCCESS=$?
 if [ $BUILD_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} build failed"
-then
+else
     echo "${SUCCESS_PREFIX} build successful"
 fi
 
@@ -61,7 +61,7 @@ VERSION_SUCCESS=$?
 if [ $VERSION_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} unable to find version"
     exit 1;
-then
+else
     echo "${SUCCESS_PREFIX} version found: $VERSION"
 fi
 
@@ -73,7 +73,7 @@ ENVIRONMENT_SUCCESS=$?
 if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} unable to find environment from ENV"
     echo "${INFO_PREFIX} assuming environment is prod"
-then
+else
     echo "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
@@ -97,6 +97,6 @@ fi
 if [ $UI_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} ui failed"
     echo "${INFO_PREFIX} dillo-bot-$VERSION.jar will not have a ui"
-else
+fi
 
 exit 0;

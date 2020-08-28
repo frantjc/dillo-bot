@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NORMAL_COLOR='\033[0m'
-INFO_COLOR='\033[0;36m'
+PREFIX_COLOR='\033[0;36m'
 ECHO_PREFIX="[${PREFIX_COLOR}PIPELINE${NORMAL_COLOR}]"
 
 FAIL_COLOR='\033[1;31m'
@@ -24,7 +24,7 @@ ENVIRONMENT_SUCCESS=$?
 if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} unable to find environment from ENV"
     echo "${INFO_PREFIX} assuming environment is prod"
-then
+else
     echo "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
@@ -40,7 +40,7 @@ VERSION=$(cat version/version)
 VERSION_SUCCESS=$?
 if [ $VERSION_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} unable to find version"
-then
+else
     echo "${SUCCESS_PREFIX} version found: $VERSION"
 fi
 
