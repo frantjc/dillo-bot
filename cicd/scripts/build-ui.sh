@@ -26,6 +26,7 @@ cd dillo-bot-ui/
 echo "${INFO_PREFIX} installing dependencies..."
 npm install
 INSTALL_SUCCESS=$?
+echo ""
 if [ $INSTALL_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} install failed"
     exit 1;
