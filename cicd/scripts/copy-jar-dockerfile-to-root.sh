@@ -17,3 +17,5 @@ cp dillo-bot/cicd/docker/jar/Dockerfile dillo-bot-dockerfile/
 
 echo "${INFO_PREFIX} dillo-bot-dockerfile/"
 ls dillo-bot-dockerfile/
+
+exit 0;
