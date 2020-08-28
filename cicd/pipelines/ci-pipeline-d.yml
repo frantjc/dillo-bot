@@ -137,6 +137,7 @@ jobs:
 
 
   - name: test-dillo-bot-ui
+    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-ui
