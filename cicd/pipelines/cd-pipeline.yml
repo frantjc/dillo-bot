@@ -72,7 +72,6 @@ jobs:
 
     plan:
       - get: dillo-bot
-        trigger: true
 
       - get: dillo-bot-docker
         trigger: true

@@ -28,9 +28,9 @@ npm install
 INSTALL_SUCCESS=$?
 if [ $INSTALL_SUCCESS -ne 0 ]; then
     echo "${FAIL_PREFIX} install failed"
+    exit 1;
 else
     echo "${SUCCESS_PREFIX} install complete"
-    exit 1;
 fi
 
 echo ""
