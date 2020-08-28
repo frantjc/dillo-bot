@@ -50,7 +50,7 @@ anchors:
 
 
 
-  jobs:
+jobs:
   - name: run-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
