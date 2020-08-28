@@ -177,7 +177,7 @@ jobs:
         params:
           bump: patch
 
-      -try:
+      - try:
         - task: build-ui
           file: dillo-bot/cicd/tasks/build-ui.yml
           on_failure:
