@@ -67,6 +67,23 @@ fi
 
 echo ""
 
+echo "${INFO_PREFIX} getting environment..."
+LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
+ENVIRONMENT_SUCCESS=$?
+if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
+    echo "${FAIL_PREFIX} unable to find environment from ENV"
+    echo "${INFO_PREFIX} assuming environment is prod"
+then
+    echo "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
+fi
+
+if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
+    VERSION="$VERSION.d"
+    echo "${INFO_PREFIX} updated version: $VERSION"
+fi
+
+echo ""
+
 echo "${INFO_PREFIX} versioning artifact..."
 cp dillo-bot/target/*.jar target/dillo-bot-$VERSION.jar
 BUILD_SUCCESS=$?

@@ -32,7 +32,7 @@ resources:
     icon: aws
     source:
       bucket: ((aws.s3.name))
-      regexp: ((aws.s3.folder))/dillo-bot-(.*).jar
+      regexp: ((aws.s3.folder))/dillo-bot-(.*).d.jar
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
@@ -44,6 +44,7 @@ resources:
       username: ((docker.username))
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot
+      tag: develop
 
   - name: version
     type: semver
@@ -72,6 +73,7 @@ anchors:
     DB_USER: sa
     DB_PASSWORD: 
     DB_DRIVER: org.h2.Driver
+    ENV: dev
   
   
   
@@ -213,9 +215,19 @@ jobs:
         - task: copy-src-dockerfile-to-root
           file: dillo-bot/cicd/tasks/copy-src-dockerfile-to-root.yml
 
+        - task: create-image-labels
+          file: dillo-bot/cicd/tasks/create-image-labels.yml
+  
+        - task: create-image-tags
+          file: dillo-bot/cicd/tasks/create-image-tags.yml
+          params:
+            ENV: d
+  
         - put: dillo-bot-docker
           params:
             build: dillo-bot-dockerfile/
+            additional_tags: tags/additional_tags
+            labels_file: labels/labels_file.json
           on_success:
             put: notify
             params:
@@ -245,6 +257,16 @@ jobs:
       - task: copy-jar-dockerfile-to-root
         file: dillo-bot/cicd/tasks/copy-jar-dockerfile-to-root.yml
 
+      - task: create-image-labels
+        file: dillo-bot/cicd/tasks/create-image-labels.yml
+
+      - task: create-image-tags
+        file: dillo-bot/cicd/tasks/create-image-tags.yml
+        params:
+          ENV: d
+
       - put: dillo-bot-docker
         params:
           build: dillo-bot-dockerfile/
+          additional_tags: tags/additional_tags
+          labels_file: labels/labels_file.json
