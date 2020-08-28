@@ -177,15 +177,16 @@ jobs:
         params:
           bump: patch
 
-      - task: build-ui
-        file: dillo-bot/cicd/tasks/build-ui.yml
-        on_failure:
-          put: notify
-          params:
-            channel: ((concourse.discord.channel))
-            title: FAIL
-            message: |
-              Failed to build new DilloBot-d's ui
+      -try:
+        - task: build-ui
+          file: dillo-bot/cicd/tasks/build-ui.yml
+          on_failure:
+            put: notify
+            params:
+              channel: ((concourse.discord.channel))
+              title: FAIL
+              message: |
+                Failed to build new DilloBot-d's ui
 
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
