@@ -51,7 +51,6 @@ fi
 if [ $VERSION_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" != "d" ] && [ "$LOWERCASED_ENV" != "dev" ] && [ "$LOWERCASED_ENV" != "develop" ]; then
     echo -n "\"version\": \"$VERSION\"" >> labels/labels_file.json
     FIRST_LABEL=1
-  fi
 fi
 
 echo -n " }" >> labels/labels_file.json
