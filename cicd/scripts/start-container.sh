@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot)" == "true" ]]; then
     docker kill dillo_bot

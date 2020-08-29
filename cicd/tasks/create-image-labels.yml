@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: alpine
+    repository: ubuntu
 
 params:
   ENV:
@@ -17,6 +17,6 @@ outputs:
   - name: labels
 
 run:
-  path: /bin/sh
+  path: /bin/bash
   args:
     - "dillo-bot/cicd/scripts/create-image-labels.sh"

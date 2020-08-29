@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 NORMAL_COLOR='\033[0m'
 PREFIX_COLOR='\033[0;36m'
@@ -45,8 +45,8 @@ else
     echo "${SUCCESS_PREFIX} version found: $VERSION"
 fi
 
-if [ $VERSION_SUCCESS -ne 0 ]; then
-  if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
+if [ $VERSION_SUCCESS -ne 1 ]; then
+  if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
     VERSION="$VERSION.d"
   fi
 

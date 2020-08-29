@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 NORMAL_COLOR='\033[0m'
 PREFIX_COLOR='\033[0;36m'
@@ -34,7 +34,7 @@ else
     echo "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
-if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
+if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
   echo -n "d" >> tags/additional_tags.txt
   echo -n " dev" >> tags/additional_tags.txt
   echo -n " develop" >> tags/additional_tags.txt
@@ -50,13 +50,13 @@ else
     echo "${SUCCESS_PREFIX} version found: $VERSION"
 fi
 
-if [ $VERSION_SUCCESS -ne 0 ]; then
+if [ $VERSION_SUCCESS -ne 1 ]; then
   if [ $FIRST_TAG -ne 0 ]; then
     echo -n " " >> tags/additional_tags.txt
     FIRST_TAG=1
   fi
 
-  if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
+  if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
     VERSION="$VERSION.d"
   fi
 

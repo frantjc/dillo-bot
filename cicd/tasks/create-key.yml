@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-      repository: alpine
+      repository: ubuntu
 
 params:
   KEY:
@@ -16,6 +16,6 @@ outputs:
   - name: key
 
 run:
-  path: /bin/sh
+  path: /bin/bash
   args:
     - "dillo-bot/cicd/scripts/create-key.sh"

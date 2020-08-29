@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PREFIX_COLOR='\033[1;36m'
 NORMAL_COLOR='\033[0m'

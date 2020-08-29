@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: alpine
+    repository: ubuntu
 
 inputs:
   - name: dillo-bot
@@ -14,6 +14,6 @@ outputs:
   - name: dillo-bot-dockerfile
 
 run:
-  path: /bin/sh
+  path: /bin/bash
   args:
     - "dillo-bot/cicd/scripts/copy-jar-dockerfile-to-root.sh"

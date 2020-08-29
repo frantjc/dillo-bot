@@ -18,6 +18,6 @@ inputs:
     - name: dillo-bot
 
 run:
-    path: /bin/sh
+    path: /bin/bash
     args:
         - "dillo-bot/cicd/scripts/ssh-and-start-container.sh"
