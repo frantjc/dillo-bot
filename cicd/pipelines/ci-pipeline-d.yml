@@ -32,7 +32,7 @@ resources:
     icon: aws
     source:
       bucket: ((aws.s3.name))
-      regexp: ((aws.s3.folder))/dillo-bot-(.*).d.jar
+      regexp: ((aws.s3.folder))/dillo-bot-d-(.*).jar
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
