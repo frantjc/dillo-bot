@@ -50,7 +50,7 @@ resources:
     type: semver
     icon: aws
     source:
-      initial_version: 0.2.0
+      initial_version: 0.3.0
       driver: s3
       bucket: ((aws.s3.name))
       key: ((aws.s3.folder))/version
@@ -120,8 +120,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: 
-          - update-pipeline
+        passed: [update-pipeline]
         trigger: true
 
       - task: unit-test
@@ -132,8 +131,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              The new DilloBot-d failed his tests
+            message: The new DilloBot-d failed his tests
 
 
   - name: test-dillo-bot-ui
@@ -144,8 +142,7 @@ jobs:
         trigger: true
 
       - get: dillo-bot
-        passed:
-          - update-pipeline
+        passed: [update-pipeline]
         trigger: true
 
       - task: unit-test-ui
@@ -155,8 +152,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              The new DilloBot-d's ui failed its tests
+            message: The new DilloBot-d's ui failed its tests
 
 
   - name: build-dillo-bot
@@ -164,14 +160,11 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed:
-          - test-dillo-bot
-          - test-dillo-bot-ui
+        passed: [test-dillo-bot, test-dillo-bot-ui]
         trigger: true
         
       - get: dillo-bot-ui
-        passed:
-          - test-dillo-bot-ui
+        passed: [test-dillo-bot-ui]
         trigger: true
 
       - get: version
@@ -185,8 +178,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              Failed to build new DilloBot-d's ui
+            message: Failed to build new DilloBot-d's ui
 
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
@@ -196,8 +188,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              Failed to build new DilloBot-d
+            message: Failed to build new DilloBot-d
 
       - put: version
         params:
@@ -216,8 +207,7 @@ jobs:
       params:
         channel: ((concourse.discord.channel))
         title: SUCCESS
-        message: |
-          New DilloBot-d was containerized
+        message: New DilloBot-d was successfully contained
     on_failure:
       do:
         - task: copy-src-dockerfile-to-root
@@ -226,12 +216,12 @@ jobs:
         - task: create-image-labels
           file: dillo-bot/cicd/tasks/create-image-labels.yml
           params:
-            ENV: d
+            ENV: dev
   
         - task: create-image-tags
           file: dillo-bot/cicd/tasks/create-image-tags.yml
           params:
-            ENV: d
+            ENV: dev
   
         - put: dillo-bot-docker
           params:
@@ -243,29 +233,24 @@ jobs:
             params:
               channel: ((concourse.discord.channel))
               title: WARN
-              message: |
-                New DilloBot-d was containerized from source
+              message: New DilloBot-d was containerized from source
           on_failure:
             put: notify
             params:
               channel: ((concourse.discord.channel))
               title: FAIL
-              message: |
-                New DilloBot-d could not be contained
+              message: New DilloBot-d could not be contained
 
     plan:
       - get: dillo-bot
-        passed: 
-          - build-dillo-bot
+        passed: [build-dillo-bot]
         trigger: true
 
       - get: version
-        passed:
-          - build-dillo-bot
+        passed: [build-dillo-bot]
 
       - get: dillo-bot-bucket
-        passed:
-          - build-dillo-bot
+        passed: [build-dillo-bot]
         trigger: true
 
       - task: copy-jar-dockerfile-to-root
@@ -273,11 +258,11 @@ jobs:
 
       - task: create-image-labels
         file: dillo-bot/cicd/tasks/create-image-labels.yml
+        params: { ENV: dev }
 
       - task: create-image-tags
         file: dillo-bot/cicd/tasks/create-image-tags.yml
-        params:
-          ENV: d
+        params: { ENV: dev }
 
       - put: dillo-bot-docker
         params:

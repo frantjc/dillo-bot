@@ -141,8 +141,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: 
-          - update-pipeline
+        passed: [update-pipeline]
         trigger: true
 
       - task: unit-test
@@ -153,8 +152,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              The new DilloBot failed his tests
+            message: The new DilloBot failed his tests
 
 
   - name: test-dillo-bot-ui
@@ -164,8 +162,7 @@ jobs:
         trigger: true
 
       - get: dillo-bot
-        passed:
-          - update-pipeline
+        passed: [update-pipeline]
         trigger: true
 
       - task: unit-test-ui
@@ -175,8 +172,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              The new DilloBot's ui failed its tests
+            message: The new DilloBot's ui failed its tests
 
 
   - name: build-dillo-bot
@@ -184,14 +180,11 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed:
-          - test-dillo-bot
-          - test-dillo-bot-ui
+        passed: [test-dillo-bot, test-dillo-bot-ui]
         trigger: true
         
       - get: dillo-bot-ui
-        passed:
-          - test-dillo-bot-ui
+        passed: [test-dillo-bot-ui]
         trigger: true
 
       - get: version
@@ -205,8 +198,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              Failed to build new DilloBot's ui
+            message: Failed to build new DilloBot's ui
 
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
@@ -216,8 +208,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: |
-              Failed to build new DilloBot
+            message: Failed to build new DilloBot
 
       - put: version
         params:
@@ -244,25 +235,21 @@ jobs:
             params:
               channel: ((concourse.discord.channel))
               title: WARN
-              message: |
-                New DilloBot was containerized from source
+              message: New DilloBot was containerized from source
           on_failure:
             put: notify
             params:
               channel: ((concourse.discord.channel))
               title: FAIL
-              message: |
-                New DilloBot could not be contained
+              message: New DilloBot could not be contained
 
     plan:
       - get: dillo-bot
-        passed: 
-          - build-dillo-bot
+        passed: [build-dillo-bot]
         trigger: true
 
       - get: dillo-bot-bucket
-        passed:
-          - build-dillo-bot
+        passed: [build-dillo-bot]
         trigger: true
 
       - task: copy-jar-dockerfile-to-root
@@ -281,26 +268,22 @@ jobs:
       params:
         channel: ((concourse.discord.channel))
         title: SUCCESS
-        message: |
-          New DilloBot is up and running!
+        message: New DilloBot is up and running!
 
     on_failure:
       put: notify
       params:
         channel: ((concourse.discord.channel))
         title: FAIL
-        message: |
-          Could not get new DilloBot to run on server
+        message: Could not get new DilloBot to run on server
 
     plan:
       - get: dillo-bot
-        passed:
-          - containerize-dillo-bot
+        passed: [containerize-dillo-bot]
         trigger: true
 
       - get: dillo-bot-docker
-        passed:
-          - containerize-dillo-bot
+        passed: [containerize-dillo-bot]
         trigger: true
 
       - task: create-key

@@ -59,16 +59,14 @@ jobs:
       params:
         channel: ((concourse.discord.channel))
         title: SUCCESS
-        message: |
-          New DilloBot is up and running!
+        message: New DilloBot is up and running!
 
     on_failure:
       put: notify
       params:
         channel: ((concourse.discord.channel))
         title: FAIL
-        message: |
-          Could not get new DilloBot to run on server
+        message: Could not get new DilloBot to run on server
 
     plan:
       - get: dillo-bot
