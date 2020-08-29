@@ -258,6 +258,8 @@ jobs:
         trigger: true
 
       - get: version
+          passed:
+            - build-dillo-bot
 
       - get: dillo-bot-bucket
         passed:

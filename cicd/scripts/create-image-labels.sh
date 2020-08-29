@@ -18,6 +18,10 @@ VERSION_SUCCESS=0
 
 FIRST_LABEL=0
 
+pwd
+ls -al
+echo ""
+
 echo "${INFO_PREFIX} getting environment..."
 LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
 ENVIRONMENT_SUCCESS=$?

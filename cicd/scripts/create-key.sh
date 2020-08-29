@@ -15,6 +15,10 @@ INFO_PREFIX="${ECHO_PREFIX} [${INFO_COLOR}INFO${NORMAL_COLOR}]"
 
 SUCCESS=0
 
+pwd
+ls -al
+echo ""
+
 echo "${INFO_PREFIX} creating key file..."
 echo "$KEY" > key/dillo-key.pem
 SUCCESS=$?
