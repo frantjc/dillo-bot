@@ -57,6 +57,18 @@ resources:
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
 
+  - name: version-d
+    type: semver
+    icon: aws
+    source:
+      initial_version: 0.3.0
+      driver: s3
+      bucket: ((aws.s3.name))
+      key: ((aws.s3.folder))/dev/version
+      access_key_id: ((aws.s3.key.id))
+      secret_access_key: ((aws.s3.key.secret))
+      region_name: us-east-2
+
 
 
 anchors:
@@ -215,7 +227,7 @@ jobs:
 
       - get: version
         params:
-          bump: patch
+          bump: minor
 
       - task: build-ui
         file: dillo-bot/cicd/tasks/build-ui.yml
@@ -237,6 +249,10 @@ jobs:
             message: Failed to build new DilloBot
 
       - put: version
+        params:
+          file: version/version
+
+      - put: version-d
         params:
           file: version/version
 
