@@ -17,7 +17,7 @@ cp dillo-bot/mvnw dillo-bot-dockerfile/
 cp dillo-bot/pom.xml dillo-bot-dockerfile/
 cp dillo-bot/cicd/docker/src/Dockerfile dillo-bot-dockerfile/
 
-echo "${INFO_PREFIX} dillo-bot-dockerfile/"
+echo -e "${INFO_PREFIX} dillo-bot-dockerfile/"
 ls dillo-bot-dockerfile/
 
 exit 0;

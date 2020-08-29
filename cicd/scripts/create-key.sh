@@ -19,19 +19,19 @@ pwd
 ls -al
 echo ""
 
-echo "${INFO_PREFIX} creating key file..."
+echo -e "${INFO_PREFIX} creating key file..."
 echo "$KEY" > key/dillo-key.pem
 SUCCESS=$?
 if [ $SUCCESS -ne 0 ]; then
-  echo "${FAIL_PREFIX} failed to create .pem file"
+  echo -e "${FAIL_PREFIX} failed to create .pem file"
 fi
 
 chmod 400 key/dillo-key.pem
 SUCCESS=$?
 if [ $SUCCESS -ne 0 ]; then
-  echo "${FAIL_PREFIX} failed to change access permissions of .pem file"
+  echo -e "${FAIL_PREFIX} failed to change access permissions of .pem file"
 else
-  echo "${SUCCESS_PREFIX} key created"
+  echo -e "${SUCCESS_PREFIX} key created"
 fi
 
 exit 0;

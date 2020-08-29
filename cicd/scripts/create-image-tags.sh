@@ -24,14 +24,14 @@ echo ""
 
 touch tags/additional_tags.txt
 
-echo "${INFO_PREFIX} getting environment..."
+echo -e "${INFO_PREFIX} getting environment..."
 LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
 ENVIRONMENT_SUCCESS=$?
 if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
-    echo "${FAIL_PREFIX} unable to find environment from ENV"
-    echo "${INFO_PREFIX} assuming environment is prod"
+    echo -e "${FAIL_PREFIX} unable to find environment from ENV"
+    echo -e "${INFO_PREFIX} assuming environment is prod"
 else
-    echo "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
+    echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
 if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
@@ -41,13 +41,13 @@ if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCAS
   FIRST_TAG=1
 fi
 
-echo "${INFO_PREFIX} getting version..."
+echo -e "${INFO_PREFIX} getting version..."
 VERSION=$(cat version/version)
 VERSION_SUCCESS=$?
 if [ $VERSION_SUCCESS -ne 0 ]; then
-    echo "${FAIL_PREFIX} unable to find version"
+    echo -e "${FAIL_PREFIX} unable to find version"
 else
-    echo "${SUCCESS_PREFIX} version found: $VERSION"
+    echo -e "${SUCCESS_PREFIX} version found: $VERSION"
 fi
 
 if [ $VERSION_SUCCESS -ne 1 ]; then
@@ -63,8 +63,8 @@ if [ $VERSION_SUCCESS -ne 1 ]; then
   echo -n "$VERSION" >> tags/additional_tags.txt
 fi
 
-echo "${SUCCESS_PREFIX} created: tags/additional_tags.txt"
-echo "${INFO_PREFIX} tags/additional_tags.txt"
+echo -e "${SUCCESS_PREFIX} created: tags/additional_tags.txt"
+echo -e "${INFO_PREFIX} tags/additional_tags.txt"
 cat tags/additional_tags.txt
 
 exit 0;
