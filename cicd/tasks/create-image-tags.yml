@@ -6,13 +6,17 @@ image_resource:
   source:
     repository: ubuntu
 
+params:
+  ENV:
+
 inputs:
   - name: dillo-bot
+  - name: version
 
 outputs:
-  - name: dillo-bot-dockerfile
+  - name: tags
 
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/copy-src-dockerfile-to-root.sh"
+    - "dillo-bot/cicd/scripts/create-image-tags.sh"

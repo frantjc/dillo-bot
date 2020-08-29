@@ -18,7 +18,7 @@ caches:
     - path: dillo-bot-ui/node_modules
 
 run:
-    path: /bin/sh
+    path: /bin/bash
     args:
         - "dillo-bot/cicd/scripts/build-ui.sh"
         

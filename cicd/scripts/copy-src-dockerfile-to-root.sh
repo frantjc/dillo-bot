@@ -1,4 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
+PREFIX_COLOR='\033[1;36m'
+NORMAL_COLOR='\033[0m'
+ECHO_PREFIX="[${PREFIX_COLOR}PIPELINE${NORMAL_COLOR}]"
+
+INFO_COLOR='\033[0;34m'
+INFO_PREFIX="${ECHO_PREFIX} [${INFO_COLOR}INFO${NORMAL_COLOR}]"
 
 pwd
 ls -al
@@ -10,5 +17,7 @@ cp dillo-bot/mvnw dillo-bot-dockerfile/
 cp dillo-bot/pom.xml dillo-bot-dockerfile/
 cp dillo-bot/cicd/docker/src/Dockerfile dillo-bot-dockerfile/
 
-echo "dillo-bot-dockerfile/"
+echo -e "${INFO_PREFIX} dillo-bot-dockerfile/"
 ls dillo-bot-dockerfile/
+
+exit 0;

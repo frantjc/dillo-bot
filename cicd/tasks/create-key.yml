@@ -2,20 +2,20 @@
 platform: linux
 
 image_resource:
-    type: registry-image
-    source:
-        repository: alpine
+  type: registry-image
+  source:
+      repository: ubuntu
 
 params:
-    KEY:
+  KEY:
 
 inputs:
-    - name: dillo-bot
+  - name: dillo-bot
 
 outputs:
-    - name: key
+  - name: key
 
 run:
-    path: /bin/sh
-    args:
-        - "dillo-bot/cicd/scripts/create-key.sh"
+  path: /bin/bash
+  args:
+    - "dillo-bot/cicd/scripts/create-key.sh"
