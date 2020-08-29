@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.dillos.dillobot.builders.ChannelBuilder;
 import com.dillos.dillobot.entities.DiscordChannel;
 import com.dillos.dillobot.entities.Subscription;
 import com.dillos.dillobot.entities.Subscription.SubscriptionType;
@@ -60,9 +61,50 @@ public class DiscordChannelService {
             channel.setSubscriptions(new ArrayList<Subscription>());
         }
 
-        channel.getSubscriptions().add(subscription);
+        if (!channel.getSubscriptions().contains(subscription)) {
+            channel.getSubscriptions().add(subscription);
+        }
 
         return save(channel);
+    }
+
+    public DiscordChannel addSubscription(String id, Subscription subscription) {
+        return addSubscription(
+            new ChannelBuilder()
+                .setId(id)
+                .build(),
+            subscription
+        );
+    }
+
+    public DiscordChannel addSubscription(DiscordChannel channel, SubscriptionType subscription) {
+        return addSubscription(
+            channel,
+            getSubscription(subscription)
+        );
+    }
+
+    public DiscordChannel addSubscription(String id, SubscriptionType subscription) {
+        return addSubscription(
+            id,
+            getSubscription(subscription)
+        );
+    }
+
+    public DiscordChannel addSubscription(DiscordChannel channel, String subscription) {
+        return addSubscription(
+            channel,
+            getSubscription(subscription)
+        );
+    }
+
+    public DiscordChannel addSubscription(String id, String subscription) {
+        return addSubscription(
+            new ChannelBuilder()
+                .setId(id)
+                .build(),
+            getSubscription(subscription)
+        );
     }
 
     @Transactional
@@ -80,11 +122,53 @@ public class DiscordChannelService {
         return save(channel);
     }
 
-    public Subscription getSubscription(String subscription) {
-        return getSubscription(SubscriptionType.valueOf(subscription.toUpperCase()));
+    public DiscordChannel removeSubscription(String id, SubscriptionType subscription) {
+        return removeSubscription(
+            new ChannelBuilder()
+                .setId(id)
+                .build(),
+            getSubscription(subscription)
+        );
+    }
+
+    public DiscordChannel removeSubscription(DiscordChannel channel, SubscriptionType subscription) {
+        return removeSubscription(
+            channel,
+            getSubscription(subscription)
+        );
+    }
+
+    public DiscordChannel removeSubscription(String id, Subscription subscription) {
+        return removeSubscription(
+            new ChannelBuilder()
+                .setId(id)
+                .build(),
+            subscription
+        );
+    }
+
+    public DiscordChannel removeSubscription(DiscordChannel channel, String subscription) {
+        return removeSubscription(
+            channel,
+            getSubscription(subscription)
+        );
+    }
+
+    public DiscordChannel removeSubscription(String id, String subscription) {
+        return removeSubscription(
+            new ChannelBuilder()
+                .setId(id)
+                .build(),
+            getSubscription(subscription)
+        );
     }
 
     public Subscription getSubscription(SubscriptionType subscription) {
         return subscriptionRepository.findBySubscription(subscription);
     }
+
+    public Subscription getSubscription(String subscription) {
+        return getSubscription(SubscriptionType.valueOf(subscription.toUpperCase()));
+    }
+
 }
