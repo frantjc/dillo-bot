@@ -234,7 +234,7 @@ jobs:
         - put: dillo-bot-docker
           params:
             build: dillo-bot-dockerfile/
-            additional_tags: tags/additional_tags
+            additional_tags: tags/additional_tags.txt
             labels_file: labels/labels_file.json
           on_success:
             put: notify
@@ -280,5 +280,5 @@ jobs:
       - put: dillo-bot-docker
         params:
           build: dillo-bot-dockerfile/
-          additional_tags: tags/additional_tags
+          additional_tags: tags/additional_tags.txt
           labels_file: labels/labels_file.json
