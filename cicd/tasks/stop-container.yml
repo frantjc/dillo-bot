@@ -2,19 +2,20 @@
 platform: linux
 
 image_resource:
-    type: registry-image
-    source:
-        repository: kroniak/ssh-client
+  type: registry-image
+  source:
+    repository: debian
+    tag: buster-slim
 
 params:
-    USER:
-    PUBLIC_DNS:
+  USER:
+  PUBLIC_DNS:
 
 inputs:
-    - name: key
-    - name: dillo-bot
+  - name: key
+  - name: dillo-bot
 
 run:
-    path: /bin/bash
-    args:
-        - "dillo-bot/cicd/scripts/ssh-and-stop-container.sh"
+  path: /bin/bash
+  args:
+      - "dillo-bot/cicd/scripts/ssh-and-stop-container.sh"

@@ -1,6 +1,6 @@
 FROM openjdk:11.0.7-jdk-slim AS builder
 
-WORKDIR /dillo-bot
+WORKDIR /usr/src/dillo-bot
 
 COPY src/ src/
 COPY .mvn/ .mvn/
