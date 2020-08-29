@@ -32,7 +32,7 @@ resources:
     icon: aws
     source:
       bucket: ((aws.s3.name))
-      regexp: ((aws.s3.folder))/dillo-bot-(.*).d.jar
+      regexp: ((aws.s3.folder))/dillo-bot-d-(.*).jar
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
@@ -50,7 +50,7 @@ resources:
     type: semver
     icon: aws
     source:
-      initial_version: 0.3.0
+      initial_version: 0.0.0
       driver: s3
       bucket: ((aws.s3.name))
       key: ((aws.s3.folder))/version

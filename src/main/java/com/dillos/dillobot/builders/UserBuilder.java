@@ -1,7 +1,10 @@
 package com.dillos.dillobot.builders;
 
+import java.time.LocalDate;
+
 import com.dillos.dillobot.entities.DiscordUser;
 import com.dillos.dillobot.entities.GitHubUser;
+import com.dillos.dillobot.entities.UserDetails;
 
 import lombok.Getter;
 
@@ -14,6 +17,10 @@ public class UserBuilder {
     String discriminator;
 
     GitHubUser gitHubUser;
+
+    UserDetails userDetails;
+
+    LocalDate birthday;
 
     public UserBuilder setId(String id) {
         this.id = id;
@@ -32,6 +39,16 @@ public class UserBuilder {
 
     public UserBuilder setGitHubUser(GitHubUser gitHubUser) {
         this.gitHubUser = gitHubUser;
+        return this;
+    }
+
+    public UserBuilder setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
+        return this;
+    }
+
+    public UserBuilder setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
         return this;
     }
 

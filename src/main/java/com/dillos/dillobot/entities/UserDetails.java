@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.dillos.dillobot.dto.UserDetailsRequest;
+
 import lombok.Data;
 
 @Entity
@@ -23,5 +25,11 @@ public class UserDetails {
     @OneToOne
     @JoinColumn(name = "discord_user_id")
     DiscordUser discordUser;
+
+    public UserDetails(UserDetailsRequest userDetails) {
+        this.birthday = userDetails.getBirthday();
+    }
+
+    public UserDetails() {}
 
 }

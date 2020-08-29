@@ -37,10 +37,10 @@ public class DiscordChannel {
         return "<#" + this.id + ">";
     }
     public DiscordChannel merge(DiscordChannel channel) {
-        if (
-            channel.getSubscriptions() != null
-        ) {
+        if (channel.getSubscriptions() != null) {
             this.subscriptions = channel.getSubscriptions();
+        } if (channel.getName() != null) {
+            this.name = channel.getName();
         }
 
         return this;
