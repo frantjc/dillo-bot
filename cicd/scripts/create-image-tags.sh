@@ -59,12 +59,9 @@ if [ $VERSION_SUCCESS -ne 1 ]; then
     FIRST_TAG=1
   fi
 
-  if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
-    VERSION="$VERSION.d"
-    echo -e "${INFO_PREFIX} updated version: $VERSION"
+  if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" != "d" ] || [ "$LOWERCASED_ENV" != "dev" ] || [ "$LOWERCASED_ENV" != "develop" ]; then
+    echo -n "$VERSION" >> tags/additional_tags.txt
   fi
-
-  echo -n "$VERSION" >> tags/additional_tags.txt
 fi
 
 echo -e "${SUCCESS_PREFIX} created: tags/additional_tags.txt"

@@ -81,7 +81,7 @@ else
 fi
 
 if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
-    VERSION="$VERSION.d"
+    VERSION="d-$VERSION"
     echo -e "${INFO_PREFIX} updated version: $VERSION"
 fi
 
