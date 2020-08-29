@@ -126,16 +126,24 @@ public class UserController {
 
         UserDetailsResponse details = new UserDetailsResponse(discordUserService.get(id).orElseGet(DiscordUser::new).getUserDetails());
 
-        return ResponseEntity.ok().body(details);
+        if (details.getBirthday() != null) {
+            return ResponseEntity.ok().body(details);
+        }
+        
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/discord/{id}/birthday")
     public ResponseEntity<LocalDate> getDiscordUserBirthday(@PathVariable String id) {
-        log.info("GET /api/users/discord/{}/details", id);
+        log.info("GET /api/users/discord/{}/birthday", id);
 
         LocalDate birthday = discordUserService.get(id).orElseGet(DiscordUser::new).getBirthday();
 
-        return ResponseEntity.ok().body(birthday);
+        if (birthday != null) {
+            return ResponseEntity.ok().body(birthday);
+        }
+        
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "/discord/{id}/birthday", method = {

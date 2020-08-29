@@ -40,21 +40,13 @@ public class DiscordUser {
     UserDetails userDetails;
 
     public DiscordUser merge(DiscordUser user) {
-        if (
-            user.getGitHubUser() != null
-        ) {
+        if (user.getGitHubUser() != null) {
             this.gitHubUser = user.getGitHubUser();
-        } if (
-            user.getUserDetails() != null
-        ) {
+        } if (user.getUserDetails() != null) {
             this.userDetails = user.getUserDetails();
-        } if (
-            user.getName() != null
-        ) {
+        } if (user.getName() != null) {
             this.name = user.getName();
-        } if (
-            user.getDiscriminator() != null
-        ) {
+        } if (user.getDiscriminator() != null) {
             this.discriminator = user.getDiscriminator();
         }
 

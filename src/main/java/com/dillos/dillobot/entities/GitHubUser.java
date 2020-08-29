@@ -54,9 +54,7 @@ public class GitHubUser {
     DiscordUser discordUser;
 
     public GitHubUser merge(GitHubUser user) {
-        if (
-            user.getDiscordUser() != null
-        ) {
+        if (user.getDiscordUser() != null) {
             this.discordUser = user.getDiscordUser();
         }
 
