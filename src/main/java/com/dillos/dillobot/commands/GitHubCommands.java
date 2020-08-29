@@ -172,13 +172,13 @@ public class GitHubCommands {
                     .setDescription("GitHub account \"" + login + "\" already linked to another user")
                     .setThumbnail(gitHubLogoUri);
             } else {
-                discordUserService.save(
+                discordUserService.linkToGitHub(
                     new UserBuilder()
                         .setId(discordUser.getId())
                         .setName(discordUser.getName())
                         .setDiscriminator(discordUser.getDiscriminator())
-                        .setGitHubUser(gitHubUser)
-                        .build()
+                        .build(),
+                    login
                 );
 
                 message.setTitle("accounts linked successfully", gitHubUser.getHtmlUrl()).setThumbnail(gitHubLogoUri);

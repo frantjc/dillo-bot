@@ -43,7 +43,7 @@ public class SubscriptionCommands {
 
         discordChannelService.addSubscription(
             discordChannel,
-            discordChannelService.getSubscription(subscription)
+            subscription
         );
 
         channel.sendMessage(
@@ -68,7 +68,7 @@ public class SubscriptionCommands {
 
         discordChannelService.removeSubscription(
             discordChannel,
-            discordChannelService.getSubscription(subscription)
+            subscription
         );
 
         channel.sendMessage(
