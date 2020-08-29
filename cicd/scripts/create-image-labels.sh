@@ -27,6 +27,9 @@ touch labels/labels_file.json
 echo -e "${INFO_PREFIX} getting environment..."
 LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
 ENVIRONMENT_SUCCESS=$?
+if [ "$LOWERCASED_ENV" = "" ]; then
+  ENVIRONMENT_SUCCESS=1
+fi
 if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
     echo -e "${FAIL_PREFIX} unable to find environment from ENV"
     echo -e "${INFO_PREFIX} assuming environment is prod"
@@ -34,7 +37,7 @@ else
     echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
-echo -n "{" >> labels/labels_file.json
+echo -n "{ " >> labels/labels_file.json
 
 echo -e "${INFO_PREFIX} getting version..."
 VERSION=$(cat version/version)
@@ -48,13 +51,14 @@ fi
 if [ $VERSION_SUCCESS -ne 1 ]; then
   if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
     VERSION="$VERSION.d"
+    echo -e "${INFO_PREFIX} updated version: $VERSION"
   fi
 
-  echo -n " \"version\": \"$VERSION\"" >> labels/labels_file.json
+  echo -n "\"version\": \"$VERSION\"" >> labels/labels_file.json
   FIRST_LABEL=1
 fi
 
-echo -n "}" >> labels/labels_file.json
+echo -n " }" >> labels/labels_file.json
 
 echo -e "${SUCCESS_PREFIX} created: labels/labels_file.json"
 echo -e "${INFO_PREFIX} labels/labels_file.json"

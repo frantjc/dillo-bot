@@ -225,6 +225,8 @@ jobs:
 
         - task: create-image-labels
           file: dillo-bot/cicd/tasks/create-image-labels.yml
+          params:
+            ENV: d
   
         - task: create-image-tags
           file: dillo-bot/cicd/tasks/create-image-tags.yml

@@ -27,6 +27,9 @@ touch tags/additional_tags.txt
 echo -e "${INFO_PREFIX} getting environment..."
 LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
 ENVIRONMENT_SUCCESS=$?
+if [ "$LOWERCASED_ENV" = "" ]; then
+  ENVIRONMENT_SUCCESS=1
+fi
 if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
     echo -e "${FAIL_PREFIX} unable to find environment from ENV"
     echo -e "${INFO_PREFIX} assuming environment is prod"
@@ -58,6 +61,7 @@ if [ $VERSION_SUCCESS -ne 1 ]; then
 
   if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
     VERSION="$VERSION.d"
+    echo -e "${INFO_PREFIX} updated version: $VERSION"
   fi
 
   echo -n "$VERSION" >> tags/additional_tags.txt

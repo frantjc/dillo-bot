@@ -70,6 +70,9 @@ echo ""
 echo -e "${INFO_PREFIX} getting environment..."
 LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
 ENVIRONMENT_SUCCESS=$?
+if [ "$LOWERCASED_ENV" = "" ]; then
+  ENVIRONMENT_SUCCESS=1
+fi
 if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
     echo -e "${FAIL_PREFIX} unable to find environment from ENV"
     echo -e "${INFO_PREFIX} assuming environment is prod"
