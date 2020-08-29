@@ -50,7 +50,7 @@ resources:
     type: semver
     icon: aws
     source:
-      initial_version: 0.3.0
+      initial_version: 0.0.0
       driver: s3
       bucket: ((aws.s3.name))
       key: ((aws.s3.folder))/version
