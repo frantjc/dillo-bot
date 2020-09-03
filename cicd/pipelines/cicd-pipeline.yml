@@ -174,6 +174,9 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+        passed: [build-dillo-bot-resource-image]
+
       - get: dillo-bot
         passed: [update-pipeline]
         trigger: true
@@ -193,6 +196,9 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+        passed: [build-dillo-bot-resource-image]
+      
       - get: dillo-bot
         passed: [lint-dillo-bot]
         trigger: true
@@ -211,6 +217,9 @@ jobs:
   - name: test-dillo-bot-ui
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+        passed: [build-dillo-bot-resource-image]
+
       - get: dillo-bot
         passed: [lint-dillo-bot]
         trigger: true
@@ -229,6 +238,9 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+        passed: [build-dillo-bot-resource-image]
+
       - get: dillo-bot
         passed: [test-dillo-bot, test-dillo-bot-ui]
         trigger: true

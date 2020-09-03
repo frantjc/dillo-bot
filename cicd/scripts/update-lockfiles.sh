@@ -20,8 +20,17 @@ ls -al
 echo ""
 
 cp -r dillo-bot/ linted-dillo-bot/
-ls -al linted-dillo-bot/
-ls -al dillo-bot/
+
+# temp #
+cd linted-dillo-bot/
+echo -e "${INFO_PREFIX} linted-dillo-bot/"
+ls -al
+cd ../dillo-bot
+echo -e "${INFO_PREFIX} -dillo-bot/"
+ls -al
+cd ..
+# temp #
+
 cd linted-dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
