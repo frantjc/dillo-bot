@@ -108,31 +108,62 @@ jobs:
                 id: ((aws.s3.key.id))
 
 
+  - name: build-dillo-bot-resource-image
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: debian-stable-slim-trigger
+        trigger: true
+
+      - get: dillo-bot
+
+      - put: dillo-bot-resource-image
+        params:
+          build: dillo-bot/cicd/docker/dillo-bot/image_resource
+
+
+  - name: lint-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+        passed: [update-pipeline, build-dillo-bot-resource-image]
+        trigger: true
+      
+      - task: update-lockfiles
+        file: dillo-bot/cicd/tasks/update-lockfiles.yml
+
+      - task: lint-ui
+        file: dillo-bot/cicd/tasks/lint-ui.yml
+
+      - put: dillo-bot
+        params:
+          repository: linted-dillo-bot
+
   - name: test-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: [update-pipeline]
+        passed: [lint-dillo-bot]
         trigger: true
 
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
-        params: *env_vars
+        params: *test_env_vars
         on_failure:
           put: notify
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: The new DilloBot-d failed his tests
+            message: The new DilloBot failed his tests
 
 
   - name: test-dillo-bot-ui
-    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: [update-pipeline]
+        passed: [lint-dillo-bot]
         trigger: true
 
       - task: unit-test-ui
@@ -142,7 +173,7 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: The new DilloBot-d's ui failed its tests
+            message: The new DilloBot's ui failed its tests
 
 
   - name: build-dillo-bot

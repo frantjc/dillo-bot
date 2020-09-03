@@ -167,12 +167,44 @@ jobs:
             driver: ((database.driver))
 
 
+  - name: build-dillo-bot-resource-image
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: debian-stable-slim-trigger
+        trigger: true
+
+      - get: dillo-bot
+
+      - put: dillo-bot-resource-image
+        params:
+          build: dillo-bot/cicd/docker/dillo-bot/image_resource
+
+
+  - name: lint-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+        passed: [update-pipeline, build-dillo-bot-resource-image]
+        trigger: true
+      
+      - task: update-lockfiles
+        file: dillo-bot/cicd/tasks/update-lockfiles.yml
+
+      - task: lint-ui
+        file: dillo-bot/cicd/tasks/lint-ui.yml
+
+      - put: dillo-bot
+        params:
+          repository: linted-dillo-bot
+
   - name: test-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: [update-pipeline]
+        passed: [lint-dillo-bot]
         trigger: true
 
       - task: unit-test
@@ -190,7 +222,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: [update-pipeline]
+        passed: [lint-dillo-bot]
         trigger: true
 
       - task: unit-test-ui
