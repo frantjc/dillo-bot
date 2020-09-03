@@ -42,7 +42,7 @@ resources:
   - name: dillo-bot-resource-image
     type: docker-image
     icon: docker
-    source: 
+    source:
       username: ((docker.username))
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource

@@ -41,7 +41,7 @@ resources:
   - name: dillo-bot-resource-image
     type: docker-image
     icon: docker
-    source: 
+    source:
       username: ((docker.username))
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource
@@ -201,6 +201,8 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+
       - get: dillo-bot
         passed: [update-pipeline]
         trigger: true
@@ -220,6 +222,8 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+      
       - get: dillo-bot
         passed: [lint-dillo-bot]
         trigger: true
