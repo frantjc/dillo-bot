@@ -8,14 +8,13 @@ image_resource:
         tag: 12.16.3-slim
 
 inputs:
-    - name: dillo-bot-ui
     - name: dillo-bot
 
 outputs:
     - name: build
 
 caches:
-    - path: dillo-bot-ui/node_modules
+    - path: dillo-bot/node_modules
 
 run:
     path: /bin/bash
