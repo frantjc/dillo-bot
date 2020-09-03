@@ -7,6 +7,7 @@ image_resource:
     repository: frantjc/dillo-bot-resource
 
 inputs:
+  - name: dillo-bot
   - name: linted-dillo-bot
 
 outputs:
