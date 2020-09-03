@@ -7,6 +7,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG JAVA_VERSION=openjdk-11-jdk
 ARG NODE_VERSION=12.x
 
+# apt install openjdk-11-jdk fails without this directory.  refer to: https://github.com/geerlingguy/ansible-role-java/issues/64
+RUN mkdir /usr/share/man/man1
+
 RUN apt update -qq && apt install -qq -y --no-install-recommends \
         apt-transport-https \
         curl \
@@ -32,10 +35,11 @@ RUN git clone https://github.com/frantjc/dillo-bot.git \
     && cd dillo-bot \
     && ./mvnw install -DskipTests \
     && npm install \
+    && npm audit --fix \
     && cd .. \
     && mkdir node_modules/ \
     && mv dillo-bot/node_modules/* node_modules/ \
     && rm -rf dillo-bot \
     && mkdir dillo-bot/ \
     && mkdir dillo-bot/node_modules/ \
-    && cp node_modules/* dillo-bot/node_modules/
+    && cp -r node_modules/* dillo-bot/node_modules/
