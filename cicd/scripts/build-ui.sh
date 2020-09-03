@@ -56,7 +56,7 @@ fi
 echo ""
 cd ..
 
-cp -R dillo-bot/build/* build/
+cp -r dillo-bot/build/* build/
 BUILD_SUCCESS=$?
 
 echo ""

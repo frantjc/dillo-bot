@@ -19,20 +19,12 @@ pwd
 ls -al
 echo ""
 
-# this doesn't work anywhere else, but
+# this works weird when linted-dillo-bot/ already exists:
 # $ cp -r dillo-bot/ linted-dillo-bot/
-# doesn't do what you'd expect in the pipeline.
-# note the lack of a *
-cp -a dillo-bot/* linted-dillo-bot/
+# so we remove linted-dillo-bot/ first
+rm -rf linted-dillo-bot/
+cp -r dillo-bot/ linted-dillo-bot/
 cd linted-dillo-bot/
-
-echo -e "${INFO_PREFIX} linted-dillo-bot"
-ls -al
-
-echo -e "${INFO_PREFIX} dillo-bot"
-ls -al ../dillo-bot
-
-echo ""
 
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
 npm install
