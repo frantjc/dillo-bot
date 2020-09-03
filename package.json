@@ -27,7 +27,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/main/javascript",
-    "lint:fix": "eslint ./src/main/javascript --fix"
+    "lint:fix": "eslint ./src/main/javascript --fix",
+    "build:start": "./cicd/scripts/build-start.sh"
   },
   "eslintConfig": {
     "extends": "react-app"

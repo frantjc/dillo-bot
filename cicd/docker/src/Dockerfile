@@ -10,6 +10,8 @@ COPY mvnw .
 COPY pom.xml .
 
 RUN chmod +x mvnw
+RUN npm run build
+RUN cp build/* src/main/resources/static/
 RUN ./mvnw install -DskipTests
 
 FROM openjdk:11.0.7-jdk-slim
