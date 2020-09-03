@@ -26,6 +26,9 @@ echo ""
 cp -r dillo-bot/* linted-dillo-bot/
 cd linted-dillo-bot/
 
+echo -e "${INFO_PREFIX} linted-dillo-bot"
+ls -al
+
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
 npm install
 INSTALL_SUCCESS=$?
@@ -36,6 +39,8 @@ if [ $INSTALL_SUCCESS -ne 0 ]; then
   echo -e "${INFO_PREFIX} continuing..."
 else
   echo -e "${SUCCESS_PREFIX} npm install successful"
+  echo -e "${INFO_PREFIX} auditing..."
+  npm audit fix
 fi
 
 echo -e "${INFO_PREFIX} installing dependencies with yarn..."
