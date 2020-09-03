@@ -14,13 +14,6 @@ resources:
       uri: ((github.uri))
       branch: ((github.branch))
 
-  - name: dillo-bot-ui
-    type: git
-    icon: github
-    source:
-      uri: ((github.ui.uri))
-      branch: ((github.ui.branch))
-
   - name: notify
     type: discord-resource
     icon: discord
@@ -138,9 +131,6 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
-      - get: dillo-bot-ui
-        trigger: true
-
       - get: dillo-bot
         passed: [update-pipeline]
         trigger: true
@@ -161,10 +151,6 @@ jobs:
     plan:
       - get: dillo-bot
         passed: [test-dillo-bot, test-dillo-bot-ui]
-        trigger: true
-        
-      - get: dillo-bot-ui
-        passed: [test-dillo-bot-ui]
         trigger: true
 
       - get: version
