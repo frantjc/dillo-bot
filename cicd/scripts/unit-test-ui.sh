@@ -21,7 +21,7 @@ pwd
 ls -al
 echo ""
 
-cd dillo-bot-ui/
+cd dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies..."
 npm install

@@ -9,10 +9,10 @@ image_resource:
 inputs:
   - name: dillo-bot
 
-caches:
-  - path: dillo-bot/node_modules
+outputs:
+  - name: linted-dillo-bot
 
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/unit-test-ui.sh"
+    - "dillo-bot/cicd/scripts/update-lockfiles.sh"
