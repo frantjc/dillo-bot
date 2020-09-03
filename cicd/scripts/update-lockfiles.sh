@@ -23,7 +23,7 @@ echo ""
 # $ cp -r dillo-bot/ linted-dillo-bot/
 # doesn't do what you'd expect in the pipeline.
 # note the lack of a *
-cp -r dillo-bot/* linted-dillo-bot/
+cp -a dillo-bot/* linted-dillo-bot/
 cd linted-dillo-bot/
 
 echo -e "${INFO_PREFIX} linted-dillo-bot"
