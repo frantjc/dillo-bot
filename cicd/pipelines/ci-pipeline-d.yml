@@ -30,7 +30,7 @@ resources:
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
 
-  - name: dillo-bot-docker
+  - name: dillo-bot-image
     type: docker-image
     icon: docker
     source: 
@@ -38,6 +38,14 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot
       tag: develop
+
+  - name: dillo-bot-resource-image
+    type: docker-image
+    icon: docker
+    source: 
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/dillo-bot-resource
 
   - name: version
     type: semver
@@ -50,7 +58,13 @@ resources:
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
-  
+
+  - name: debian-stable-slim-trigger
+    type: docker-image
+    icon: docker
+    source:
+      repository: debian
+      tag: stable-slim
   
   
 anchors:
@@ -150,7 +164,7 @@ jobs:
 
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
-        params: *test_env_vars
+        params: *env_vars
         on_failure:
           put: notify
           params:
@@ -240,7 +254,7 @@ jobs:
           params:
             ENV: dev
   
-        - put: dillo-bot-docker
+        - put: dillo-bot-image
           params:
             build: dillo-bot-dockerfile/
             additional_tags: tags/additional_tags.txt
@@ -281,7 +295,7 @@ jobs:
         file: dillo-bot/cicd/tasks/create-image-tags.yml
         params: { ENV: dev }
 
-      - put: dillo-bot-docker
+      - put: dillo-bot-image
         params:
           build: dillo-bot-dockerfile/
           additional_tags: tags/additional_tags.txt
