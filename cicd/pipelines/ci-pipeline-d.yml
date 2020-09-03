@@ -172,7 +172,7 @@ jobs:
 
       - task: unit-test
         file: dillo-bot/cicd/tasks/unit-test.yml
-        params: *test_env_vars
+        params: *env_vars
         on_failure:
           put: notify
           params:
