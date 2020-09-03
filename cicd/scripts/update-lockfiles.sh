@@ -29,6 +29,11 @@ cd linted-dillo-bot/
 echo -e "${INFO_PREFIX} linted-dillo-bot"
 ls -al
 
+echo -e "${INFO_PREFIX} dillo-bot"
+ls -al ../dillo-bot
+
+echo ""
+
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
 npm install
 INSTALL_SUCCESS=$?
