@@ -190,6 +190,7 @@ jobs:
         trigger: true
 
       - get: dillo-bot
+        trigger: true
 
       - put: dillo-bot-resource-image
         params:
@@ -201,7 +202,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot
-        passed: [update-pipeline, build-dillo-bot-resource-image]
+        passed: [update-pipeline]
         trigger: true
       
       - task: update-lockfiles
@@ -213,6 +214,7 @@ jobs:
       - put: dillo-bot
         params:
           repository: linted-dillo-bot
+
 
   - name: test-dillo-bot
     serial: true

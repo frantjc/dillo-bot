@@ -25,7 +25,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:copy": "npm run build && rm -rf src/main/resources/static && mkdir src/main/resources/static && cp -R build/* src/main/resources/static/",
-    "build:install": "npm run build:copy && ./mvnw install -DskipTests",
+    "build:install": "npm run build:copy && ./mvnw package -DskipTests",
     "build:start": "npm run build:install && java -jar target/dillobot-0.0.1-SNAPSHOT.jar",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

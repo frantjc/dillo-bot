@@ -44,7 +44,7 @@ if [ $BUILD_SUCCESS -ne 0 ]; then
 fi
 
 echo -e "${INFO_PREFIX} building artifact..."
-./mvnw install -DskipTests
+./mvnw package -DskipTests
 BUILD_SUCCESS=$?
 if [ $BUILD_SUCCESS -ne 0 ]; then
     echo -e "${FAIL_PREFIX} build failed"

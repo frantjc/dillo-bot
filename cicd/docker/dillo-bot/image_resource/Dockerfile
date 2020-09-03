@@ -33,9 +33,8 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash - \
 
 RUN git clone https://github.com/frantjc/dillo-bot.git \
     && cd dillo-bot \
-    && ./mvnw install -DskipTests \
+    && ./mvnw package -DskipTests \
     && npm install \
-    && npm audit --fix \
     && cd .. \
     && mkdir node_modules/ \
     && mv dillo-bot/node_modules/* node_modules/ \
