@@ -4,9 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    username: ((docker.username))
-    password: ((docker.password))
-    repository: ((docker.username))/dillo-bot-resource
+    repository: frantjc/dillo-bot-resource
 
 inputs:
   - name: linted-dillo-bot
