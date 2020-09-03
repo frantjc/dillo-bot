@@ -36,4 +36,4 @@ else
   git commit -m "Concourse: linted src/main/javascript"
 fi
 
-exit 0;
+exit $?;

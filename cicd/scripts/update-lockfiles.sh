@@ -20,6 +20,8 @@ ls -al
 echo ""
 
 cp -r dillo-bot/ linted-dillo-bot/
+ls -al linted-dillo-bot/
+ls -al dillo-bot/
 cd linted-dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
@@ -54,4 +56,4 @@ echo -e "${INFO_PREFIX} committing lockfile updates..."
 git add .
 git commit -m "Concourse: updated yarn.lock and package-lock.json"
 
-exit 0;
+exit $?;
