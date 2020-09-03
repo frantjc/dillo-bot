@@ -17,3 +17,4 @@ export interface InputProps extends DefaultProps {
 }
 
 export default function Input(props: InputProps): JSX.Element;
+

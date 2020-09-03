@@ -6,3 +6,4 @@ export interface SvgProps extends React.DetailedHTMLProps<React.ImgHTMLAttribute
 }
 
 export default function Svg(props: SvgProps): JSX.Element;
+

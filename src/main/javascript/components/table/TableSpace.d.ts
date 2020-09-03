@@ -4,3 +4,4 @@ export interface TableSpaceProps {
 }
 
 export function TableSpace(props: TableSpaceProps): JSX.Element;
+
