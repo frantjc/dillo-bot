@@ -21,6 +21,12 @@ echo ""
 
 cd linted-dillo-bot/
 
+echo -e "${INFO_PREFIX} setting git user.name and user.email..."
+git config --global user.email "dillobot@gmail.com"
+git config --global user.name "Dillo Bot"
+
+echo ""
+
 echo -e "${INFO_PREFIX} linting src/main/javascript..."
 npm run lint:fix
 LINT_SUCCESS=$?
@@ -36,4 +42,4 @@ else
   git commit -m "Concourse: linted src/main/javascript"
 fi
 
-exit $?;
+exit 0;

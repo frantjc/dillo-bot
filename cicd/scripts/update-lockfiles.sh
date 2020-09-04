@@ -19,6 +19,12 @@ pwd
 ls -al
 echo ""
 
+echo -e "${INFO_PREFIX} setting git user.name and user.email..."
+git config --global user.email "dillobot@gmail.com"
+git config --global user.name "Dillo Bot"
+
+echo ""
+
 # this works weird when linted-dillo-bot/ already exists:
 # $ cp -r dillo-bot/ linted-dillo-bot/
 # so we copy all the "normal" stuff with:
@@ -45,6 +51,8 @@ else
   npm audit fix
 fi
 
+echo ""
+
 echo -e "${INFO_PREFIX} installing dependencies with yarn..."
 yarn install
 INSTALL_SUCCESS=$?
@@ -65,4 +73,4 @@ echo -e "${INFO_PREFIX} committing lockfile updates..."
 git add .
 git commit -m "Concourse: updated yarn.lock and package-lock.json"
 
-exit $?;
+exit 0;
