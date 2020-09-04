@@ -12,29 +12,29 @@ import lombok.Data;
 @JsonInclude(Include.NON_EMPTY)
 public class  IssueRequest {
 
-    Long id;
+  Long id;
 
-    Long number;
+  Long number;
 
-    String title;
+  String title;
 
-    String body;
+  String body;
 
-    String state;
+  String state;
 
-    List<String> labels;
+  List<String> labels;
 
-    List<String> assignees;
+  List<String> assignees;
 
-    public IssueRequest(IssueBuilder issue) {
-        this.id = issue.getId();
-        this.number = issue.getNumber();
-        this.title = issue.getTitle();
-        this.body = issue.getBody();
-        this.state = issue.getState();
-        this.labels = issue.getLabels();
-        this.assignees = issue.getAssignees();
-    }
+  public IssueRequest(IssueBuilder issue) {
+    this.id = issue.getId();
+    this.number = issue.getNumber();
+    this.title = issue.getTitle();
+    this.body = issue.getBody();
+    this.state = issue.getState();
+    this.labels = issue.getLabels();
+    this.assignees = issue.getAssignees();
+  }
 
-    public IssueRequest() {}
+  public IssueRequest() {}
 }

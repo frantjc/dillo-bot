@@ -3,11 +3,11 @@ resource_types:
     type: registry-image
     source:
       repository: trivigy/discord-resource
-  
-  
-  
+
+
+
 resources:
-  - name: dillo-bot
+  - name: dillo-bot-d
     type: git
     icon: github
     source:
@@ -20,7 +20,7 @@ resources:
     source:
       token: ((concourse.discord.token))
 
-  - name: dillo-bot-bucket
+  - name: dillo-bot-bucket-d
     type: s3
     icon: aws
     source:
@@ -30,7 +30,7 @@ resources:
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
 
-  - name: dillo-bot-image
+  - name: dillo-bot-image-d
     type: docker-image
     icon: docker
     source: 
@@ -47,7 +47,7 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource
 
-  - name: version
+  - name: version-d
     type: semver
     icon: aws
     source:
@@ -65,7 +65,7 @@ resources:
     source:
       repository: debian
       tag: stable-slim
-  
+
   - name: time-trigger
     type: time
     icon: clock-outline
@@ -88,15 +88,15 @@ anchors:
     DB_PASSWORD: 
     DB_DRIVER: org.h2.Driver
     ENV: dev
-  
-  
-  
+
+
+
 jobs:
   - name: update-pipeline
     serial: true
     build_log_retention: *build_log_retention
     plan:
-      - get: dillo-bot
+      - get: dillo-bot-d
         trigger: true
 
       - set_pipeline: dillo-bot-ci-d
@@ -140,7 +140,7 @@ jobs:
       - get: time-trigger
         trigger: true
 
-      - get: dillo-bot
+      - get: dillo-bot-d
 
       - put: dillo-bot-resource-image
         params:
@@ -154,7 +154,7 @@ jobs:
   #     - get: dillo-bot-resource-image
   #       passed: [build-dillo-bot-resource-image]
 
-  #     - get: dillo-bot
+  #     - get: dillo-bot-d
   #       passed: [update-pipeline]
   #       trigger: true
       
@@ -164,7 +164,7 @@ jobs:
   #     - task: lint-ui
   #       file: dillo-bot/cicd/tasks/lint-ui.yml
 
-  #     - put: dillo-bot
+  #     - put: dillo-bot-d
   #       params:
   #         repository: linted-dillo-bot
 
@@ -175,8 +175,8 @@ jobs:
     plan:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
-      
-      - get: dillo-bot
+
+      - get: dillo-bot-d
         passed: [update-pipeline]
         trigger: true
 
@@ -196,8 +196,8 @@ jobs:
     plan:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
-      
-      - get: dillo-bot
+
+      - get: dillo-bot-d
         passed: [update-pipeline]
         trigger: true
 
@@ -218,11 +218,11 @@ jobs:
       - get: dillo-bot-resource-image
         passed: [test-dillo-bot, test-dillo-bot-ui]
 
-      - get: dillo-bot
+      - get: dillo-bot-d
         passed: [test-dillo-bot, test-dillo-bot-ui]
         trigger: true
 
-      - get: version
+      - get: version-d
         params:
           bump: patch
 
@@ -246,11 +246,11 @@ jobs:
             title: FAIL
             message: Failed to build new DilloBot-d
 
-      - put: version
+      - put: version-d
         params:
           file: version/version
 
-      - put: dillo-bot-bucket
+      - put: dillo-bot-bucket-d
         params:
           file: target/dillo-bot*.jar
 
@@ -273,13 +273,13 @@ jobs:
           file: dillo-bot/cicd/tasks/create-image-labels.yml
           params:
             ENV: dev
-  
+
         - task: create-image-tags
           file: dillo-bot/cicd/tasks/create-image-tags.yml
           params:
             ENV: dev
-  
-        - put: dillo-bot-image
+
+        - put: dillo-bot-image-d
           params:
             build: dillo-bot-dockerfile/
             additional_tags: tags/additional_tags.txt
@@ -298,14 +298,14 @@ jobs:
               message: New DilloBot-d could not be contained
 
     plan:
-      - get: dillo-bot
+      - get: dillo-bot-d
         passed: [build-dillo-bot]
         trigger: true
 
-      - get: version
+      - get: version-d
         passed: [build-dillo-bot]
 
-      - get: dillo-bot-bucket
+      - get: dillo-bot-bucket-d
         passed: [build-dillo-bot]
         trigger: true
 
@@ -320,7 +320,7 @@ jobs:
         file: dillo-bot/cicd/tasks/create-image-tags.yml
         params: { ENV: dev }
 
-      - put: dillo-bot-image
+      - put: dillo-bot-image-d
         params:
           build: dillo-bot-dockerfile/
           additional_tags: tags/additional_tags.txt

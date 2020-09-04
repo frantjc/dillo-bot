@@ -18,4 +18,4 @@ inputs:
 run:
   path: /bin/bash
   args:
-      - "dillo-bot/cicd/scripts/ssh-and-stop-container.sh"
+    - "dillo-bot/cicd/scripts/ssh-and-stop-container.sh"

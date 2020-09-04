@@ -7,20 +7,20 @@ image_resource:
     repository: frantjc/dillo-bot-resource
 
 params:
-    DISCORD_TOKEN:
-    DISCORD_CLIENT_ID:
-    GITHUB_TOKEN:
+  DISCORD_TOKEN:
+  DISCORD_CLIENT_ID:
+  GITHUB_TOKEN:
 
 inputs:
-    - name: dillo-bot
-    - name: version
-    - name: build
+  - name: dillo-bot
+  - name: version
+  - name: build
 
 outputs:
-    - name: target
+  - name: target
 
 run:
-    path: /bin/bash
-    args:
-        - "dillo-bot/cicd/scripts/build-jar.sh"
+  path: /bin/bash
+  args:
+    - "dillo-bot/cicd/scripts/build-jar.sh"
         

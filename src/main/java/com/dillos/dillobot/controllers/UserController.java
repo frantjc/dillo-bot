@@ -32,168 +32,167 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/users")
 public class UserController {
 
-    Logger log = LoggerFactory.getLogger(UserController.class);
+  Logger log = LoggerFactory.getLogger(UserController.class);
 
-    GitHubUserService gitHubUserService;
+  GitHubUserService gitHubUserService;
 
-    DiscordUserService discordUserService;
+  DiscordUserService discordUserService;
 
-    @Autowired
-    public UserController(GitHubUserService gitHubUserService, DiscordUserService discordUserService) {
-        this.gitHubUserService = gitHubUserService;
-        this.discordUserService = discordUserService;
+  @Autowired
+  public UserController(GitHubUserService gitHubUserService, DiscordUserService discordUserService) {
+    this.gitHubUserService = gitHubUserService;
+    this.discordUserService = discordUserService;
+  }
+
+  @GetMapping("/github")
+  public ResponseEntity<List<GitHubUserResponse>> getGitHubUsers() {
+    log.info("GET /api/users/github");
+
+    List<GitHubUserResponse> users = gitHubUserService.get().stream().map(user -> {
+      return new GitHubUserResponse(user);
+    }).collect(Collectors.toList());
+
+    if (users.size() > 0) {
+      return ResponseEntity.ok().body(users);
     }
 
-    @GetMapping("/github")
-    public ResponseEntity<List<GitHubUserResponse>> getGitHubUsers() {
-        log.info("GET /api/users/github");
+    return ResponseEntity.noContent().build();
+  }
 
-        List<GitHubUserResponse> users = gitHubUserService.get().stream().map(user -> {
-            return new GitHubUserResponse(user);
-        }).collect(Collectors.toList());
+  @GetMapping("/github/{id}")
+  public ResponseEntity<GitHubUserResponse> getGitHubUser(@PathVariable Long id) {
+    log.info("GET /api/users/github/{}", id);
 
-        if (users.size() > 0) {
-            return ResponseEntity.ok().body(users);
-        }
+    Optional<GitHubUser> user = gitHubUserService.get(id);
 
-        return ResponseEntity.noContent().build();
+    if (user.isPresent()) {
+      return ResponseEntity.ok().body(new GitHubUserResponse(user.get()));
     }
 
-    @GetMapping("/github/{id}")
-    public ResponseEntity<GitHubUserResponse> getGitHubUser(@PathVariable Long id) {
-        log.info("GET /api/users/github/{}", id);
+    return ResponseEntity.noContent().build();
+  }
 
-        Optional<GitHubUser> user = gitHubUserService.get(id);
+  @RequestMapping(value = "/github/{github_id}/link", method = {
+    RequestMethod.POST,
+    RequestMethod.PUT,
+    RequestMethod.PATCH
+  })
+  public ResponseEntity<GitHubUserResponse> linkToDiscord(
+    @PathVariable Long github_id,
+    @RequestBody String discord_id
+  ) throws URISyntaxException {
+    log.info("POST|PUT|PATCH /api/users/github/{}/link {}", github_id, discord_id);
 
-        if (user.isPresent()) {
-            return ResponseEntity.ok().body(new GitHubUserResponse(user.get()));
-        }
+    return ResponseEntity.created(new URI("/api/users/github/" + github_id)).body(
+      new GitHubUserResponse(
+        discordUserService.linkToGitHub(discord_id, github_id).getGitHubUser()
+      )
+    );
+  }
 
-        return ResponseEntity.noContent().build();
+  @GetMapping("/discord")
+  public ResponseEntity<List<DiscordUserResponse>> getDiscordUsers() {
+    log.info("GET /api/users/discord");
+
+    List<DiscordUserResponse> users = discordUserService.get().stream().map(user -> {
+      return new DiscordUserResponse(user);
+    }).collect(Collectors.toList());
+
+    if (users.size() > 0) {
+      return ResponseEntity.ok().body(users);
     }
 
-    @RequestMapping(value = "/github/{github_id}/link", method = {
-        RequestMethod.POST,
-        RequestMethod.PUT,
-        RequestMethod.PATCH
-    })
-    public ResponseEntity<GitHubUserResponse> linkToDiscord(
-        @PathVariable Long github_id,
-        @RequestBody String discord_id
-    ) throws URISyntaxException {
-        log.info("POST|PUT|PATCH /api/users/github/{}/link {}", github_id, discord_id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/discord/{id}")
+  public ResponseEntity<DiscordUserResponse> getDiscordUser(@PathVariable String id) {
+    log.info("GET /api/users/discord/{}", id);
+
+    Optional<DiscordUser> user = discordUserService.get(id);
+
+    if (user.isPresent()) {
+      return ResponseEntity.ok().body(
+        new DiscordUserResponse(user.get())
+      );
+    }
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/discord/{id}/details")
+  public ResponseEntity<UserDetailsResponse> getDiscordUserDetails(@PathVariable String id) {
+    log.info("GET /api/users/discord/{}/details", id);
+
+    UserDetailsResponse details = new UserDetailsResponse(discordUserService.get(id).orElseGet(DiscordUser::new).getUserDetails());
+
+    if (details.getBirthday() != null) {
+    return ResponseEntity.ok().body(details);
+    }
     
-        return ResponseEntity.created(new URI("/api/users/github/" + github_id)).body(
-            new GitHubUserResponse(
-                discordUserService.linkToGitHub(discord_id, github_id).getGitHubUser()
-            )
-        );
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/discord/{id}/birthday")
+  public ResponseEntity<LocalDate> getDiscordUserBirthday(@PathVariable String id) {
+    log.info("GET /api/users/discord/{}/birthday", id);
+
+    LocalDate birthday = discordUserService.get(id).orElseGet(DiscordUser::new).getBirthday();
+
+    if (birthday != null) {
+      return ResponseEntity.ok().body(birthday);
     }
-
-    @GetMapping("/discord")
-    public ResponseEntity<List<DiscordUserResponse>> getDiscordUsers() {
-        log.info("GET /api/users/discord");
-
-        List<DiscordUserResponse> users = discordUserService.get().stream().map(user -> {
-            return new DiscordUserResponse(user);
-        }).collect(Collectors.toList());
-
-        if (users.size() > 0) {
-            return ResponseEntity.ok().body(users);
-        }
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/discord/{id}")
-    public ResponseEntity<DiscordUserResponse> getDiscordUser(@PathVariable String id) {
-        log.info("GET /api/users/discord/{}", id);
-
-        Optional<DiscordUser> user = discordUserService.get(id);
-
-        if (user.isPresent()) {
-            return ResponseEntity.ok().body(
-                new DiscordUserResponse(user.get())
-            );
-        }
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/discord/{id}/details")
-    public ResponseEntity<UserDetailsResponse> getDiscordUserDetails(@PathVariable String id) {
-        log.info("GET /api/users/discord/{}/details", id);
-
-        UserDetailsResponse details = new UserDetailsResponse(discordUserService.get(id).orElseGet(DiscordUser::new).getUserDetails());
-
-        if (details.getBirthday() != null) {
-            return ResponseEntity.ok().body(details);
-        }
-        
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/discord/{id}/birthday")
-    public ResponseEntity<LocalDate> getDiscordUserBirthday(@PathVariable String id) {
-        log.info("GET /api/users/discord/{}/birthday", id);
-
-        LocalDate birthday = discordUserService.get(id).orElseGet(DiscordUser::new).getBirthday();
-
-        if (birthday != null) {
-            return ResponseEntity.ok().body(birthday);
-        }
-        
-        return ResponseEntity.noContent().build();
-    }
-
-    @RequestMapping(value = "/discord/{id}/birthday", method = {
-        RequestMethod.POST,
-        RequestMethod.PUT,
-        RequestMethod.PATCH
-    })
-    public ResponseEntity<DiscordUserResponse> addBirthday(
-        @PathVariable String id,
-        @RequestBody LocalDate birthday
-    ) throws URISyntaxException {
-        log.info("POST|PUT|PATCH /api/users/discord/{}/birthday {}", id, birthday);
-
-        Optional<DiscordUser> maybeUser = discordUserService.get(id);
-
-        DiscordUser discordUser = new UserBuilder()
-            .setId(id)
-            .build();
-
-        if (maybeUser.isPresent()) {
-            discordUser.merge(maybeUser.get());
-        }
-
-        discordUser.setBirthday(birthday);
-
-        return ResponseEntity.created(new URI("/api/users/discord/" + id)).body(
-            new DiscordUserResponse(
-                discordUserService.save(
-                    discordUser
-                )
-            )
-        );
-    }
-
-    @RequestMapping(value = "/discord/{discord_id}/link", method = {
-        RequestMethod.POST,
-        RequestMethod.PUT,
-        RequestMethod.PATCH
-    })
-    public ResponseEntity<DiscordUserResponse> linkToDiscord(
-        @PathVariable String discord_id,
-        @RequestBody Long github_id
-    ) throws URISyntaxException {
-        log.info("POST|PUT|PATCH /api/users/discord/{}/link {}", discord_id, github_id);
     
-        return ResponseEntity.created(new URI("/api/users/discord/" + discord_id)).body(
-            new DiscordUserResponse(
-                discordUserService.linkToGitHub(discord_id, github_id)
-            )
-        );
+    return ResponseEntity.noContent().build();
+  }
+
+  @RequestMapping(value = "/discord/{id}/birthday", method = {
+    RequestMethod.POST,
+    RequestMethod.PUT,
+    RequestMethod.PATCH
+  })
+  public ResponseEntity<DiscordUserResponse> addBirthday(
+    @PathVariable String id,
+    @RequestBody LocalDate birthday
+  ) throws URISyntaxException {
+    log.info("POST|PUT|PATCH /api/users/discord/{}/birthday {}", id, birthday);
+
+    Optional<DiscordUser> maybeUser = discordUserService.get(id);
+
+    DiscordUser discordUser = new UserBuilder()
+        .setId(id)
+        .build();
+
+    if (maybeUser.isPresent()) {
+      discordUser.merge(maybeUser.get());
     }
 
+    discordUser.setBirthday(birthday);
+
+    return ResponseEntity.created(new URI("/api/users/discord/" + id)).body(
+      new DiscordUserResponse(
+        discordUserService.save(
+          discordUser
+        )
+      )
+    );
+  }
+
+  @RequestMapping(value = "/discord/{discord_id}/link", method = {
+    RequestMethod.POST,
+    RequestMethod.PUT,
+    RequestMethod.PATCH
+  })
+  public ResponseEntity<DiscordUserResponse> linkToDiscord(
+    @PathVariable String discord_id,
+    @RequestBody Long github_id
+  ) throws URISyntaxException {
+    log.info("POST|PUT|PATCH /api/users/discord/{}/link {}", discord_id, github_id);
+
+    return ResponseEntity.created(new URI("/api/users/discord/" + discord_id)).body(
+      new DiscordUserResponse(
+        discordUserService.linkToGitHub(discord_id, github_id)
+      )
+    );
+  }
 }

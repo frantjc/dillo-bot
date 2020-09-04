@@ -28,10 +28,10 @@ npm install
 INSTALL_SUCCESS=$?
 echo ""
 if [ $INSTALL_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} install failed"
-    exit 1;
+  echo -e "${FAIL_PREFIX} install failed"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} install complete"
+  echo -e "${SUCCESS_PREFIX} install complete"
 fi
 
 echo ""
@@ -47,10 +47,10 @@ echo -e "${INFO_PREFIX} building ui..."
 npm run build
 BUILD_SUCCESS=$?
 if [ $BUILD_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} build failed"
-    exit 1;
+  echo -e "${FAIL_PREFIX} build failed"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} build complete"
+  echo -e "${SUCCESS_PREFIX} build complete"
 fi
 
 echo ""
@@ -62,27 +62,27 @@ BUILD_SUCCESS=$?
 echo ""
 
 if [ $INSTALL_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} install failed"
-    exit 1;
+  echo -e "${FAIL_PREFIX} install failed"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} install successful"
+  echo -e "${SUCCESS_PREFIX} install successful"
 fi
 
 if [ $AUDIT_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} audit failed; there are dependencies with active vulnerabilities"
-    echo -e "${INFO_PREFIX} the pipeline will continue regardless"
-    npm audit
+  echo -e "${FAIL_PREFIX} audit failed; there are dependencies with active vulnerabilities"
+  echo -e "${INFO_PREFIX} the pipeline will continue regardless"
+  npm audit
 else
-    echo -e "${SUCCESS_PREFIX} audit successful"
+  echo -e "${SUCCESS_PREFIX} audit successful"
 fi
 
 if [ $BUILD_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} build failed"
-    exit 1;
+  echo -e "${FAIL_PREFIX} build failed"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} build successful"
-    echo -e "${INFO_PREFIX} build/"
-    ls build/
+  echo -e "${SUCCESS_PREFIX} build successful"
+  echo -e "${INFO_PREFIX} build/"
+  ls build/
 fi
 
 exit 0;

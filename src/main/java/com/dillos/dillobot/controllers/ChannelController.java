@@ -28,72 +28,72 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("api/channels")
 public class ChannelController {
 
-    Logger log = LoggerFactory.getLogger(ChannelController.class);
+  Logger log = LoggerFactory.getLogger(ChannelController.class);
 
-    DiscordChannelService discordChannelService;
+  DiscordChannelService discordChannelService;
 
-    @Autowired
-    public ChannelController(DiscordChannelService discordChannelService) {
-        this.discordChannelService = discordChannelService;
+  @Autowired
+  public ChannelController(DiscordChannelService discordChannelService) {
+    this.discordChannelService = discordChannelService;
+  }
+
+  @GetMapping
+  public ResponseEntity<List<DiscordChannelResponse>> getChannels() {
+    log.info("GET /api/channels");
+
+    List<DiscordChannelResponse> channels = discordChannelService.get().stream().map(channel -> {
+      return new DiscordChannelResponse(channel);
+    }).collect(Collectors.toList());
+
+    if (channels.size() > 0) {
+      return ResponseEntity.ok().body(channels);
     }
 
-    @GetMapping
-    public ResponseEntity<List<DiscordChannelResponse>> getChannels() {
-        log.info("GET /api/channels");
+    return ResponseEntity.noContent().build();
+  }
 
-        List<DiscordChannelResponse> channels = discordChannelService.get().stream().map(channel -> {
-            return new DiscordChannelResponse(channel);
-        }).collect(Collectors.toList());
+  @GetMapping("/{id}")
+  public ResponseEntity<DiscordChannelResponse> getChannel(@PathVariable String id) {
+    log.info("GET /api/channels/{}", id);
 
-        if (channels.size() > 0) {
-            return ResponseEntity.ok().body(channels);
-        }
+    Optional<DiscordChannel> channel = discordChannelService.get(id);
 
-        return ResponseEntity.noContent().build();
+    if (channel.isPresent()) {
+      return ResponseEntity.ok().body(new DiscordChannelResponse(channel.get()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DiscordChannelResponse> getChannel(@PathVariable String id) {
-        log.info("GET /api/channels/{}", id);
+    return ResponseEntity.noContent().build();
+  }
 
-        Optional<DiscordChannel> channel = discordChannelService.get(id);
+  @GetMapping("/{id}/subscriptions")
+  public ResponseEntity<List<SubscriptionResponse>> getSubscriptions(@PathVariable String id) {
+    log.info("GET /api/channels/{}/subscriptions", id);
 
-        if (channel.isPresent()) {
-            return ResponseEntity.ok().body(new DiscordChannelResponse(channel.get()));
-        }
+    List<SubscriptionResponse> subscriptions = discordChannelService.get(id).orElseGet(DiscordChannel::new)
+      .getSubscriptions().stream().map(subscription -> {
+        return new SubscriptionResponse(subscription);
+      }).collect(Collectors.toList());
 
-        return ResponseEntity.noContent().build();
+    if (subscriptions.size() > 0) {
+      return ResponseEntity.ok().body(subscriptions);
     }
 
-    @GetMapping("/{id}/subscriptions")
-    public ResponseEntity<List<SubscriptionResponse>> getSubscriptions(@PathVariable String id) {
-        log.info("GET /api/channels/{}/subscriptions", id);
+    return ResponseEntity.noContent().build();
+  }
 
-        List<SubscriptionResponse> subscriptions = discordChannelService.get(id).orElseGet(DiscordChannel::new)
-                .getSubscriptions().stream().map(subscription -> {
-                    return new SubscriptionResponse(subscription);
-                }).collect(Collectors.toList());
+  @RequestMapping(value = "/{id}/subscriptions", method = { 
+    RequestMethod.POST,
+    RequestMethod.PUT,
+    RequestMethod.PATCH
+  })
+  public ResponseEntity<DiscordChannelResponse> addSubscription(@PathVariable String id, @RequestBody SubscriptionType subscription)
+          throws URISyntaxException {
+            log.info("POST|PUT|PATCH /api/channels/{}/susbcriptions {}", id, subscription);
 
-        if (subscriptions.size() > 0) {
-            return ResponseEntity.ok().body(subscriptions);
-        }
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @RequestMapping(value = "/{id}/subscriptions", method = { 
-        RequestMethod.POST,
-        RequestMethod.PUT,
-        RequestMethod.PATCH
-    })
-    public ResponseEntity<DiscordChannelResponse> addSubscription(@PathVariable String id, @RequestBody SubscriptionType subscription)
-            throws URISyntaxException {
-                log.info("POST|PUT|PATCH /api/channels/{}/susbcriptions {}", id, subscription);
-
-                return ResponseEntity.created(new URI("/api/channels/" + id)).body(
-                    new DiscordChannelResponse(
-                        discordChannelService.addSubscription(id, subscription)
-                    )
-                );
-    }
+            return ResponseEntity.created(new URI("/api/channels/" + id)).body(
+              new DiscordChannelResponse(
+                discordChannelService.addSubscription(id, subscription)
+              )
+            );
+  }
 }

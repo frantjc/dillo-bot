@@ -28,10 +28,10 @@ npm install
 INSTALL_SUCCESS=$?
 echo ""
 if [ $INSTALL_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} install failed"
-    exit 1;
+  echo -e "${FAIL_PREFIX} install failed"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} install complete"
+  echo -e "${SUCCESS_PREFIX} install complete"
 fi
 
 echo ""
@@ -47,18 +47,18 @@ echo -e "${INFO_PREFIX} testing ui..."
 npm test
 TEST_SUCCESS=$?
 if [ $TEST_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} build failed"
-    exit 1;
+  echo -e "${FAIL_PREFIX} build failed"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} tests passed"
+  echo -e "${SUCCESS_PREFIX} tests passed"
 fi
 
 if [ $AUDIT_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} audit failed; there are dependencies with active vulnerabilities"
-    echo -e "${INFO_PREFIX} the pipeline will continue regardless"
-    npm audit
+  echo -e "${FAIL_PREFIX} audit failed; there are dependencies with active vulnerabilities"
+  echo -e "${INFO_PREFIX} the pipeline will continue regardless"
+  npm audit
 else
-    echo -e "${SUCCESS_PREFIX} audit successful"
+  echo -e "${SUCCESS_PREFIX} audit successful"
 fi
 
 cd ..
