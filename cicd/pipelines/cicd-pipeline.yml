@@ -46,6 +46,14 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource
 
+  - name: ssh-resource-image
+    type: docker-image
+    icon: docker
+    source:
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/openssh-client
+
   - name: version
     type: semver
     icon: aws
@@ -178,6 +186,18 @@ jobs:
         params:
           build: dillo-bot/cicd/docker/dillo-bot/image_resource
 
+  - name: build-ssh-resource-image
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: debian-stable-slim-trigger
+        trigger: true
+
+      - get: dillo-bot
+
+      - put: ssh-resource-image
+        params:
+          build: dillo-bot/cicd/docker/ssh/image_resource
 
   # - name: lint-dillo-bot
   #   serial: true
@@ -380,6 +400,9 @@ jobs:
       - get: dillo-bot-image
         passed: [containerize-dillo-bot]
         trigger: true
+      
+      - get: ssh-resource-image
+        passed: [build-ssh-resource-image]
 
       - task: create-key
         file: dillo-bot/cicd/tasks/create-key.yml
