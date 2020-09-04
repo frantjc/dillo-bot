@@ -17,6 +17,7 @@ RUN apt update -qq && apt install -qq -y --no-install-recommends \
         file \
         git \
         ${JAVA_VERSION} \
+    && gem install bundler \
     && rm -rf /var/lib/apt/lists/*;
 
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash - \

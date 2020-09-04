@@ -9,9 +9,6 @@ image_resource:
 inputs:
   - name: dillo-bot
 
-caches:
-  - path: dillo-bot/node_modules
-
 run:
   path: /bin/bash
   args:

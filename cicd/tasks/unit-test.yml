@@ -14,9 +14,6 @@ params:
 inputs:
   - name: dillo-bot
 
-caches:
-  - path: .m2/
-
 run:
   path: /bin/bash
   args:

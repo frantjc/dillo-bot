@@ -12,9 +12,6 @@ inputs:
 outputs:
   - name: build
 
-caches:
-  - path: dillo-bot/node_modules
-
 run:
   path: /bin/bash
   args:

@@ -19,9 +19,6 @@ inputs:
 outputs:
     - name: target
 
-caches:
-    - path: .m2/
-
 run:
     path: /bin/bash
     args:
