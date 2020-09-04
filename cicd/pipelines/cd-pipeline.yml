@@ -28,6 +28,14 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot
 
+  - name: ssh-resource-image
+    type: docker-image
+    icon: docker
+    source:
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/openssh-client
+
 
 
 anchors:
@@ -70,6 +78,8 @@ jobs:
 
     plan:
       - get: dillo-bot
+
+      - get: ssh-resource-image
 
       - get: dillo-bot-docker
         trigger: true
