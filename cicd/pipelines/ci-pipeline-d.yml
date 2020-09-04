@@ -164,6 +164,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
+        passed: [lint-dillo-bot]
       
       - get: dillo-bot
         passed: [lint-dillo-bot]
@@ -184,6 +185,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
+        passed: [lint-dillo-bot]
 
       - get: dillo-bot
         passed: [lint-dillo-bot]
@@ -204,6 +206,7 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
+        passed: [test-dillo-bot, test-dillo-bot-ui]
 
       - get: dillo-bot
         passed: [test-dillo-bot, test-dillo-bot-ui]

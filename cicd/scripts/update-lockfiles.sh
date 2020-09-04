@@ -21,9 +21,14 @@ echo ""
 
 # this works weird when linted-dillo-bot/ already exists:
 # $ cp -r dillo-bot/ linted-dillo-bot/
-# so we remove linted-dillo-bot/ first
-rm -rf linted-dillo-bot/
-cp -r dillo-bot/ linted-dillo-bot/
+# so we copy all the "normal" stuff with:
+cp -r dillo-bot/* linted-dillo-bot/
+# and then copy the stragglers (stuff preceded with .)
+cp -r dillo-bot/.git/ linted-dillo-bot/.git/
+cp -r dillo-bot/.mvn/ linted-dillo-bot/.mvn/
+cp dillo-bot/.eslintrc.js linted-dillo-bot/.eslintrc.js
+cp dillo-bot/.gitignore linted-dillo-bot/.gitignore
+cp dillo-bot/.prettierrc.js linted-dillo-bot/.prettierrc.js
 cd linted-dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
