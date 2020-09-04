@@ -1,8 +1,6 @@
-FROM openjdk:11.0.7-jdk-slim AS builder
+FROM frantjc/dillo-bot-resource AS builder
 
-RUN mkdir dillo-bot/
-
-WORKDIR /dillo-bot
+WORKDIR /usr/src/dillo-bot
 
 COPY src/ src/
 COPY .mvn/ .mvn/
@@ -10,9 +8,9 @@ COPY mvnw .
 COPY pom.xml .
 
 RUN chmod +x mvnw
-RUN ./mvnw install -DskipTests
+RUN npm run build:install
 
-FROM openjdk:11.0.7-jdk-slim
+FROM frantjc/dillo-bot-resource
 
 EXPOSE 8081
 

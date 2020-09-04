@@ -74,14 +74,24 @@ More Reading                                         |
 
 When running the app locally, you will be connecting to DilloBot-d. To successfully connect to a DilloBot (and for some of DilloBot's commands to successfully run), the file [`src/main/resources/application.yml`](src/main/resources/application.yml) must have some secret tokens and ids in it. Ask the owner of this repository about that.
 
-As a SpringBoot/Maven project, dillo-bot can be ran in a number of ways.  The easiest and most preferred method, in the root of the project, follows:
+As a SpringBoot/Maven project, dillo-bot can be ran in a number of ways.  To just run the api:
 ```
 $ mvnw spring-boot:run
 ```
 
+To build the ui into the api and run it:
+```
+$ npm run build:start // or build:run
+```
+
+To just run the ui:
+```
+$ npm start
+```
+
 Or, to run it inside of Docker from source:
 ```
-$ cp cicd\docker\Dockerfile .
+$ cp cicd/docker/dillo-bot/Dockerfile .
 $ docker build .
 ```
 
@@ -100,13 +110,13 @@ Create a class with some commands:
 @Component
 public class MyCommands {
 
-    @Command("/myCommand {someArg}")
-    public void myCommand(
-        @Arg(defaultValue = "mine") someArg,
-        @Channel MessageChannel channel
-    ) {
-        channel.sendMessage(someArg).queue();
-    }
+  @Command("/myCommand {someArg}")
+  public void myCommand(
+      @Arg(defaultValue = "mine") someArg,
+      @Channel MessageChannel channel
+  ) {
+      channel.sendMessage(someArg).queue();
+  }
 
 }
 ```
@@ -117,19 +127,19 @@ Add your commands to the bot:
 
 ...
 
-    MyCommands myCommands; // add your @Component class with some @Command functions
+  MyCommands myCommands; // add your @Component class with some @Command functions
 
-    // @Autowired your commands
-    @Autowired
+  // @Autowired your commands
+  @Autowired
 	public DillobotApplication(
 		JDAService jdaService,
-        SimpleCommands simpleCommands,
-        MyCommands myCommands
+    SimpleCommands simpleCommands,
+    MyCommands myCommands
 	) {
 		this.jdaService = jdaService;
 		this.simpleCommands = simpleCommands;
-        this.myCommands = myCommands; // instantiate your commands
-    }
+    this.myCommands = myCommands; // instantiate your commands
+  }
     
 ...
 
@@ -139,11 +149,11 @@ Add your commands to the bot:
 
 		jdaService.addCommands(
 			simpleCommands,
-            myCommands // add your commands to the jda!
+      myCommands // add your commands to the jda!
 		);
 
 		jdaService.getJda().awaitReady();
-    }
+  }
 
 ...
 ```

@@ -14,13 +14,6 @@ resources:
       uri: ((github.uri))
       branch: ((github.branch))
 
-  - name: dillo-bot-ui
-    type: git
-    icon: github
-    source:
-      uri: ((github.ui.uri))
-      branch: ((github.ui.branch))
-
   - name: notify
     type: discord-resource
     icon: discord
@@ -37,7 +30,7 @@ resources:
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
 
-  - name: dillo-bot-docker
+  - name: dillo-bot-image
     type: docker-image
     icon: docker
     source: 
@@ -45,6 +38,14 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot
       tag: develop
+
+  - name: dillo-bot-resource-image
+    type: docker-image
+    icon: docker
+    source:
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/dillo-bot-resource
 
   - name: version
     type: semver
@@ -57,9 +58,22 @@ resources:
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
+
+  - name: debian-stable-slim-trigger
+    type: docker-image
+    icon: docker
+    source:
+      repository: debian
+      tag: stable-slim
   
-  
-  
+  - name: time-trigger
+    type: time
+    icon: clock-outline
+    source:
+      interval: 96h
+
+
+
 anchors:
   - &build_log_retention
     builds: 10
@@ -103,6 +117,7 @@ jobs:
             uri: ((github.uri))
             branch: ((github.branch))
             token: ((github.token))
+            private_key: ((github.private_key))
           docker:
             username: ((docker.username))
             password: ((docker.password))
@@ -115,10 +130,52 @@ jobs:
                 id: ((aws.s3.key.id))
 
 
+  - name: build-dillo-bot-resource-image
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: debian-stable-slim-trigger
+        trigger: true
+
+      - get: time-trigger
+        trigger: true
+
+      - get: dillo-bot
+
+      - put: dillo-bot-resource-image
+        params:
+          build: dillo-bot/cicd/docker/dillo-bot/image_resource
+
+
+  # - name: lint-dillo-bot
+  #   serial: true
+  #   build_log_retention: *build_log_retention
+  #   plan:
+  #     - get: dillo-bot-resource-image
+  #       passed: [build-dillo-bot-resource-image]
+
+  #     - get: dillo-bot
+  #       passed: [update-pipeline]
+  #       trigger: true
+      
+  #     - task: update-lockfiles
+  #       file: dillo-bot/cicd/tasks/update-lockfiles.yml
+
+  #     - task: lint-ui
+  #       file: dillo-bot/cicd/tasks/lint-ui.yml
+
+  #     - put: dillo-bot
+  #       params:
+  #         repository: linted-dillo-bot
+
+
   - name: test-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+        passed: [build-dillo-bot-resource-image]
+      
       - get: dillo-bot
         passed: [update-pipeline]
         trigger: true
@@ -131,16 +188,15 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: The new DilloBot-d failed his tests
+            message: The new DilloBot failed his tests
 
 
   - name: test-dillo-bot-ui
-    serial: true
     build_log_retention: *build_log_retention
     plan:
-      - get: dillo-bot-ui
-        trigger: true
-
+      - get: dillo-bot-resource-image
+        passed: [build-dillo-bot-resource-image]
+      
       - get: dillo-bot
         passed: [update-pipeline]
         trigger: true
@@ -152,33 +208,33 @@ jobs:
           params:
             channel: ((concourse.discord.channel))
             title: FAIL
-            message: The new DilloBot-d's ui failed its tests
+            message: The new DilloBot's ui failed its tests
 
 
   - name: build-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
     plan:
+      - get: dillo-bot-resource-image
+        passed: [test-dillo-bot, test-dillo-bot-ui]
+
       - get: dillo-bot
         passed: [test-dillo-bot, test-dillo-bot-ui]
-        trigger: true
-        
-      - get: dillo-bot-ui
-        passed: [test-dillo-bot-ui]
         trigger: true
 
       - get: version
         params:
           bump: patch
 
-      - task: build-ui
-        file: dillo-bot/cicd/tasks/build-ui.yml
-        on_failure:
-          put: notify
-          params:
-            channel: ((concourse.discord.channel))
-            title: FAIL
-            message: Failed to build new DilloBot-d's ui
+      - try:
+          task: build-ui
+          file: dillo-bot/cicd/tasks/build-ui.yml
+          on_failure:
+            put: notify
+            params:
+              channel: ((concourse.discord.channel))
+              title: WARN
+              message: Failed to build new DilloBot-d's ui
 
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
@@ -223,7 +279,7 @@ jobs:
           params:
             ENV: dev
   
-        - put: dillo-bot-docker
+        - put: dillo-bot-image
           params:
             build: dillo-bot-dockerfile/
             additional_tags: tags/additional_tags.txt
@@ -264,7 +320,7 @@ jobs:
         file: dillo-bot/cicd/tasks/create-image-tags.yml
         params: { ENV: dev }
 
-      - put: dillo-bot-docker
+      - put: dillo-bot-image
         params:
           build: dillo-bot-dockerfile/
           additional_tags: tags/additional_tags.txt

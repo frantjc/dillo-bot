@@ -1,4 +1,3 @@
-HELP.md
 target/
 !**/src/main/**
 !**/src/test/**
@@ -31,3 +30,18 @@ build/
 
 ### React ###
 static/
+build/
+
+### npm / yarn ###
+/node_modules
+/.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+### testing ###
+coverage/
+
+### OSX ###
+.DS_Store

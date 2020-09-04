@@ -1,4 +1,4 @@
-FROM openjdk:11.0.7-jdk-slim
+FROM frantjc/dillo-bot-resource
 
 EXPOSE 8081
 

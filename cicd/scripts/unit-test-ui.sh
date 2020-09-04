@@ -21,7 +21,7 @@ pwd
 ls -al
 echo ""
 
-cd dillo-bot-ui/
+cd dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies..."
 npm install
@@ -44,7 +44,7 @@ echo -e "${INFO_PREFIX} audit complete"
 echo ""
 
 echo -e "${INFO_PREFIX} testing ui..."
-npm test -- --watchAll=false
+npm test
 TEST_SUCCESS=$?
 if [ $TEST_SUCCESS -ne 0 ]; then
     echo -e "${FAIL_PREFIX} build failed"

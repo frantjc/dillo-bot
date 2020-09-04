@@ -23,7 +23,7 @@ echo ""
 
 echo -e "${INFO_PREFIX} integrating ui into dillo-bot..."
 mkdir dillo-bot/src/main/resources/static
-cp -R build/* dillo-bot/src/main/resources/static/
+cp -r build/* dillo-bot/src/main/resources/static/
 UI_SUCCESS=$?
 if [ $UI_SUCCESS -ne 0 ]; then
     echo -e "${FAIL_PREFIX} ui failed"
@@ -44,7 +44,7 @@ if [ $BUILD_SUCCESS -ne 0 ]; then
 fi
 
 echo -e "${INFO_PREFIX} building artifact..."
-./mvnw install -DskipTests
+./mvnw package -DskipTests
 BUILD_SUCCESS=$?
 if [ $BUILD_SUCCESS -ne 0 ]; then
     echo -e "${FAIL_PREFIX} build failed"

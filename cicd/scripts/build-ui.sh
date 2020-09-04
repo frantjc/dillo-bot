@@ -21,7 +21,7 @@ pwd
 ls -al
 echo ""
 
-cd dillo-bot-ui/
+cd dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies..."
 npm install
@@ -56,7 +56,7 @@ fi
 echo ""
 cd ..
 
-cp -R dillo-bot-ui/build/* build/
+cp -r dillo-bot/build/* build/
 BUILD_SUCCESS=$?
 
 echo ""

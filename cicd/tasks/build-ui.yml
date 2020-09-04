@@ -2,23 +2,18 @@
 platform: linux
 
 image_resource:
-    type: registry-image
-    source:
-        repository: node
-        tag: 12.16.3-slim
+  type: registry-image
+  source:
+    repository: frantjc/dillo-bot-resource
 
 inputs:
-    - name: dillo-bot-ui
-    - name: dillo-bot
+  - name: dillo-bot
 
 outputs:
-    - name: build
-
-caches:
-    - path: dillo-bot-ui/node_modules
+  - name: build
 
 run:
-    path: /bin/bash
-    args:
-        - "dillo-bot/cicd/scripts/build-ui.sh"
+  path: /bin/bash
+  args:
+    - "dillo-bot/cicd/scripts/build-ui.sh"
         
