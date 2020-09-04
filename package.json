@@ -1,5 +1,5 @@
 {
-  "name": "dillo-bot-ui",
+  "name": "dillo-bot",
   "homepage": ".",
   "version": "0.0.1",
   "private": true,
@@ -27,7 +27,9 @@
     "build:copy": "npm run build && rm -rf src/main/resources/static && mkdir src/main/resources/static && cp -r build/* src/main/resources/static/",
     "build:install": "npm run build:copy && ./mvnw package -DskipTests",
     "build:start": "npm run build:install && java -jar target/dillobot-0.0.1-SNAPSHOT.jar",
-    "test": "react-scripts test",
+    "build:run": "npm run build:copy && ./mvnw spring-boot:run",
+    "test": "react-scripts test --watchAll=false",
+    "test:watch": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/main/javascript",
     "lint:fix": "eslint ./src/main/javascript --fix"
