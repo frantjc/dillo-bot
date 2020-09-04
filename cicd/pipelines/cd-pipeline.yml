@@ -13,7 +13,6 @@ resources:
     source:
       uri: ((github.uri))
       branch: ((github.branch))
-      private_key: ((github.private_key))
 
   - name: notify
     type: discord-resource

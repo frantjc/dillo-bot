@@ -13,7 +13,6 @@ resources:
     source:
       uri: ((github.uri))
       branch: ((github.branch))
-      private_key: ((github.private_key))
 
   - name: notify
     type: discord-resource
@@ -77,6 +76,12 @@ resources:
     source:
       repository: debian
       tag: stable-slim
+
+  - name: time-trigger
+    type: time
+    icon: clock-outline
+    source:
+      interval: 96h
 
 
 
@@ -192,34 +197,36 @@ jobs:
       - get: debian-stable-slim-trigger
         trigger: true
 
-      - get: dillo-bot
+      - get: time-trigger
         trigger: true
+
+      - get: dillo-bot
 
       - put: dillo-bot-resource-image
         params:
           build: dillo-bot/cicd/docker/dillo-bot/image_resource
 
 
-  - name: lint-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
-    plan:
-      - get: dillo-bot-resource-image
-        passed: [build-dillo-bot-resource-image]
+  # - name: lint-dillo-bot
+  #   serial: true
+  #   build_log_retention: *build_log_retention
+  #   plan:
+  #     - get: dillo-bot-resource-image
+  #       passed: [build-dillo-bot-resource-image]
 
-      - get: dillo-bot
-        passed: [update-pipeline]
-        trigger: true
+  #     - get: dillo-bot
+  #       passed: [update-pipeline]
+  #       trigger: true
       
-      - task: update-lockfiles
-        file: dillo-bot/cicd/tasks/update-lockfiles.yml
+  #     - task: update-lockfiles
+  #       file: dillo-bot/cicd/tasks/update-lockfiles.yml
 
-      - task: lint-ui
-        file: dillo-bot/cicd/tasks/lint-ui.yml
+  #     - task: lint-ui
+  #       file: dillo-bot/cicd/tasks/lint-ui.yml
 
-      - put: dillo-bot
-        params:
-          repository: linted-dillo-bot
+  #     - put: dillo-bot
+  #       params:
+  #         repository: linted-dillo-bot
 
 
   - name: test-dillo-bot
@@ -227,10 +234,10 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
-        passed: [lint-dillo-bot]
+        passed: [build-dillo-bot-resource-image]
       
       - get: dillo-bot
-        passed: [lint-dillo-bot]
+        passed: [update-pipeline]
         trigger: true
 
       - task: unit-test
@@ -248,10 +255,10 @@ jobs:
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
-        passed: [lint-dillo-bot]
-
+        passed: [build-dillo-bot-resource-image]
+      
       - get: dillo-bot
-        passed: [lint-dillo-bot]
+        passed: [update-pipeline]
         trigger: true
 
       - task: unit-test-ui
