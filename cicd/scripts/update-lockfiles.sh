@@ -19,11 +19,22 @@ pwd
 ls -al
 echo ""
 
+echo -e "${INFO_PREFIX} setting git user.name and user.email..."
+git config --global user.email "dillobot@gmail.com"
+git config --global user.name "Dillo Bot"
+
+echo ""
+
 # this works weird when linted-dillo-bot/ already exists:
 # $ cp -r dillo-bot/ linted-dillo-bot/
-# so we remove linted-dillo-bot/ first
-rm -rf linted-dillo-bot/
-cp -r dillo-bot/ linted-dillo-bot/
+# so we copy all the "normal" stuff with:
+cp -r dillo-bot/* linted-dillo-bot/
+# and then copy the stragglers (stuff preceded with .)
+cp -r dillo-bot/.git/ linted-dillo-bot/.git/
+cp -r dillo-bot/.mvn/ linted-dillo-bot/.mvn/
+cp dillo-bot/.eslintrc.js linted-dillo-bot/.eslintrc.js
+cp dillo-bot/.gitignore linted-dillo-bot/.gitignore
+cp dillo-bot/.prettierrc.js linted-dillo-bot/.prettierrc.js
 cd linted-dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
@@ -39,6 +50,8 @@ else
   echo -e "${INFO_PREFIX} auditing..."
   npm audit fix
 fi
+
+echo ""
 
 echo -e "${INFO_PREFIX} installing dependencies with yarn..."
 yarn install
@@ -60,4 +73,4 @@ echo -e "${INFO_PREFIX} committing lockfile updates..."
 git add .
 git commit -m "Concourse: updated yarn.lock and package-lock.json"
 
-exit $?;
+exit 0;
