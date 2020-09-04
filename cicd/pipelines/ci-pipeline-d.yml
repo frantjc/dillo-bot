@@ -233,7 +233,7 @@ jobs:
             put: notify
             params:
               channel: ((concourse.discord.channel))
-              title: FAIL
+              title: WARN
               message: Failed to build new DilloBot-d's ui
 
       - task: build-jar
