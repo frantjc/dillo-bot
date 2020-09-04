@@ -47,5 +47,5 @@
       "last 1 safari version"
     ]
   },
-  "types": "*index.d.ts"
+  "typings": "*index.d.ts"
 }
