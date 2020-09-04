@@ -16,12 +16,7 @@ RUN apt update -qq && apt install -qq -y --no-install-recommends \
         build-essential \
         file \
         git \
-        ruby-full \
         ${JAVA_VERSION} \
-        gnupg2 \
-        openssh-client \
-        unzip \
-    && gem install bundler \
     && rm -rf /var/lib/apt/lists/*;
 
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash - \

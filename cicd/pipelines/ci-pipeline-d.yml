@@ -227,6 +227,7 @@ jobs:
           bump: patch
 
       - task: build-ui
+        privledged: true
         file: dillo-bot/cicd/tasks/build-ui.yml
         on_failure:
           put: notify
