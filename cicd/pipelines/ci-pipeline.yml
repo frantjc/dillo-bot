@@ -14,6 +14,14 @@ resources:
       uri: ((github.uri))
       branch: ((github.branch))
 
+  - name: dillo-bot-release
+    type: github-release
+    icon: github
+    source:
+      owner: ((github.owner))
+      repository: ((github.repository))
+      access_token: ((github.token))
+
   - name: notify
     type: discord-resource
     icon: discord
@@ -138,13 +146,11 @@ jobs:
             client:
               id: "((discord.client.id))"
           github:
-            ui:
-              uri: ((github.ui.uri))
-              branch: ((github.ui.branch))
+            owner: ((github.owner))
+            repository: ((github.repository))
             uri: ((github.uri))
             branch: ((github.branch))
             token: ((github.token))
-            private_key: ((github.private_key))
           docker:
             username: ((docker.username))
             password: ((docker.password))
@@ -178,10 +184,11 @@ jobs:
             client:
               id: "((discord.client.id))"
           github:
+            owner: ((github.owner))
+            repository: ((github.repository))
             uri: ((github.uri))
             branch: ((github.branch))
             token: ((github.token))
-            private_key: ((github.private_key))
           docker:
             username: ((docker.username))
             password: ((docker.password))
@@ -339,6 +346,40 @@ jobs:
       - put: dillo-bot-bucket
         params:
           file: target/dillo-bot*.jar
+
+
+  - name: release-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+        passed: [build-dillo-bot]
+
+      - get: dillo-bot-bucket
+        passed: [build-dillo-bot]
+        trigger: true
+
+      - get: version
+        passed: [build-dillo-bot]
+
+      - task: create-release-name
+        file: dillo-bot/cicd/tasks/create-release-name.yml
+
+      - task: create-release-tag
+        file: dillo-bot/cicd/tasks/create-release-tag.yml
+
+      - task: create-release-commitish
+        file: dillo-bot/cicd/tasks/create-release-commitish.yml
+
+      - task: create-release-globs
+        file: dillo-bot/cicd/tasks/create-release-globs.yml
+
+      - put: dillo-bot-release
+        params:
+          name: name/name_file.txt
+          tag: tag/tag_file.txt
+          commitish: commitish/commitish_file.txt
+          globs: [globs/*.jar]
 
 
   - name: containerize-dillo-bot

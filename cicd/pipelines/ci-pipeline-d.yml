@@ -127,13 +127,11 @@ jobs:
             client:
               id: "((discord.client.id))"
           github:
-            ui:
-              uri: ((github.ui.uri))
-              branch: ((github.ui.branch))
+            owner: ((github.owner))
+            repository: ((github.repository))
             uri: ((github.uri))
             branch: ((github.branch))
             token: ((github.token))
-            private_key: ((github.private_key))
           docker:
             username: ((docker.username))
             password: ((docker.password))
