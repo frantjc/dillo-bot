@@ -13,16 +13,24 @@ SUCCESS_PREFIX="${ECHO_PREFIX} [${SUCCESS_COLOR}SUCCESS${NORMAL_COLOR}]"
 INFO_COLOR='\033[0;34m'
 INFO_PREFIX="${ECHO_PREFIX} [${INFO_COLOR}INFO${NORMAL_COLOR}]"
 
-ENVIRONMENT_SUCCESS=0
 VERSION_SUCCESS=0
-
-FIRST_LABEL=0
+ENVIRONMENT_SUCCESS=0
 
 pwd
 ls -al
 echo ""
 
-touch labels/labels_file.json
+echo -e "${INFO_PREFIX} getting version..."
+VERSION=$(cat version/version)
+VERSION_SUCCESS=$?
+if [ $VERSION_SUCCESS -ne 0 ]; then
+  echo -e "${FAIL_PREFIX} unable to find version"
+  exit 1;
+else
+  echo -e "${SUCCESS_PREFIX} version found: $VERSION"
+fi
+
+echo ""
 
 echo -e "${INFO_PREFIX} getting environment..."
 LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
@@ -37,26 +45,21 @@ else
   echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
-echo -n "{ " >> labels/labels_file.json
+if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
+  VERSION="d-$VERSION"
+  echo -e "${INFO_PREFIX} updated version: $VERSION"
+fi
 
-echo -e "${INFO_PREFIX} getting version..."
-VERSION=$(cat version/version)
+echo ""
+
+echo -e "${INFO_PREFIX} versioning artifact..."
+cp dillo-bot-bucket/dillo-bot*.jar globs/dillo-bot-$VERSION.jar
 VERSION_SUCCESS=$?
 if [ $VERSION_SUCCESS -ne 0 ]; then
-  echo -e "${FAIL_PREFIX} unable to find version"
+  echo -e "${FAIL_PREFIX} failed to version artifact"
+  exit 1;
 else
-  echo -e "${SUCCESS_PREFIX} version found: $VERSION"
+  echo -e "${SUCCESS_PREFIX} created: dillo-bot-$VERSION.jar"
 fi
-
-if [ $VERSION_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" != "d" ] && [ "$LOWERCASED_ENV" != "dev" ] && [ "$LOWERCASED_ENV" != "develop" ]; then
-  echo -n "\"version\": \"$VERSION\"" >> labels/labels_file.json
-  FIRST_LABEL=1
-fi
-
-echo -n " }" >> labels/labels_file.json
-
-echo -e "${SUCCESS_PREFIX} created: labels/labels_file.json"
-echo -e "${INFO_PREFIX} labels/labels_file.json"
-cat labels/labels_file.json
 
 exit 0;

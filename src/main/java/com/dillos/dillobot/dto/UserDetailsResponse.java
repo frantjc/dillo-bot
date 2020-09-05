@@ -13,10 +13,9 @@ import lombok.Data;
 @JsonInclude(Include.NON_EMPTY)
 public class UserDetailsResponse {
     
-    LocalDate birthday;
+  LocalDate birthday;
 
-    public UserDetailsResponse(UserDetails userDetails) {
-        this.birthday = userDetails.getBirthday();
-    }
-
+  public UserDetailsResponse(UserDetails userDetails) {
+    this.birthday = userDetails.getBirthday();
+  }
 }

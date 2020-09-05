@@ -9,12 +9,11 @@ import lombok.Data;
 @Data
 public class UserDetailsRequest {
 
-    LocalDate birthday;
+  LocalDate birthday;
 
-    public UserDetailsRequest(UserDetails userDetails) {
-        this.birthday = userDetails.getBirthday();
-    }
+  public UserDetailsRequest(UserDetails userDetails) {
+    this.birthday = userDetails.getBirthday();
+  }
 
-    public UserDetailsRequest() {}
-    
+  public UserDetailsRequest() {}
 }

@@ -10,64 +10,64 @@ import lombok.Getter;
 @Getter
 public class IssueBuilder {
     
-    Long id;
+  Long id;
 
-    Long number;
+  Long number;
 
-    String title;
+  String title;
 
-    String body;
+  String body;
 
-    String state;
+  String state;
 
-    List<String> labels;
+  List<String> labels;
 
-    List<String> assignees;
+  List<String> assignees;
 
-    public IssueBuilder setId(Long id) {
-        this.id = id;
-        return this;
-    }
+  public IssueBuilder setId(Long id) {
+    this.id = id;
+    return this;
+  }
 
-    public IssueBuilder setNumber(Long number) {
-        this.number = number;
-        return this;
-    }
+  public IssueBuilder setNumber(Long number) {
+    this.number = number;
+    return this;
+  }
 
-    public IssueBuilder setTitle(String title) {
-        this.title = title;
-        return this;
-    }
+  public IssueBuilder setTitle(String title) {
+    this.title = title;
+    return this;
+  }
 
-    public IssueBuilder setBody(String body) {
-        this.body = body;
-        return this;
-    }
+  public IssueBuilder setBody(String body) {
+    this.body = body;
+    return this;
+  }
 
-    public IssueBuilder setState(String state) {
-        this.state = state;
-        return this;
-    }
+  public IssueBuilder setState(String state) {
+    this.state = state;
+    return this;
+  }
 
-    public IssueBuilder setLabels(List<String> labels) {
-        this.labels = labels;
-        return this;
-    }
+  public IssueBuilder setLabels(List<String> labels) {
+    this.labels = labels;
+    return this;
+  }
 
-    public IssueBuilder setAssignees(List<String> assignees) {
-        this.assignees = assignees;
-        return this;
-    }
-    
-    public IssueRequest build() {
-        return this.buildRequest();
-    }
+  public IssueBuilder setAssignees(List<String> assignees) {
+    this.assignees = assignees;
+    return this;
+  }
+  
+  public IssueRequest build() {
+    return this.buildRequest();
+  }
 
-    public IssueRequest buildRequest() {
-        return new IssueRequest(this);
-    }
+  public IssueRequest buildRequest() {
+    return new IssueRequest(this);
+  }
 
-    public IssueResponse buildResponse() {
-        return new IssueResponse(this);
-    }
+  public IssueResponse buildResponse() {
+    return new IssueResponse(this);
+  }
 }

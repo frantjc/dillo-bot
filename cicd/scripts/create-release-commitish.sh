@@ -14,15 +14,10 @@ INFO_COLOR='\033[0;34m'
 INFO_PREFIX="${ECHO_PREFIX} [${INFO_COLOR}INFO${NORMAL_COLOR}]"
 
 ENVIRONMENT_SUCCESS=0
-VERSION_SUCCESS=0
-
-FIRST_TAG=0
 
 pwd
 ls -al
 echo ""
-
-touch tags/additional_tags.txt
 
 echo -e "${INFO_PREFIX} getting environment..."
 LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
@@ -38,32 +33,9 @@ else
 fi
 
 if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
-  echo -n "d" >> tags/additional_tags.txt
-  echo -n " dev" >> tags/additional_tags.txt
-  echo -n " develop" >> tags/additional_tags.txt
-  FIRST_TAG=1
-fi
-
-echo -e "${INFO_PREFIX} getting version..."
-VERSION=$(cat version/version)
-VERSION_SUCCESS=$?
-if [ $VERSION_SUCCESS -ne 0 ]; then
-  echo -e "${FAIL_PREFIX} unable to find version"
+  echo -n "master" >> commitish/commitish_file.txt
 else
-  echo -e "${SUCCESS_PREFIX} version found: $VERSION"
+  echo -n "develop" >> commitish/commitish_file.txt
 fi
-
-if [ $VERSION_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" != "d" ] && [ "$LOWERCASED_ENV" != "dev" ] && [ "$LOWERCASED_ENV" != "develop" ]; then
-  if [ $FIRST_TAG -ne 0 ]; then
-    echo -n " " >> tags/additional_tags.txt
-    FIRST_TAG=1
-  fi
-
-  echo -n "$VERSION" >> tags/additional_tags.txt
-fi
-
-echo -e "${SUCCESS_PREFIX} created: tags/additional_tags.txt"
-echo -e "${INFO_PREFIX} tags/additional_tags.txt"
-cat tags/additional_tags.txt
 
 exit 0;

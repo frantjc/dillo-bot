@@ -18,102 +18,101 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DiscordUserService {
 
-    Logger log = LoggerFactory.getLogger(DiscordUserService.class);
+  Logger log = LoggerFactory.getLogger(DiscordUserService.class);
 
-    DiscordUserRepository discordUserRepository;
+  DiscordUserRepository discordUserRepository;
 
-    GitHubUserService gitHubUserService;
+  GitHubUserService gitHubUserService;
 
-    @Autowired
-    public DiscordUserService(DiscordUserRepository discordUserRepository, GitHubUserService gitHubUserService) {
-        this.discordUserRepository = discordUserRepository;
-        this.gitHubUserService = gitHubUserService;
+  @Autowired
+  public DiscordUserService(DiscordUserRepository discordUserRepository, GitHubUserService gitHubUserService) {
+    this.discordUserRepository = discordUserRepository;
+    this.gitHubUserService = gitHubUserService;
+  }
+
+  public DiscordUser save(DiscordUser user) {
+    Optional<DiscordUser> maybeUser = get(user.getId());
+
+    if (maybeUser.isPresent()) {
+      return discordUserRepository.save(
+        user.merge(maybeUser.get())
+      );
     }
 
-    public DiscordUser save(DiscordUser user) {
-        Optional<DiscordUser> maybeUser = get(user.getId());
+    return discordUserRepository.save(user);
+  }
 
-        if (maybeUser.isPresent()) {
-            return discordUserRepository.save(
-                user.merge(maybeUser.get())
-            );
-        }
+  public Optional<DiscordUser> get(String id) {
+    return discordUserRepository.findById(id);
+  }
 
-        return discordUserRepository.save(user);
+  public List<DiscordUser> get() {
+    return discordUserRepository.findAll();
+  }
+
+  @Transactional
+  public DiscordUser linkToGitHub(DiscordUser discordUser, GitHubUser gitHubUser) {
+    Optional<DiscordUser> maybeDiscordUser = get(discordUser.getId());
+    Optional<GitHubUser> maybeGitHubUser = gitHubUserService.get(gitHubUser.getLogin());
+    Optional<GitHubUser> maybeGitHubUser2 = gitHubUserService.get(gitHubUser.getId());
+
+    if (maybeDiscordUser.isPresent()) {
+      discordUser.merge(maybeDiscordUser.get());
+    } if (maybeGitHubUser.isPresent()) {
+      gitHubUser.merge(maybeGitHubUser.get());
+    } if (maybeGitHubUser2.isPresent()) {
+      gitHubUser.merge(maybeGitHubUser2.get());
     }
 
-    public Optional<DiscordUser> get(String id) {
-        return discordUserRepository.findById(id);
-    }
+    gitHubUser = gitHubUserService.save(gitHubUser);
 
-    public List<DiscordUser> get() {
-        return discordUserRepository.findAll();
-    }
+    discordUser.setGitHubUser(gitHubUser);
 
-    @Transactional
-    public DiscordUser linkToGitHub(DiscordUser discordUser, GitHubUser gitHubUser) {
-        Optional<DiscordUser> maybeDiscordUser = get(discordUser.getId());
-        Optional<GitHubUser> maybeGitHubUser = gitHubUserService.get(gitHubUser.getLogin());
-        Optional<GitHubUser> maybeGitHubUser2 = gitHubUserService.get(gitHubUser.getId());
+    return save(discordUser);
+  }
 
-        if (maybeDiscordUser.isPresent()) {
-            discordUser.merge(maybeDiscordUser.get());
-        } if (maybeGitHubUser.isPresent()) {
-            gitHubUser.merge(maybeGitHubUser.get());
-        } if (maybeGitHubUser2.isPresent()) {
-            gitHubUser.merge(maybeGitHubUser2.get());
-        }
+  public DiscordUser linkToGitHub(DiscordUser discordUser, String login) {
+    return linkToGitHub(
+      discordUser,
+      new UserBuilder()
+        .setLogin(login)
+        .buildGitHub()
+    );
+  }
 
-        gitHubUser = gitHubUserService.save(gitHubUser);
+  public DiscordUser linkToGitHub(DiscordUser discordUser, Long gitHubId) {
+    return linkToGitHub(
+      discordUser,
+      new UserBuilder()
+        .setId(gitHubId.toString())
+        .buildGitHub()
+    );
+  }
 
-        discordUser.setGitHubUser(gitHubUser);
+  public DiscordUser linkToGitHub(String discordId, GitHubUser gitHubUser) {
+    return linkToGitHub(
+      new UserBuilder()
+        .setId(discordId)
+        .build(),
+      gitHubUser
+    );
+  }
 
-        return save(discordUser);
-    }
+  public DiscordUser linkToGitHub(String discordId, String login) {
+    return linkToGitHub(
+      discordId,
+      new UserBuilder()
+        .setLogin(login)
+        .buildGitHub()
+    );
+  }
 
-    public DiscordUser linkToGitHub(DiscordUser discordUser, String login) {
-        return linkToGitHub(
-            discordUser,
-            new UserBuilder()
-                .setLogin(login)
-                .buildGitHub()
-        );
-    }
-
-    public DiscordUser linkToGitHub(DiscordUser discordUser, Long gitHubId) {
-        return linkToGitHub(
-            discordUser,
-            new UserBuilder()
-                .setId(gitHubId.toString())
-                .buildGitHub()
-        );
-    }
-
-    public DiscordUser linkToGitHub(String discordId, GitHubUser gitHubUser) {
-        return linkToGitHub(
-            new UserBuilder()
-                .setId(discordId)
-                .build(),
-            gitHubUser
-        );
-    }
-
-    public DiscordUser linkToGitHub(String discordId, String login) {
-        return linkToGitHub(
-            discordId,
-            new UserBuilder()
-                .setLogin(login)
-                .buildGitHub()
-        );
-    }
-
-    public DiscordUser linkToGitHub(String discordId, Long gitHubId) {
-        return linkToGitHub(
-            discordId,
-            new UserBuilder()
-                .setId(gitHubId.toString())
-                .buildGitHub()
-        );
-    }
-
+  public DiscordUser linkToGitHub(String discordId, Long gitHubId) {
+    return linkToGitHub(
+      discordId,
+      new UserBuilder()
+        .setId(gitHubId.toString())
+        .buildGitHub()
+    );
+  }
 }

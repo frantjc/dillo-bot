@@ -12,13 +12,12 @@ import lombok.Data;
 @JsonInclude(Include.NON_EMPTY)
 public class SubscriptionResponse {
 
-    Long id;
+  Long id;
 
-    SubscriptionType subscription;
+  SubscriptionType subscription;
 
-    public SubscriptionResponse(Subscription subscriptionEntity) {
-        this.id = subscriptionEntity.getId();
-        this.subscription = subscriptionEntity.getSubscription();
-    }
-
+  public SubscriptionResponse(Subscription subscriptionEntity) {
+    this.id = subscriptionEntity.getId();
+    this.subscription = subscriptionEntity.getSubscription();
+  }
 }

@@ -46,13 +46,13 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource
 
-  - name: ssh-resource-image
+  - name: general-resource-image
     type: docker-image
     icon: docker
     source:
       username: ((docker.username))
       password: ((docker.password))
-      repository: ((docker.username))/openssh-client
+      repository: ((docker.username))/general-resource
 
   - name: version
     type: semver
@@ -184,9 +184,9 @@ jobs:
 
       - put: dillo-bot-resource-image
         params:
-          build: dillo-bot/cicd/docker/dillo-bot/image_resource
+          build: dillo-bot/cicd/docker/image_resource/dillo-bot
 
-  - name: build-ssh-resource-image
+  - name: build-general-resource-image
     serial: true
     build_log_retention: *build_log_retention
     plan:
@@ -195,9 +195,9 @@ jobs:
 
       - get: dillo-bot
 
-      - put: ssh-resource-image
+      - put: general-resource-image
         params:
-          build: dillo-bot/cicd/docker/ssh/image_resource
+          build: dillo-bot/cicd/docker/image_resource/general
 
   # - name: lint-dillo-bot
   #   serial: true
@@ -244,6 +244,7 @@ jobs:
 
 
   - name: test-dillo-bot-ui
+    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
@@ -348,7 +349,6 @@ jobs:
               channel: ((concourse.discord.channel))
               title: FAIL
               message: New DilloBot could not be contained
-
     plan:
       - get: dillo-bot
         passed: [build-dillo-bot]
@@ -385,14 +385,12 @@ jobs:
         channel: ((concourse.discord.channel))
         title: SUCCESS
         message: New DilloBot is up and running!
-
     on_failure:
       put: notify
       params:
         channel: ((concourse.discord.channel))
         title: FAIL
         message: Could not get new DilloBot to run on server
-
     plan:
       - get: dillo-bot
         passed: [containerize-dillo-bot]
@@ -401,8 +399,8 @@ jobs:
         passed: [containerize-dillo-bot]
         trigger: true
       
-      - get: ssh-resource-image
-        passed: [build-ssh-resource-image]
+      - get: general-resource-image
+        passed: [build-general-resource-image]
 
       - task: create-key
         file: dillo-bot/cicd/tasks/create-key.yml

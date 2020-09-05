@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ReactController {
     
-    Logger log = LoggerFactory.getLogger(ReactController.class);
+  Logger log = LoggerFactory.getLogger(ReactController.class);
 
-    @GetMapping("/")
-    public String index() {
-        log.info("GET / -> /index.html");
-        return "index.html";
-    }
-
+  @GetMapping("/")
+  public String index() {
+    log.info("GET / -> /index.html");
+    return "index.html";
+  }
 }

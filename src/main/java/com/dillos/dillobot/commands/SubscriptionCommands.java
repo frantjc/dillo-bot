@@ -20,62 +20,62 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 @Component
 public class SubscriptionCommands {
 
-    Logger log = LoggerFactory.getLogger(SubscriptionCommands.class);
+  Logger log = LoggerFactory.getLogger(SubscriptionCommands.class);
 
-    DiscordChannelService discordChannelService;
+  DiscordChannelService discordChannelService;
 
-    @Autowired
-    public SubscriptionCommands(DiscordChannelService discordChannelService) {
-        this.discordChannelService = discordChannelService;
-    }
+  @Autowired
+  public SubscriptionCommands(DiscordChannelService discordChannelService) {
+    this.discordChannelService = discordChannelService;
+  }
 
-    @Command("/subscribe {subscription}")
-    public void subscribe(
-        @Channel MessageChannel channel,
-        @Arg(required = true) SubscriptionType subscription
-    ) {
-        log.info("/subscribe {}, for channel: {}", subscription, channel.getId());
+  @Command("/subscribe {subscription}")
+  public void subscribe(
+    @Channel MessageChannel channel,
+    @Arg(required = true) SubscriptionType subscription
+  ) {
+    log.info("/subscribe {}, for channel: {}", subscription, channel.getId());
 
-        DiscordChannel discordChannel = new ChannelBuilder()
-            .setId(channel.getId())
-            .setName(channel.getName())
-            .build();
+    DiscordChannel discordChannel = new ChannelBuilder()
+      .setId(channel.getId())
+      .setName(channel.getName())
+      .build();
 
-        discordChannelService.addSubscription(
-            discordChannel,
-            subscription
-        );
+    discordChannelService.addSubscription(
+      discordChannel,
+      subscription
+    );
 
-        channel.sendMessage(
-            new EmbedBuilder()
-                .setTitle("Subscribed")
-                .setDescription("Subscribed " + discordChannel.getHashtag() + " to the " + subscription + " subscription")
-                .build()
-        ).queue();
-    }
+    channel.sendMessage(
+      new EmbedBuilder()
+        .setTitle("Subscribed")
+        .setDescription("Subscribed " + discordChannel.getHashtag() + " to the " + subscription + " subscription")
+        .build()
+    ).queue();
+  }
 
-    @Command("/unsubscribe {subscription}")
-    public void unsubscribe(
-        @Channel MessageChannel channel,
-        @Arg(required = true) SubscriptionType subscription
-    ) {
-        log.info("/unsubscribe {}, for channel: {}", subscription, channel.getId());
+  @Command("/unsubscribe {subscription}")
+  public void unsubscribe(
+    @Channel MessageChannel channel,
+    @Arg(required = true) SubscriptionType subscription
+  ) {
+    log.info("/unsubscribe {}, for channel: {}", subscription, channel.getId());
 
-        DiscordChannel discordChannel = new ChannelBuilder()
-            .setId(channel.getId())
-            .setName(channel.getName())
-            .build();
+    DiscordChannel discordChannel = new ChannelBuilder()
+      .setId(channel.getId())
+      .setName(channel.getName())
+      .build();
 
-        discordChannelService.removeSubscription(
-            discordChannel,
-            subscription
-        );
+    discordChannelService.removeSubscription(
+      discordChannel,
+      subscription
+    );
 
-        channel.sendMessage(
-            new EmbedBuilder()
-                .setTitle("Unubscribed")
-                .setDescription("Unsubscribed " + discordChannel.getHashtag() + " from the " + subscription + " subscription")
-                .build()
-        ).queue();
-    }
+    channel.sendMessage(
+      new EmbedBuilder()
+        .setTitle("Unubscribed")
+        .setDescription("Unsubscribed " + discordChannel.getHashtag() + " from the " + subscription + " subscription")
+        .build()
+    ).queue();
+  }
 }

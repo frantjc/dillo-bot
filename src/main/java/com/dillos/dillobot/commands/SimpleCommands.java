@@ -16,28 +16,28 @@ import net.dv8tion.jda.api.entities.User;
 @Component
 public class SimpleCommands {
     
-    Logger log = LoggerFactory.getLogger(SimpleCommands.class);
+  Logger log = LoggerFactory.getLogger(SimpleCommands.class);
 
-    @Command("/log {string}")
-    public void log(
-        @Sender User sender,
-        @Arg(required = true) String string
-    ) {
-        log.info("{}: {}", sender, string);
-    }
+  @Command("/log {string}")
+  public void log(
+    @Sender User sender,
+    @Arg(required = true) String string
+  ) {
+    log.info("{}: {}", sender, string);
+  }
 
-    @Command("/say {string}")
-    public void say(
-        @Channel MessageChannel channel,
-        @Arg(required = true) String string
-    ) {
-        channel.sendMessage(string).queue();
-    }
+  @Command("/say {string}")
+  public void say(
+    @Channel MessageChannel channel,
+    @Arg(required = true) String string
+  ) {
+    channel.sendMessage(string).queue();
+  }
 
-    @Command("/poofy")
-    public void poofy(
-        @Channel MessageChannel channel
-    ) {
-        channel.sendMessage("squirrel").queue();
-    }
+  @Command("/poofy")
+  public void poofy(
+    @Channel MessageChannel channel
+  ) {
+    channel.sendMessage("squirrel").queue();
+  }
 }

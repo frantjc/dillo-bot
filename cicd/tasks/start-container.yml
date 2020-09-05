@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: frantjc/openssh-client
+    repository: frantjc/general-resource
 
 params:
   USER:
@@ -20,4 +20,4 @@ inputs:
 run:
   path: /bin/bash
   args:
-      - "dillo-bot/cicd/scripts/ssh-and-start-container.sh"
+    - "dillo-bot/cicd/scripts/ssh-and-start-container.sh"

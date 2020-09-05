@@ -21,65 +21,65 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class Birthday {
 
-    Logger log = LoggerFactory.getLogger(Birthday.class);
+  Logger log = LoggerFactory.getLogger(Birthday.class);
 
-    JDAService jdaService;
+  JDAService jdaService;
 
-    DiscordChannelService discordChannelService;
+  DiscordChannelService discordChannelService;
 
-    DiscordUserService discordUserService;
+  DiscordUserService discordUserService;
 
-    @Autowired
-    public Birthday(JDAService jdaService, DiscordChannelService discordChannelService, DiscordUserService discordUserService) {
-        this.jdaService = jdaService;
-        this.discordChannelService = discordChannelService;
-        this.discordUserService = discordUserService;
-    }
+  @Autowired
+  public Birthday(JDAService jdaService, DiscordChannelService discordChannelService, DiscordUserService discordUserService) {
+    this.jdaService = jdaService;
+    this.discordChannelService = discordChannelService;
+    this.discordUserService = discordUserService;
+  }
 
-    @Scheduled(cron = "0 0 0 * * *", zone = "America/New_York")
-    @Transactional
-    public void sayHappyBirthday() {
-        List<DiscordChannel> subscribedChannels = discordChannelService.get();
-        
-        Subscription subscription = discordChannelService.getSubscription(SubscriptionType.BIRTHDAY);
-
-        subscribedChannels.removeIf(channel -> {
-            return !channel.getSubscriptions().contains(subscription);
-        });
-
-        log.info("Running happy birthday scheduled event on {} channels...", subscribedChannels.size());
-        
-        LocalDate now = LocalDate.now();
+  @Scheduled(cron = "0 0 0 * * *", zone = "America/New_York")
+  @Transactional
+  public void sayHappyBirthday() {
+    List<DiscordChannel> subscribedChannels = discordChannelService.get();
     
-        discordUserService.get().stream().filter(discordUser -> {
-            if (discordUser.getBirthday() != null) {
-                int birthday = discordUser.getBirthday().getDayOfYear();
-                int today = now.getDayOfYear();
+    Subscription subscription = discordChannelService.getSubscription(SubscriptionType.BIRTHDAY);
 
-                if (!discordUser.getBirthday().isLeapYear()) {
-                    birthday++;
-                } if (!now.isLeapYear()) {
-                    today++;
-                }
+    subscribedChannels.removeIf(channel -> {
+      return !channel.getSubscriptions().contains(subscription);
+    });
 
-                return birthday == today;
-            }
+    log.info("Running happy birthday scheduled event on {} channels...", subscribedChannels.size());
+    
+    LocalDate now = LocalDate.now();
 
-            return false;
-        }).forEach(discordUserWhoseBirthdayIsToday -> {
-            log.info(
-                "Saying happy birthday to {} in {} channels...",
-                discordUserWhoseBirthdayIsToday.getName(),
-                subscribedChannels.size()
-            );
+    discordUserService.get().stream().filter(discordUser -> {
+      if (discordUser.getBirthday() != null) {
+        int birthday = discordUser.getBirthday().getDayOfYear();
+        int today = now.getDayOfYear();
 
-            subscribedChannels.stream().forEach(channel -> {
-                jdaService.getJda().getTextChannelById(
-                    channel.getId()
-                ).sendMessage(
-                    "Happy Birthday " + discordUserWhoseBirthdayIsToday.getAt() + "!"
-                ).queue();
-            });
-        });
-    }
+        if (!discordUser.getBirthday().isLeapYear()) {
+          birthday++;
+        } if (!now.isLeapYear()) {
+          today++;
+        }
+
+        return birthday == today;
+      }
+
+      return false;
+    }).forEach(discordUserWhoseBirthdayIsToday -> {
+      log.info(
+        "Saying happy birthday to {} in {} channels...",
+        discordUserWhoseBirthdayIsToday.getName(),
+        subscribedChannels.size()
+      );
+
+      subscribedChannels.stream().forEach(channel -> {
+        jdaService.getJda().getTextChannelById(
+          channel.getId()
+        ).sendMessage(
+          "Happy Birthday " + discordUserWhoseBirthdayIsToday.getAt() + "!"
+        ).queue();
+      });
+    });
+  }
 }

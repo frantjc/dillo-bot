@@ -11,22 +11,21 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_EMPTY)
 public class DiscordUserResponse {
-    
-    String id;
 
-    String name;
+  String id;
 
-    String discriminator;
+  String name;
 
-    LocalDate birthday;
+  String discriminator;
 
-    public DiscordUserResponse() {}
+  LocalDate birthday;
 
-    public DiscordUserResponse(DiscordUser user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.discriminator = user.getDiscriminator();
-        this.birthday = user.getBirthday();
-    }
+  public DiscordUserResponse() {}
 
+  public DiscordUserResponse(DiscordUser user) {
+    this.id = user.getId();
+    this.name = user.getName();
+    this.discriminator = user.getDiscriminator();
+    this.birthday = user.getBirthday();
+  }
 }

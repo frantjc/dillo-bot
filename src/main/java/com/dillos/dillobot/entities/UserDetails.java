@@ -15,21 +15,20 @@ import lombok.Data;
 @Entity
 @Data
 public class UserDetails {
-    
-    @Id
-    @GeneratedValue
-    Long id;
+  
+  @Id
+  @GeneratedValue
+  Long id;
 
-    LocalDate birthday;
+  LocalDate birthday;
 
-    @OneToOne
-    @JoinColumn(name = "discord_user_id")
-    DiscordUser discordUser;
+  @OneToOne
+  @JoinColumn(name = "discord_user_id")
+  DiscordUser discordUser;
 
-    public UserDetails(UserDetailsRequest userDetails) {
-        this.birthday = userDetails.getBirthday();
-    }
+  public UserDetails(UserDetailsRequest userDetails) {
+    this.birthday = userDetails.getBirthday();
+  }
 
-    public UserDetails() {}
-
+  public UserDetails() {}
 }

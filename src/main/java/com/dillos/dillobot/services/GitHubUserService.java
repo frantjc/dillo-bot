@@ -17,80 +17,79 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class GitHubUserService {
-    
-    Logger log = LoggerFactory.getLogger(GitHubUserService.class);
+  
+  Logger log = LoggerFactory.getLogger(GitHubUserService.class);
 
-    GitHubUserRepository gitHubUserRepository;
+  GitHubUserRepository gitHubUserRepository;
 
-    @Autowired
-    public GitHubUserService(GitHubUserRepository gitHubUserRepository) {
-        this.gitHubUserRepository = gitHubUserRepository;
+  @Autowired
+  public GitHubUserService(GitHubUserRepository gitHubUserRepository) {
+    this.gitHubUserRepository = gitHubUserRepository;
+  }
+
+  public List<GitHubUser> get() {
+    return gitHubUserRepository.findAll();
+  }
+  
+  public Optional<GitHubUser> get(Long id) {
+    return gitHubUserRepository.findById(id);
+  }
+
+  public Optional<GitHubUser> get(String login) {
+    return gitHubUserRepository.findByLogin(login);
+  }
+
+  public GitHubUser save(GitHubUser user) {
+    Optional<GitHubUser> maybeUser = get(user.getId());
+
+    if (maybeUser.isPresent()) {
+      return gitHubUserRepository.save(
+        user.merge(maybeUser.get())
+      );
     }
 
-    public List<GitHubUser> get() {
-        return gitHubUserRepository.findAll();
-    }
-    
-    public Optional<GitHubUser> get(Long id) {
-        return gitHubUserRepository.findById(id);
-    }
+    return gitHubUserRepository.save(user);
+  }
 
-    public Optional<GitHubUser> get(String login) {
-        return gitHubUserRepository.findByLogin(login);
-    }
+  public List<GitHubUser> saveAll(List<GitHubUser> users) {
+    return gitHubUserRepository.saveAll(users.stream().map(user -> {
+      Optional<GitHubUser> maybeUser = get(user.getId());
 
-    public GitHubUser save(GitHubUser user) {
-        Optional<GitHubUser> maybeUser = get(user.getId());
+      if (maybeUser.isPresent()) {
+        return user.merge(maybeUser.get());
+      }
 
-        if (maybeUser.isPresent()) {
-            return gitHubUserRepository.save(
-                user.merge(maybeUser.get())
-            );
-        }
+      return user;
+    }).collect(Collectors.toList()));
+  }
 
-        return gitHubUserRepository.save(user);
-    }
+  public List<GitHubUser> saveUsersFrom(IssueResponse response) {
+    List<GitHubUser> savedUsers = new ArrayList<GitHubUser>();
 
-    public List<GitHubUser> saveAll(List<GitHubUser> users) {
-        return gitHubUserRepository.saveAll(users.stream().map(user -> {
-            Optional<GitHubUser> maybeUser = get(user.getId());
+    savedUsers.add(
+      save(new GitHubUser(response.getUser()))
+    );
 
-            if (maybeUser.isPresent()) {
-                return user.merge(maybeUser.get());
-            }
+    savedUsers.addAll(
+      saveAll(
+        response.getAssignees().stream().map(assignee -> {
+          return new GitHubUser(assignee);
+        }).collect(Collectors.toList())
+      )
+    );
 
-            return user;
-        }).collect(Collectors.toList()));
-    }
+    return savedUsers;
+  }
 
-    public List<GitHubUser> saveUsersFrom(IssueResponse response) {
-        List<GitHubUser> savedUsers = new ArrayList<GitHubUser>();
-    
-        savedUsers.add(
-            save(new GitHubUser(response.getUser()))
-        );
+  public List<GitHubUser> saveUsersFrom(List<IssueResponse> response) {
+    List<GitHubUser> savedUsers = new ArrayList<GitHubUser>();
 
-        savedUsers.addAll(
-            saveAll(
-                response.getAssignees().stream().map(assignee -> {
-                    return new GitHubUser(assignee);
-                }).collect(Collectors.toList())
-            )
-        );
+    response.stream().forEach(issue -> {
+      savedUsers.addAll(
+        saveUsersFrom(issue)
+      );
+    });
 
-        return savedUsers;
-    }
-
-    public List<GitHubUser> saveUsersFrom(List<IssueResponse> response) {
-        List<GitHubUser> savedUsers = new ArrayList<GitHubUser>();
-
-        response.stream().forEach(issue -> {
-            savedUsers.addAll(
-                saveUsersFrom(issue)
-            );
-        });
-
-        return savedUsers;
-    }
-
+    return savedUsers;
+  }
 }

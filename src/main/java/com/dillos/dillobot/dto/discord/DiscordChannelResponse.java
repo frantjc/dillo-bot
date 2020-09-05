@@ -15,20 +15,19 @@ import lombok.Data;
 @JsonInclude(Include.NON_EMPTY)
 public class DiscordChannelResponse {
     
-    String id;
+  String id;
 
-    String name;
+  String name;
 
-    List<SubscriptionType> subscriptions;
+  List<SubscriptionType> subscriptions;
 
-    public DiscordChannelResponse() {}
+  public DiscordChannelResponse() {}
 
-    public DiscordChannelResponse(DiscordChannel channel) {
-        this.id = channel.getId();
-        this.name = channel.getName();
-        this.subscriptions = channel.getSubscriptions().stream().map(subscription -> {
-            return subscription.getSubscription();
-        }).collect(Collectors.toList());
-    }
-
+  public DiscordChannelResponse(DiscordChannel channel) {
+    this.id = channel.getId();
+    this.name = channel.getName();
+    this.subscriptions = channel.getSubscriptions().stream().map(subscription -> {
+      return subscription.getSubscription();
+    }).collect(Collectors.toList());
+  }
 }
