@@ -38,4 +38,7 @@ else
   echo -n "develop" >> commitish/commitish_file.txt
 fi
 
+COMMITISH=$(cat commitish/commitish_file.txt)
+echo -e "${INFO_PREFIX} release commitish: $COMMITISH"
+
 exit 0;

@@ -33,6 +33,8 @@ else
   echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
+echo ""
+
 echo -e "${INFO_PREFIX} getting version..."
 VERSION=$(cat version/version)
 VERSION_SUCCESS=$?
@@ -47,5 +49,8 @@ fi
 if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
   echo -n "-rc" >> name/name_file.txt
 fi
+
+NAME=$(cat name/name_file.txt)
+echo -e "${INFO_PREFIX} release name: $NAME"
 
 exit 0;
