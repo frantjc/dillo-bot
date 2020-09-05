@@ -17,83 +17,83 @@ import net.dv8tion.jda.api.entities.User;
 @Data
 public class DiscordUser {
 
-    @Id
-    String id;
+  @Id
+  String id;
 
-    String name;
+  String name;
 
-    String discriminator;
+  String discriminator;
 
-    @OneToOne
-    @JoinTable(
-        name = "discord_git_hub_user", 
-        joinColumns = {
-            @JoinColumn(name = "discord_user_id", referencedColumnName = "id") 
-        },
-        inverseJoinColumns = {
-            @JoinColumn(name = "git_hub_user_id", referencedColumnName = "id") 
-        }
-    )
-    GitHubUser gitHubUser;
+  @OneToOne
+  @JoinTable(
+    name = "discord_git_hub_user", 
+    joinColumns = {
+      @JoinColumn(name = "discord_user_id", referencedColumnName = "id") 
+    },
+    inverseJoinColumns = {
+      @JoinColumn(name = "git_hub_user_id", referencedColumnName = "id") 
+    }
+  )
+  GitHubUser gitHubUser;
 
-    @OneToOne(mappedBy = "discordUser")
-    UserDetails userDetails;
+  @OneToOne(mappedBy = "discordUser")
+  UserDetails userDetails;
 
-    public DiscordUser merge(DiscordUser user) {
-        if (user.getGitHubUser() != null) {
-            this.gitHubUser = user.getGitHubUser();
-        } if (user.getUserDetails() != null) {
-            this.userDetails = user.getUserDetails();
-        } if (user.getName() != null) {
-            this.name = user.getName();
-        } if (user.getDiscriminator() != null) {
-            this.discriminator = user.getDiscriminator();
-        }
-
-        return this;
+  public DiscordUser merge(DiscordUser user) {
+    if (user.getGitHubUser() != null) {
+      this.gitHubUser = user.getGitHubUser();
+    } if (user.getUserDetails() != null) {
+      this.userDetails = user.getUserDetails();
+    } if (user.getName() != null) {
+      this.name = user.getName();
+    } if (user.getDiscriminator() != null) {
+      this.discriminator = user.getDiscriminator();
     }
 
-    public LocalDate getBirthday() {
-        if (this.userDetails == null) {
-            return null;
-        }
+    return this;
+  }
 
-        return this.userDetails.getBirthday();
+  public LocalDate getBirthday() {
+    if (this.userDetails == null) {
+      return null;
     }
 
-    public void setBirthday(LocalDate birthday) {
-        if (this.userDetails == null) {
-            this.userDetails = new UserDetails();
-        }
+    return this.userDetails.getBirthday();
+  }
 
-        this.userDetails.setBirthday(birthday);
+  public void setBirthday(LocalDate birthday) {
+    if (this.userDetails == null) {
+      this.userDetails = new UserDetails();
     }
 
-    public Boolean isLinked() {
-        return gitHubUser != null;
-    }
+    this.userDetails.setBirthday(birthday);
+  }
 
-    public String getAt() {
-        return "<@" + this.id + ">";
-    }
+  public Boolean isLinked() {
+    return gitHubUser != null;
+  }
 
-    public DiscordUser(UserBuilder builder) {
-        this.id = builder.getId();
-        this.name = builder.getName();
-        this.discriminator = builder.getDiscriminator();
-        this.gitHubUser = builder.getGitHubUser();
-        if (builder.getUserDetails() != null) {
-            this.userDetails = builder.getUserDetails();
-        } if (builder.getBirthday() != null) {
-            this.setBirthday(builder.getBirthday());
-        }
-    }
+  public String getAt() {
+    return "<@" + this.id + ">";
+  }
 
-    public DiscordUser(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.discriminator = user.getDiscriminator();
+  public DiscordUser(UserBuilder builder) {
+    this.id = builder.getId();
+    this.name = builder.getName();
+    this.discriminator = builder.getDiscriminator();
+    this.gitHubUser = builder.getGitHubUser();
+    if (builder.getUserDetails() != null) {
+      this.userDetails = builder.getUserDetails();
+    } if (builder.getBirthday() != null) {
+      this.setBirthday(builder.getBirthday());
     }
+  }
 
-    public DiscordUser() {}
+  public DiscordUser(User user) {
+    this.id = user.getId();
+    this.name = user.getName();
+    this.discriminator = user.getDiscriminator();
+  }
+
+  public DiscordUser() {}
 }

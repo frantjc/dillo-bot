@@ -12,64 +12,65 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_EMPTY)
 public class IssueResponse {
-    String url;
 
-    String repository_url;
+  String url;
 
-    String labels_url;
+  String repository_url;
 
-    String comments_url;
+  String labels_url;
 
-    String events_url;
+  String comments_url;
 
-    String html_url;
+  String events_url;
 
-    Long id;
+  String html_url;
 
-    String node_id;
+  Long id;
 
-    Long number;
+  String node_id;
 
-    String title;
+  Long number;
 
-    String state;
+  String title;
 
-    Boolean locked;
+  String state;
 
-    Integer comments;
+  Boolean locked;
 
-    String created_at;
+  Integer comments;
 
-    String updated_at;
+  String created_at;
 
-    String closed_at;
+  String updated_at;
 
-    String author_association;
+  String closed_at;
 
-    String active_lock_reason;
+  String author_association;
 
-    String body;
+  String active_lock_reason;
 
-    Object pull_request;
+  String body;
 
-    List<String> labels;
+  Object pull_request;
 
-    Integer milestone;
+  List<String> labels;
 
-    List<GitHubUserResponse> assignees;
+  Integer milestone;
 
-    GitHubUserResponse assignee;
+  List<GitHubUserResponse> assignees;
 
-    GitHubUserResponse user;
+  GitHubUserResponse assignee;
 
-    public IssueResponse(IssueBuilder issue) {
-        this.id = issue.getId();
-        this.number = issue.getNumber();
-        this.title = issue.getTitle();
-        this.body = issue.getBody();
-        this.state = issue.getState();
-        this.labels = issue.getLabels();
-    }
+  GitHubUserResponse user;
 
-    public IssueResponse() {}
+  public IssueResponse(IssueBuilder issue) {
+    this.id = issue.getId();
+    this.number = issue.getNumber();
+    this.title = issue.getTitle();
+    this.body = issue.getBody();
+    this.state = issue.getState();
+    this.labels = issue.getLabels();
+  }
+
+  public IssueResponse() {}
 }

@@ -8,12 +8,12 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class RestService {
     
-    RestTemplate rest = new RestTemplate(
-      new HttpComponentsClientHttpRequestFactory()
-    );
+  RestTemplate rest = new RestTemplate(
+    new HttpComponentsClientHttpRequestFactory()
+  );
     
-    @Bean("rest")
-    public RestTemplate getRest() {
+  @Bean("rest")
+  public RestTemplate getRest() {
 		return this.rest;
 	}
 }

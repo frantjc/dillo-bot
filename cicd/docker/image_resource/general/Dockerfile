@@ -9,4 +9,5 @@ RUN apt update -qq && apt install -qq -y --no-install-recommends \
         curl \
         openssh-client \
         unzip \
+        zip \
     && rm -rf /var/lib/apt/lists/*;

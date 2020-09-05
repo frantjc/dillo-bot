@@ -26,135 +26,135 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class GitHubService {
 
-    Logger log = LoggerFactory.getLogger(GitHubService.class);
+  Logger log = LoggerFactory.getLogger(GitHubService.class);
 
-    @Value("${github.repository.api}")
-    String api;
+  @Value("${github.repository.api}")
+  String api;
 
-    @Value("${github.repository.token}")
-    String token;
+  @Value("${github.repository.token}")
+  String token;
 
-    RestTemplate rest;
+  RestTemplate rest;
 
-    GitHubUserService gitHubUserService;
+  GitHubUserService gitHubUserService;
 
-    @Autowired
-    public GitHubService(RestTemplate rest, GitHubUserService gitHubUserService) {
-        this.rest = rest;
-        this.gitHubUserService = gitHubUserService;
-    }
+  @Autowired
+  public GitHubService(RestTemplate rest, GitHubUserService gitHubUserService) {
+    this.rest = rest;
+    this.gitHubUserService = gitHubUserService;
+  }
 
-    public List<IssueResponse> getIssues(String state) {
-        URI uri = UriComponentsBuilder.fromUriString(api).path("/issues").queryParam("state", state).build().encode().toUri();
+  public List<IssueResponse> getIssues(String state) {
+    URI uri = UriComponentsBuilder.fromUriString(api).path("/issues").queryParam("state", state).build().encode().toUri();
 
-        List<IssueResponse> response = Optional.ofNullable(rest.getForObject(uri, IssueResponse[].class))
-                .map(Arrays::asList).orElseGet(ArrayList::new);
+    List<IssueResponse> response = Optional.ofNullable(rest.getForObject(uri, IssueResponse[].class))
+      .map(Arrays::asList).orElseGet(ArrayList::new);
 
-        gitHubUserService.saveUsersFrom(response);
+    gitHubUserService.saveUsersFrom(response);
 
-        return response.stream().filter(issue -> {
-            return issue.getPull_request() == null;
-        }).collect(Collectors.toList());
-    }
+    return response.stream().filter(issue -> {
+      return issue.getPull_request() == null;
+    }).collect(Collectors.toList());
+  }
 
-    public IssueResponse getIssue(Long number) {
-        URI uri = UriComponentsBuilder.fromUriString(api)
-            .path("/issues").path("/{issueNumber}")
-            .build(number);
+  public IssueResponse getIssue(Long number) {
+    URI uri = UriComponentsBuilder.fromUriString(api)
+      .path("/issues").path("/{issueNumber}")
+      .build(number);
 
-        IssueResponse response = Optional.ofNullable(
-            rest.getForObject(
-                uri,
-                IssueResponse.class
-            )
-        ).orElseGet(IssueResponse::new);
+    IssueResponse response = Optional.ofNullable(
+      rest.getForObject(
+        uri,
+        IssueResponse.class
+      )
+    ).orElseGet(IssueResponse::new);
 
-        gitHubUserService.saveUsersFrom(response);
+    gitHubUserService.saveUsersFrom(response);
 
-        return response;
-    }
+    return response;
+  }
 
-    public IssueResponse getIssue(IssueRequest issue) {
-        return getIssue(issue.getNumber());
-    }
+  public IssueResponse getIssue(IssueRequest issue) {
+    return getIssue(issue.getNumber());
+  }
 
-    public IssueResponse createIssue(IssueRequest issue) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+  public IssueResponse createIssue(IssueRequest issue) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Bearer " + token);
 
-        URI uri = UriComponentsBuilder.fromUriString(api)
-            .path("/issues")
-            .build().encode().toUri();
+    URI uri = UriComponentsBuilder.fromUriString(api)
+      .path("/issues")
+      .build().encode().toUri();
 
-        return Optional.ofNullable(
-            rest.postForObject(
-                uri,
-                new HttpEntity<IssueRequest>(issue, headers),
-                IssueResponse.class
-            )
-        ).orElseGet(IssueResponse::new);
-    }
+    return Optional.ofNullable(
+      rest.postForObject(
+        uri,
+        new HttpEntity<IssueRequest>(issue, headers),
+        IssueResponse.class
+      )
+    ).orElseGet(IssueResponse::new);
+  }
 
-    public IssueResponse updateIssue(IssueRequest issue) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+  public IssueResponse updateIssue(IssueRequest issue) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Authorization", "Bearer " + token);
 
-        URI uri = UriComponentsBuilder.fromUriString(api)
-            .path("/issues").path("/{issueNumber}")
-            .build(issue.getNumber());
-    
-        return Optional.ofNullable(
-            rest.patchForObject(
-                uri,
-                new HttpEntity<IssueRequest>(issue, headers),
-                IssueResponse.class
-            )
-        ).orElseGet(IssueResponse::new);
-    }
+    URI uri = UriComponentsBuilder.fromUriString(api)
+      .path("/issues").path("/{issueNumber}")
+      .build(issue.getNumber());
 
-    public IssueResponse claimIssue(Long number, GitHubUser user) {
-        List<String> assignees = new ArrayList<String>();
-        assignees.add(user.getLogin());
+    return Optional.ofNullable(
+      rest.patchForObject(
+        uri,
+        new HttpEntity<IssueRequest>(issue, headers),
+        IssueResponse.class
+      )
+    ).orElseGet(IssueResponse::new);
+  }
 
-        return updateIssue(
-            new IssueBuilder()
-                .setNumber(number)
-                .setAssignees(assignees)
-                .build()
-        );
-    }
+  public IssueResponse claimIssue(Long number, GitHubUser user) {
+    List<String> assignees = new ArrayList<String>();
+    assignees.add(user.getLogin());
 
-    public IssueResponse claimIssue(IssueRequest issue, GitHubUser user) {
-        List<String> assignees = new ArrayList<String>();
-        assignees.add(user.getLogin());
+    return updateIssue(
+      new IssueBuilder()
+        .setNumber(number)
+        .setAssignees(assignees)
+        .build()
+    );
+  }
 
-        return updateIssue(
-            new IssueBuilder()
-                .setNumber(issue.getNumber())
-                .setAssignees(assignees)
-                .build()
-        );
-    }
+  public IssueResponse claimIssue(IssueRequest issue, GitHubUser user) {
+    List<String> assignees = new ArrayList<String>();
+    assignees.add(user.getLogin());
 
-    public IssueResponse claimIssue(IssueRequest issue) {
-        return updateIssue(
-            new IssueBuilder()
-                .setNumber(issue.getNumber())
-                .setAssignees(issue.getAssignees())
-                .build()
-        );
-    }
+    return updateIssue(
+      new IssueBuilder()
+        .setNumber(issue.getNumber())
+        .setAssignees(assignees)
+        .build()
+    );
+  }
 
-    public IssueResponse closeIssue(Long number) {
-        return updateIssue(
-            new IssueBuilder()
-                .setNumber(number)
-                .setState("closed")
-                .build()
-        );
-    }
+  public IssueResponse claimIssue(IssueRequest issue) {
+    return updateIssue(
+      new IssueBuilder()
+        .setNumber(issue.getNumber())
+        .setAssignees(issue.getAssignees())
+        .build()
+    );
+  }
 
-    public IssueResponse closeIssue(IssueRequest issue) {
-        return closeIssue(issue.getNumber());
-    }
+  public IssueResponse closeIssue(Long number) {
+    return updateIssue(
+      new IssueBuilder()
+        .setNumber(number)
+        .setState("closed")
+        .build()
+    );
+  }
+
+  public IssueResponse closeIssue(IssueRequest issue) {
+    return closeIssue(issue.getNumber());
+  }
 }

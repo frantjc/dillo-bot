@@ -16,41 +16,41 @@ import lombok.Data;
 @Data
 public class DiscordChannel {
 
-    @Id
-    String id;
+  @Id
+  String id;
 
-    String name;
-    
-    @ManyToMany
-    @JoinTable(
-        name = "discord_channel_subscription",
-        joinColumns = {
-            @JoinColumn(name = "discord_channel_id", referencedColumnName = "id") 
-        },
-        inverseJoinColumns = {
-            @JoinColumn(name = "subscription_id", referencedColumnName = "id") 
-        }
-    )
-    List<Subscription> subscriptions;
-
-    public String getHashtag() {
-        return "<#" + this.id + ">";
+  String name;
+  
+  @ManyToMany
+  @JoinTable(
+    name = "discord_channel_subscription",
+    joinColumns = {
+      @JoinColumn(name = "discord_channel_id", referencedColumnName = "id") 
+    },
+    inverseJoinColumns = {
+      @JoinColumn(name = "subscription_id", referencedColumnName = "id") 
     }
-    public DiscordChannel merge(DiscordChannel channel) {
-        if (channel.getSubscriptions() != null) {
-            this.subscriptions = channel.getSubscriptions();
-        } if (channel.getName() != null) {
-            this.name = channel.getName();
-        }
+  )
+  List<Subscription> subscriptions;
 
-        return this;
+  public String getHashtag() {
+    return "<#" + this.id + ">";
+  }
+  public DiscordChannel merge(DiscordChannel channel) {
+    if (channel.getSubscriptions() != null) {
+      this.subscriptions = channel.getSubscriptions();
+    } if (channel.getName() != null) {
+      this.name = channel.getName();
     }
 
-    public DiscordChannel(ChannelBuilder builder) {
-        this.id = builder.getId();
-        this.name = builder.getName();
-        this.subscriptions = builder.getSubscriptions();
-    }
+    return this;
+  }
 
-    public DiscordChannel() {}
+  public DiscordChannel(ChannelBuilder builder) {
+    this.id = builder.getId();
+    this.name = builder.getName();
+    this.subscriptions = builder.getSubscriptions();
+  }
+
+  public DiscordChannel() {}
 }

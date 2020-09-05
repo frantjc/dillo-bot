@@ -15,23 +15,23 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 @Component
 public class InformationalCommands {
 
-    Logger log = LoggerFactory.getLogger(InformationalCommands.class);
+  Logger log = LoggerFactory.getLogger(InformationalCommands.class);
 
-    @Value("${discord.bot.redirect_uri}")
-    String redirectUri;
- 
-    @Command("/help")
-    public void help(@Channel MessageChannel channel) {
-        log.info("/help");
+  @Value("${discord.bot.redirect_uri}")
+  String redirectUri;
 
-        channel.sendMessage(
-            new EmbedBuilder()
-                .setTitle("DilloBot", redirectUri)
-                .setDescription("by Discord server Dillos the Third. Available commands:")
-                .addField("Informational", "`/help`", false)
-                .addField("GitHub", "`/request`, `/issues`, `/repository`, `/issue`, `/updateIssue`, `/closeIssue`, `/claimIssue`, `/linkGitHub`", false)
-                .addField("Subscriptions", "`/subscribe birthday`, `/unsubscribe birthday`", false)
-                .build()
-        ).queue();
-    }
+  @Command("/help")
+  public void help(@Channel MessageChannel channel) {
+    log.info("/help");
+
+    channel.sendMessage(
+      new EmbedBuilder()
+        .setTitle("DilloBot", redirectUri)
+        .setDescription("by Discord server Dillos the Third. Available commands:")
+        .addField("Informational", "`/help`", false)
+        .addField("GitHub", "`/request`, `/issues`, `/repository`, `/issue`, `/updateIssue`, `/closeIssue`, `/claimIssue`, `/linkGitHub`", false)
+        .addField("Subscriptions", "`/subscribe birthday`, `/unsubscribe birthday`", false)
+        .build()
+    ).queue();
+  }
 }

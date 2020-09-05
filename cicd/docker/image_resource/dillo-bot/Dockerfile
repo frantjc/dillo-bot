@@ -1,6 +1,6 @@
 FROM debian:stable-slim
 
-LABEL Description="This image provides a base development environment for DilloBot and can be used to run tests"
+LABEL Description="This image provides a base development environment for dillo-bot and can be used to run tests"
 
 ENV DEBIAN_FRONTEND=noninteractive
 

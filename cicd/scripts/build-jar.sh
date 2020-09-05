@@ -26,10 +26,10 @@ mkdir dillo-bot/src/main/resources/static
 cp -r build/* dillo-bot/src/main/resources/static/
 UI_SUCCESS=$?
 if [ $UI_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} ui failed"
-    echo -e "${INFO_PREFIX} the build will continue regardless"
+  echo -e "${FAIL_PREFIX} ui failed"
+  echo -e "${INFO_PREFIX} the build will continue regardless"
 else
-    echo -e "${SUCCESS_PREFIX} ui successful"
+  echo -e "${SUCCESS_PREFIX} ui successful"
 fi
 
 echo ""
@@ -38,18 +38,18 @@ cd dillo-bot/
 chmod +x mvnw
 BUILD_SUCCESS=$?
 if [ $BUILD_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} failed to change access permissions for ./mvnw"
-    echo -e "${INFO_PREFIX} attempting to continue..."
-    echo ""
+  echo -e "${FAIL_PREFIX} failed to change access permissions for ./mvnw"
+  echo -e "${INFO_PREFIX} attempting to continue..."
+  echo ""
 fi
 
 echo -e "${INFO_PREFIX} building artifact..."
 ./mvnw package -DskipTests
 BUILD_SUCCESS=$?
 if [ $BUILD_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} build failed"
+  echo -e "${FAIL_PREFIX} build failed"
 else
-    echo -e "${SUCCESS_PREFIX} build successful"
+  echo -e "${SUCCESS_PREFIX} build successful"
 fi
 
 echo ""
@@ -59,10 +59,10 @@ echo -e "${INFO_PREFIX} getting version..."
 VERSION=$(cat version/version)
 VERSION_SUCCESS=$?
 if [ $VERSION_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} unable to find version"
-    exit 1;
+  echo -e "${FAIL_PREFIX} unable to find version"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} version found: $VERSION"
+  echo -e "${SUCCESS_PREFIX} version found: $VERSION"
 fi
 
 echo ""
@@ -74,15 +74,15 @@ if [ "$LOWERCASED_ENV" = "" ]; then
   ENVIRONMENT_SUCCESS=1
 fi
 if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} unable to find environment from ENV"
-    echo -e "${INFO_PREFIX} assuming environment is prod"
+  echo -e "${FAIL_PREFIX} unable to find environment from ENV"
+  echo -e "${INFO_PREFIX} assuming environment is prod"
 else
-    echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
+  echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
 fi
 
 if [ $ENVIRONMENT_SUCCESS -ne 0 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
-    VERSION="d-$VERSION"
-    echo -e "${INFO_PREFIX} updated version: $VERSION"
+  VERSION="d-$VERSION"
+  echo -e "${INFO_PREFIX} updated version: $VERSION"
 fi
 
 echo ""
@@ -91,15 +91,15 @@ echo -e "${INFO_PREFIX} versioning artifact..."
 cp dillo-bot/target/*.jar target/dillo-bot-$VERSION.jar
 BUILD_SUCCESS=$?
 if [ $BUILD_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} failed to version artifact"
-    exit 1;
+  echo -e "${FAIL_PREFIX} failed to version artifact"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} created: dillo-bot-$VERSION.jar"
+  echo -e "${SUCCESS_PREFIX} created: dillo-bot-$VERSION.jar"
 fi
 
 if [ $UI_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} ui failed"
-    echo -e "${INFO_PREFIX} dillo-bot-$VERSION.jar will not have a ui"
+  echo -e "${FAIL_PREFIX} ui failed"
+  echo -e "${INFO_PREFIX} dillo-bot-$VERSION.jar will not have a ui"
 fi
 
 exit 0;

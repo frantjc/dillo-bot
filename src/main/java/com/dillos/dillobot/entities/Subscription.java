@@ -13,22 +13,21 @@ import lombok.Data;
 public class Subscription {
 
 	public enum SubscriptionType {
-        BIRTHDAY("BIRTHDAY");
+    BIRTHDAY("BIRTHDAY");
 
-        String subscription;
+    String subscription;
 
-        SubscriptionType(String subscription) {
-            this.subscription = subscription.toUpperCase();
-        }
+    SubscriptionType(String subscription) {
+      this.subscription = subscription.toUpperCase();
     }
+  }
 
-    @Id
-    @GeneratedValue
-    Long id;
+  @Id
+  @GeneratedValue
+  Long id;
 
-    @Enumerated(EnumType.STRING)
-    SubscriptionType subscription;
-    
-    public Subscription() {}
-
+  @Enumerated(EnumType.STRING)
+  SubscriptionType subscription;
+  
+  public Subscription() {}
 }

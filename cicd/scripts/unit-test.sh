@@ -24,19 +24,19 @@ cd dillo-bot/
 chmod +x mvnw
 TEST_SUCCESS=$?
 if [ $TEST_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} failed to change access permissions for ./mvnw"
-    echo -e "${INFO_PREFIX} attempting to continue..."
-    echo ""
+  echo -e "${FAIL_PREFIX} failed to change access permissions for ./mvnw"
+  echo -e "${INFO_PREFIX} attempting to continue..."
+  echo ""
 fi
 
 echo -e "${INFO_PREFIX} testing..."
 ./mvnw test
 TEST_SUCCESS=$?
 if [ $TEST_SUCCESS -ne 0 ]; then
-    echo -e "${FAIL_PREFIX} tests failed"
-    exit 1;
+  echo -e "${FAIL_PREFIX} tests failed"
+  exit 1;
 else
-    echo -e "${SUCCESS_PREFIX} tests passed"
+  echo -e "${SUCCESS_PREFIX} tests passed"
 fi
 
 cd ..
