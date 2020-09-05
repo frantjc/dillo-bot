@@ -24,6 +24,7 @@ echo "$KEY" > key/dillo-key.pem
 SUCCESS=$?
 if [ $SUCCESS -ne 0 ]; then
   echo -e "${FAIL_PREFIX} failed to create .pem file"
+  exit 1;
 fi
 
 chmod 400 key/dillo-key.pem
@@ -34,4 +35,4 @@ else
   echo -e "${SUCCESS_PREFIX} key created"
 fi
 
-exit 0;
+exit $SUCCESS;

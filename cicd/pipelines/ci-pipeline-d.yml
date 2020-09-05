@@ -7,12 +7,20 @@ resource_types:
 
 
 resources:
-  - name: dillo-bot-d
+  - name: dillo-bot
     type: git
     icon: github
     source:
       uri: ((github.uri))
       branch: ((github.branch))
+
+  - name: dillo-bot-release
+    type: github-release
+    icon: github
+    source:
+      owner: ((github.owner))
+      repository: ((github.repository))
+      access_token: ((github.token))
 
   - name: notify
     type: discord-resource
@@ -20,7 +28,7 @@ resources:
     source:
       token: ((concourse.discord.token))
 
-  - name: dillo-bot-bucket-d
+  - name: dillo-bot-bucket
     type: s3
     icon: aws
     source:
@@ -30,7 +38,7 @@ resources:
       secret_access_key: ((aws.s3.key.secret))
       region_name: us-east-2
 
-  - name: dillo-bot-image-d
+  - name: dillo-bot-image
     type: docker-image
     icon: docker
     source: 
@@ -47,7 +55,15 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource
 
-  - name: version-d
+  - name: general-resource-image
+    type: docker-image
+    icon: docker
+    source:
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/general-resource
+
+  - name: version
     type: semver
     icon: aws
     source:
@@ -96,10 +112,10 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
-      - get: dillo-bot-d
+      - get: dillo-bot
         trigger: true
 
-      - set_pipeline: dillo-bot-ci-d
+      - set_pipeline: dillo-bot-ci
         file: dillo-bot/cicd/pipelines/ci-pipeline-d.yml
         vars:
           concourse:
@@ -140,11 +156,25 @@ jobs:
       - get: time-trigger
         trigger: true
 
-      - get: dillo-bot-d
+      - get: dillo-bot
 
       - put: dillo-bot-resource-image
         params:
-          build: dillo-bot/cicd/docker/dillo-bot/image_resource
+          build: dillo-bot/cicd/docker/image_resource/dillo-bot
+
+
+  - name: build-general-resource-image
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: debian-stable-slim-trigger
+        trigger: true
+
+      - get: dillo-bot
+
+      - put: general-resource-image
+        params:
+          build: dillo-bot/cicd/docker/image_resource/general
 
 
   # - name: lint-dillo-bot
@@ -154,7 +184,7 @@ jobs:
   #     - get: dillo-bot-resource-image
   #       passed: [build-dillo-bot-resource-image]
 
-  #     - get: dillo-bot-d
+  #     - get: dillo-bot
   #       passed: [update-pipeline]
   #       trigger: true
       
@@ -164,7 +194,7 @@ jobs:
   #     - task: lint-ui
   #       file: dillo-bot/cicd/tasks/lint-ui.yml
 
-  #     - put: dillo-bot-d
+  #     - put: dillo-bot
   #       params:
   #         repository: linted-dillo-bot
 
@@ -176,7 +206,7 @@ jobs:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
 
-      - get: dillo-bot-d
+      - get: dillo-bot
         passed: [update-pipeline]
         trigger: true
 
@@ -192,12 +222,13 @@ jobs:
 
 
   - name: test-dillo-bot-ui
+    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
 
-      - get: dillo-bot-d
+      - get: dillo-bot
         passed: [update-pipeline]
         trigger: true
 
@@ -218,11 +249,11 @@ jobs:
       - get: dillo-bot-resource-image
         passed: [test-dillo-bot, test-dillo-bot-ui]
 
-      - get: dillo-bot-d
+      - get: dillo-bot
         passed: [test-dillo-bot, test-dillo-bot-ui]
         trigger: true
 
-      - get: version-d
+      - get: version
         params:
           bump: patch
 
@@ -246,13 +277,55 @@ jobs:
             title: FAIL
             message: Failed to build new DilloBot-d
 
-      - put: version-d
+      - put: version
         params:
           file: version/version
 
-      - put: dillo-bot-bucket-d
+      - put: dillo-bot-bucket
         params:
           file: target/dillo-bot*.jar
+
+
+  - name: release-dillo-bot
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: dillo-bot
+        passed: [build-dillo-bot]
+
+      - get: dillo-bot-bucket
+        passed: [build-dillo-bot]
+        trigger: true
+
+      - get: version
+        passed: [build-dillo-bot]
+
+      - task: create-release-name
+        file: dillo-bot/cicd/tasks/create-release-name.yml
+        params:
+          ENV: dev
+
+      - task: create-release-tag
+        file: dillo-bot/cicd/tasks/create-release-tag.yml
+        params:
+          ENV: dev
+
+      - task: create-release-commitish
+        file: dillo-bot/cicd/tasks/create-release-commitish.yml
+        params:
+          ENV: dev
+
+      - task: create-release-globs
+        file: dillo-bot/cicd/tasks/create-release-globs.yml
+        params:
+          ENV: dev
+
+      - put: dillo-bot-release
+        params:
+          name: name/name_file.txt
+          tag: tag/tag_file.txt
+          commitish: commitish/commitish_file.txt
+          globs: [globs/*.jar]
 
 
   - name: containerize-dillo-bot
@@ -279,7 +352,7 @@ jobs:
           params:
             ENV: dev
 
-        - put: dillo-bot-image-d
+        - put: dillo-bot-image
           params:
             build: dillo-bot-dockerfile/
             additional_tags: tags/additional_tags.txt
@@ -296,16 +369,15 @@ jobs:
               channel: ((concourse.discord.channel))
               title: FAIL
               message: New DilloBot-d could not be contained
-
     plan:
-      - get: dillo-bot-d
+      - get: dillo-bot
         passed: [build-dillo-bot]
         trigger: true
 
-      - get: version-d
+      - get: version
         passed: [build-dillo-bot]
 
-      - get: dillo-bot-bucket-d
+      - get: dillo-bot-bucket
         passed: [build-dillo-bot]
         trigger: true
 
@@ -320,7 +392,7 @@ jobs:
         file: dillo-bot/cicd/tasks/create-image-tags.yml
         params: { ENV: dev }
 
-      - put: dillo-bot-image-d
+      - put: dillo-bot-image
         params:
           build: dillo-bot-dockerfile/
           additional_tags: tags/additional_tags.txt

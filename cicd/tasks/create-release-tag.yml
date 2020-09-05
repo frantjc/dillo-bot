@@ -8,15 +8,16 @@ image_resource:
     tag: stable-slim
 
 params:
-  KEY:
+  ENV:
 
 inputs:
   - name: dillo-bot
+  - name: version
 
 outputs:
-  - name: key
+  - name: tag
 
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/create-key.sh"
+    - "dillo-bot/cicd/scripts/create-release-tag.sh"

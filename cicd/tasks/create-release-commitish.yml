@@ -4,17 +4,19 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: frantjc/general-resource
+    repository: debian
+    tag: stable-slim
 
 params:
-  USER:
-  PUBLIC_DNS:
+  ENV:
 
 inputs:
-  - name: key
   - name: dillo-bot
+
+outputs:
+  - name: commitish
 
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/ssh-and-stop-container.sh"
+    - "dillo-bot/cicd/scripts/create-release-commitish.sh"

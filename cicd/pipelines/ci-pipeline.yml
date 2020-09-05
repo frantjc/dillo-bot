@@ -46,6 +46,14 @@ resources:
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource
 
+  - name: general-resource-image
+    type: docker-image
+    icon: docker
+    source:
+      username: ((docker.username))
+      password: ((docker.password))
+      repository: ((docker.username))/general-resource
+
   - name: version
     type: semver
     icon: aws
@@ -206,6 +214,19 @@ jobs:
         params:
           build: dillo-bot/cicd/docker/dillo-bot/image_resource
 
+  - name: build-general-resource-image
+    serial: true
+    build_log_retention: *build_log_retention
+    plan:
+      - get: debian-stable-slim-trigger
+        trigger: true
+
+      - get: dillo-bot
+
+      - put: general-resource-image
+        params:
+          build: dillo-bot/cicd/docker/image_resource/general
+
 
   # - name: lint-dillo-bot
   #   serial: true
@@ -252,6 +273,7 @@ jobs:
 
 
   - name: test-dillo-bot-ui
+    serial: true
     build_log_retention: *build_log_retention
     plan:
       - get: dillo-bot-resource-image
@@ -356,7 +378,6 @@ jobs:
               channel: ((concourse.discord.channel))
               title: FAIL
               message: New DilloBot could not be contained
-
     plan:
       - get: dillo-bot
         passed: [build-dillo-bot]

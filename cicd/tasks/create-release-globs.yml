@@ -8,15 +8,17 @@ image_resource:
     tag: stable-slim
 
 params:
-  KEY:
+  ENV:
 
 inputs:
   - name: dillo-bot
+  - name: dillo-bot-bucket
+  - name: version
 
 outputs:
-  - name: key
+  - name: globs
 
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/create-key.sh"
+    - "dillo-bot/cicd/scripts/create-release-globs.sh"
