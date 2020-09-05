@@ -62,4 +62,7 @@ else
   echo -e "${SUCCESS_PREFIX} created: dillo-bot-$VERSION.jar"
 fi
 
+echo -e "${INFO_PREFIX} globs/"
+ls globs/
+
 exit 0;
