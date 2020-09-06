@@ -158,7 +158,7 @@ jobs:
 
       - put: dillo-bot-resource-image
         params:
-          build: dillo-bot/cicd/docker/image_resource/dillo-bot
+          build: dillo-bot/cicd/docker/image_resources/dillo-bot
 
 
   - name: build-general-resource-image
@@ -172,7 +172,7 @@ jobs:
 
       - put: general-resource-image
         params:
-          build: dillo-bot/cicd/docker/image_resource/general
+          build: dillo-bot/cicd/docker/image_resources/general
 
 
   # - name: lint-dillo-bot
