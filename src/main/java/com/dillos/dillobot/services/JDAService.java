@@ -86,7 +86,12 @@ public class JDAService {
   public void saveChannelAndUserFrom(MessageReceivedEvent event) {
     MessageChannel channel = event.getChannel();
 
-    discordChannelService.save(new ChannelBuilder().setId(channel.getId()).setName(channel.getName()).build());
+    discordChannelService.save(
+      new ChannelBuilder()
+        .setId(channel.getId())
+        .setName(channel.getName())
+        .build()
+    );
 
     User sender = event.getAuthor();
 

@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.entities.DiscordUser;
 import com.dillos.dillobot.entities.GitHubUser;
+import com.dillos.dillobot.exceptions.InvalidArgException;
 import com.dillos.dillobot.repositories.DiscordUserRepository;
 
 import org.slf4j.Logger;
@@ -114,5 +115,13 @@ public class DiscordUserService {
         .setId(gitHubId.toString())
         .buildGitHub()
     );
+  }
+
+  public String getIdFromAt(String at) throws InvalidArgException {
+    if (at.startsWith("<@") && at.endsWith(">")) {
+      return at.substring(2, at.length() - 1);
+    }
+
+    throw new InvalidArgException("cannot get an id from an invalid Discord user @");
   }
 }
