@@ -10,6 +10,14 @@ A bot for Discord server Dillos the Third.
 
 #### [Git](https://git-scm.com/)
 
+#### [Nodejs 12.x](https://nodejs.org/en/download/)
+
+> _Note: Nodejs is only required for developing DilloBot's ui_
+
+#### [Yarn](https://yarnpkg.com/)
+
+> _Note: Yarn is an optional package manager replacement for Nodejs's npm.  It is also only relevant to DilloBot's ui_
+
 #### Editor suggestion: [VSCode](https://code.visualstudio.com/)
 
 > _Hint: there are a bunch of useful Java, SpringBoot, etc. extensions for VSCode that you can add inside of the editor itself!_
@@ -19,29 +27,35 @@ A bot for Discord server Dillos the Third.
 On the command line, ensure a correct version of Java is on your PATH:
 ```
 $ java --version
-openjdk 11 2018-09-25
-OpenJDK Runtime Environment 18.9 (build 11+28)
-OpenJDK 64-Bit Server VM 18.9 (build 11+28, mixed mode)
+openjdk 11.0.8 2020-07-14
+OpenJDK Runtime Environment (build 11.0.8+10-post-Ubuntu-0ubuntu120.04)
+OpenJDK 64-Bit Server VM (build 11.0.8+10-post-Ubuntu-0ubuntu120.04, mixed mode, sharing)
 ```
 
 Do the same for Git:
 ```
 $ git --version
-git version 2.26.2.windows.1
+git version 2.25.1
+```
+
+Lastly (and optionally), for Nodejs:
+```
+$ node --version
+v12.18.3
 ```
 
 ## Developing
 
 ### Cloning the repository
 
-On the command line, in the directory you want the project in:
+On the command line, in the directory you want the project folder to be in:
 ```
 $ git clone https://github.com/frantjc/dillo-bot.git
 ```
 
 ### Creating your own branch to work in
 
-If you want to work on GitHub integration, for example, you would:
+If you want to work on GitHub integration, for example, you would do the following in the project root directory:
 ```
 $ git checkout develop
 $ git pull
@@ -60,15 +74,16 @@ $ git push
 
 Lastly, on GitHub, you should make a [Pull Request](https://github.com/frantjc/dillo-bot/pulls), asking for your code to be merged into develop.
 
-More Reading                                         |
------------------------------------------------------|
-[Concourse](documentaion/concourse/Concourse.md)     |
-[Docker](documentation/docker/Docker.md)             |
-[FlyWay](documentation/flyway/FlyWay.md)             |
-[JDA](documentation/jda/JDA.md)                      |
-[Maven](documentation/maven/Maven.md)                |
-[SpringBoot](documentation/springboot/SpringBoot.md) |
-[VSCode](documentation/vscode/VSCode.md)             |
+More Reading                                        |
+----------------------------------------------------|
+[Concourse](documentaion/concourse/Concourse.md)    |
+[Docker](documentation/docker/Docker.md)            |
+[FlyWay](documentation/flyway/FlyWay.md)            |
+[JDA](documentation/jda/JDA.md)                     |
+[Maven](documentation/maven/Maven.md)               |
+[SpringBoot](documentation/springboot/SpringBoot.md)|
+[VSCode](documentation/vscode/VSCode.md)            |
+[React](documentation/react/React.md)               |
 
 ## Running locally
 
@@ -91,8 +106,8 @@ $ npm start
 
 Or, to run it inside of Docker from source:
 ```
-$ cp cicd/docker/dillo-bot/Dockerfile .
-$ docker build .
+$ cp cicd/docker/dillo-bot/src/Dockerfile .
+$ docker run .
 ```
 
 > _Note: Docker is available on Windows 10 Pro, Mac, and Linux._
@@ -103,7 +118,7 @@ I kind of created my own annotation-driven development pattern for adding comman
 
 Create a class with some commands:
 ```java
-// src/main/java/com/dillos/dillobot/commands/MyCommands.java
+package com.dillos.dillobot.commands;
 
 ...
 
@@ -123,7 +138,7 @@ public class MyCommands {
 
 Add your commands to the bot:
 ```java
-// src/main/java/com/dillos/dillobot/DillobotApplication.java
+package com.dillos.dillobot;
 
 ...
 
