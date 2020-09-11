@@ -86,7 +86,13 @@ public class JDAService {
   public void saveChannelAndUserFrom(MessageReceivedEvent event) {
     MessageChannel channel = event.getChannel();
 
-    discordChannelService.save(new ChannelBuilder().setId(channel.getId()).setName(channel.getName()).build());
+    discordChannelService.save(
+      new ChannelBuilder()
+        .setId(channel.getId())
+        .setName(channel.getName())
+        .setType("TEXT")
+        .build()
+    );
 
     User sender = event.getAuthor();
 
@@ -103,6 +109,10 @@ public class JDAService {
   public Object castArgToParam(String arg, Parameter param) {
     Class<?> parameterizedParamClass = param.getType();
 
+    if (parameterizedParamClass.equals(String.class)) {
+      return arg;
+    }
+  
     if (parameterizedParamClass.isEnum()) {
       Class paramClass = param.getType();
       return Enum.valueOf(paramClass, arg.toUpperCase());

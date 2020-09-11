@@ -355,12 +355,6 @@ jobs:
   - name: containerize-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
-    on_success:
-      put: notify
-      params:
-        channel: ((concourse.discord.channel))
-        title: SUCCESS
-        message: New DilloBot was successfully contained
     on_failure:
       do:
         - task: copy-src-dockerfile-to-root
