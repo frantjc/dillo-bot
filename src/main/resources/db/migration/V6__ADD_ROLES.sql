@@ -11,5 +11,5 @@ CREATE TABLE discord_server_role (
 
 CREATE TABLE discord_server_member_role (
   discord_server_member_id INTEGER NOT NULL,
-  discord_role_id  id VARCHAR(64) NOT NULL
+  discord_role_id VARCHAR(64) NOT NULL
 );
