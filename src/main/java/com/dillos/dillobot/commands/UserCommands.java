@@ -38,23 +38,23 @@ public class UserCommands {
   public void afk(
     @Arg(required = false, defaultValue = "") String at,
     @Sender User sender,
-    @Server Guild guild,
+    @Server Guild server,
     @Channel MessageChannel channel
   ) {
-    log.info("/afk {}, from user: {}, in guild: {}", at, sender, guild);
+    log.info("/afk {}, from user: {}, in guild: {}", at, sender, server);
   
-    VoiceChannel afk = guild.getAfkChannel();
+    VoiceChannel afk = server.getAfkChannel();
 
     String id = discordUserService.getIdFromAt(at);
 
     if (id != null) {
-      Member member = guild.getMemberById(id);
+      Member member = server.getMemberById(id);
 
       log.info("afk channel: {}, member: {}", afk, member);
 
       return;
     }
 
-    guild.moveVoiceMember(guild.getMember(sender), afk).queue();
+    server.moveVoiceMember(server.getMember(sender), afk).queue();
   }
 }
