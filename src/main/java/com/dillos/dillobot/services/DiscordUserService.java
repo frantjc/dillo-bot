@@ -115,4 +115,16 @@ public class DiscordUserService {
         .buildGitHub()
     );
   }
+
+  public String getIdFromAt(String at) {
+    if (at != null && at.endsWith(">")) {
+      if (at.startsWith("<@!"))
+        return at.substring(3, at.length() - 1);
+      else if (at.startsWith("<@")) {
+        return at.substring(2, at.length() - 1);
+      }
+    }
+
+    return null;
+  }
 }

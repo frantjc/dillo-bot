@@ -143,6 +143,7 @@ type DiscordChannel = {
     id: string,
     name: string,
     subscriptions?: string[],
+    type: string,
 }
 
 function getDiscordChannels(): Promise<DiscordChannel[]> {    
