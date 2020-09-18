@@ -10,10 +10,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.dillos</groupId>
-	<artifactId>dillobot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>dillobot</name>
-	<description>dillobot</description>
+	<artifactId>dillo-bot</artifactId>
+	<name>dillo-bot</name>
+	<description>Discord bot for server Dillos the Third</description>
 
 	<properties>
 		<java.version>14</java.version>
