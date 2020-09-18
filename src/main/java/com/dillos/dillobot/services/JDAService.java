@@ -16,6 +16,7 @@ import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
 import com.dillos.dillobot.builders.ChannelBuilder;
+import com.dillos.dillobot.builders.ServerBuilder;
 import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.exceptions.InvalidCommandException;
 import com.dillos.dillobot.annotations.Message;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -63,11 +65,14 @@ public class JDAService {
 
   DiscordUserService discordUserService;
 
+  DiscordServerService discordServerService;
+
   @Autowired
-  public JDAService(DiscordChannelService discordChannelService, DiscordUserService discordUserService)
+  public JDAService(DiscordChannelService discordChannelService, DiscordUserService discordUserService, DiscordServerService discordServerService)
           throws LoginException {
     this.discordChannelService = discordChannelService;
     this.discordUserService = discordUserService;
+    this.discordServerService = discordServerService;
   }
 
   public void start() throws LoginException {
@@ -101,6 +106,20 @@ public class JDAService {
         .setId(sender.getId())
         .setName(sender.getName())
         .setDiscriminator(sender.getDiscriminator())
+        .build()
+    );
+  }
+
+  public void saveDiscordEntitiesFrom(MessageReceivedEvent event) {
+    Guild server = event.getGuild();
+
+    discordServerService.save(
+      new ServerBuilder()
+        .setId(server.getId())
+        .setName(server.getName())
+        .setDescription(server.getDescription())
+        .setMembers(server.getMembers())
+        .setCategories(server.getCategories())
         .build()
     );
   }
@@ -160,7 +179,8 @@ public class JDAService {
 
             @Override
             public void onMessageReceived(MessageReceivedEvent event) {
-              saveChannelAndUserFrom(event);
+              saveDiscordEntitiesFrom(event);
+
               if (
                 name.toLowerCase().equals(
                   Arrays.stream(

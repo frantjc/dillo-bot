@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import com.dillos.dillobot.builders.ChannelBuilder;
 
 import lombok.Data;
+import net.dv8tion.jda.api.entities.GuildChannel;
 
 @Entity
 @Data
@@ -42,7 +43,7 @@ public class DiscordChannel {
     String value;
 
     ChannelType(String value) {
-      this.value = value;
+      this.value = value.toUpperCase();
     }
   }
 
@@ -72,5 +73,12 @@ public class DiscordChannel {
     this.type = builder.getType();
   }
 
+  public DiscordChannel(GuildChannel channel) {
+    this.id = channel.getId();
+    this.name = channel.getName();
+    this.type = ChannelType.valueOf(channel.getType().toString());
+  }
+
   public DiscordChannel() {}
+
 }

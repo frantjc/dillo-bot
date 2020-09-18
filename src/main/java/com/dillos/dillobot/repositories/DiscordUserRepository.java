@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface DiscordUserRepository extends JpaRepository<DiscordUser, String> {
 
   public Optional<DiscordUser> findById(String id);
+
 }
