@@ -351,6 +351,12 @@ jobs:
   - name: release-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
+    on_success:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: SUCCESS
+        message: New DilloBot was released
     plan:
       - get: dillo-bot
         passed: [build-dillo-bot]
