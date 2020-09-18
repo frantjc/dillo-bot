@@ -6,7 +6,7 @@ A bot for Discord server Dillos the Third.
 
 ### Install
 
-#### [Java 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+#### [Java 14](https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)
 
 #### [Git](https://git-scm.com/)
 
@@ -27,9 +27,9 @@ A bot for Discord server Dillos the Third.
 On the command line, ensure a correct version of Java is on your PATH:
 ```
 $ java --version
-openjdk 11.0.8 2020-07-14
-OpenJDK Runtime Environment (build 11.0.8+10-post-Ubuntu-0ubuntu120.04)
-OpenJDK 64-Bit Server VM (build 11.0.8+10-post-Ubuntu-0ubuntu120.04, mixed mode, sharing)
+openjdk 14.0.1 2020-04-14
+OpenJDK Runtime Environment (build 14.0.1+7-Ubuntu-1ubuntu1)
+OpenJDK 64-Bit Server VM (build 14.0.1+7-Ubuntu-1ubuntu1, mixed mode, sharing)
 ```
 
 Do the same for Git:
@@ -38,10 +38,14 @@ $ git --version
 git version 2.25.1
 ```
 
-Lastly (and optionally), for Nodejs:
+Lastly (and optionally), for nodejs and one of its package managers:
 ```
 $ node --version
 v12.18.3
+$ npm --version
+6.14.6
+$ yarn --version
+1.22.5
 ```
 
 ## Developing
