@@ -7,10 +7,10 @@ COPY .mvn/ .mvn/
 COPY mvnw .
 COPY pom.xml .
 
-RUN chmod +x mvnw
-RUN npm run build:package
+RUN chmod +x mvnw \
+  && npm run build:package
 
-FROM frantjc/dillo-bot-resource
+FROM openjdk:14.0.2-slim
 
 EXPOSE 8081
 
