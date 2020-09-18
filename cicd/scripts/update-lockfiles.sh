@@ -38,7 +38,7 @@ cp dillo-bot/.prettierrc.js linted-dillo-bot/.prettierrc.js
 cd linted-dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies with npm..."
-npm install
+npm ci
 INSTALL_SUCCESS=$?
 echo ""
 

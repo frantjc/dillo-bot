@@ -24,11 +24,11 @@ echo ""
 cd dillo-bot/
 
 echo -e "${INFO_PREFIX} installing dependencies..."
-npm install
+npm ci
 INSTALL_SUCCESS=$?
 echo ""
 if [ $INSTALL_SUCCESS -ne 0 ]; then
-  echo -e "${FAIL_PREFIX} install failed"
+  echo -e "${FAIL_PREFIX} npm ci failed"
   exit 1;
 else
   echo -e "${SUCCESS_PREFIX} install complete"

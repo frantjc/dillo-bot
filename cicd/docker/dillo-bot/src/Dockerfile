@@ -8,7 +8,7 @@ COPY mvnw .
 COPY pom.xml .
 
 RUN chmod +x mvnw
-RUN npm run build:install
+RUN npm run build:package
 
 FROM frantjc/dillo-bot-resource
 

@@ -27,7 +27,9 @@ RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash - \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/frantjc/dillo-bot.git \
-    && cd dillo-bot \
+    && cd dillo-bot/ \
     && ./mvnw package -DskipTests \
+    && npm ci \
+    && yarn install \
     && cd .. \
-    && rm -rf dillo-bot
+    && rm -rf dillo-bot/
