@@ -122,7 +122,7 @@ jobs:
       - get: dillo-bot
         trigger: true
 
-      - set_pipeline: dillo-bot-ci
+      - set_pipeline: dillo-bot-ci-d
         file: dillo-bot/cicd/pipelines/ci-pipeline-d.yml
         vars:
           concourse:
