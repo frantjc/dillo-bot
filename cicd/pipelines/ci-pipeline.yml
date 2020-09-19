@@ -93,6 +93,13 @@ resources:
       repository: debian
       tag: stable-slim
 
+  - name: openjdk-14.0.2-slim-trigger
+    type: docker-image
+    icon: docker
+    source:
+      repository: openjdk
+      tag: 14.0.2-slim
+
   - name: time-trigger
     type: time
     icon: clock-outline
@@ -209,7 +216,7 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
-      - get: debian-stable-slim-trigger
+      - get: openjdk-14.0.2-slim-trigger
         trigger: true
 
       - get: time-trigger
