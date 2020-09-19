@@ -15,9 +15,7 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Event;
 import com.dillos.dillobot.annotations.Server;
-import com.dillos.dillobot.builders.ChannelBuilder;
 import com.dillos.dillobot.builders.ServerBuilder;
-import com.dillos.dillobot.builders.UserBuilder;
 import com.dillos.dillobot.exceptions.InvalidCommandException;
 import com.dillos.dillobot.annotations.Message;
 import com.dillos.dillobot.annotations.Sender;
@@ -36,8 +34,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -61,17 +57,10 @@ public class JDAService {
     return this.jda;
   }
 
-  DiscordChannelService discordChannelService;
-
-  DiscordUserService discordUserService;
-
   DiscordServerService discordServerService;
 
   @Autowired
-  public JDAService(DiscordChannelService discordChannelService, DiscordUserService discordUserService, DiscordServerService discordServerService)
-          throws LoginException {
-    this.discordChannelService = discordChannelService;
-    this.discordUserService = discordUserService;
+  public JDAService(DiscordServerService discordServerService) throws LoginException {
     this.discordServerService = discordServerService;
   }
 
@@ -88,28 +77,6 @@ public class JDAService {
     this.jda.addEventListener(listeners);
   }
 
-  public void saveChannelAndUserFrom(MessageReceivedEvent event) {
-    MessageChannel channel = event.getChannel();
-
-    discordChannelService.save(
-      new ChannelBuilder()
-        .setId(channel.getId())
-        .setName(channel.getName())
-        .setType("TEXT")
-        .build()
-    );
-
-    User sender = event.getAuthor();
-
-    discordUserService.save(
-      new UserBuilder()
-        .setId(sender.getId())
-        .setName(sender.getName())
-        .setDiscriminator(sender.getDiscriminator())
-        .build()
-    );
-  }
-
   public void saveDiscordEntitiesFrom(MessageReceivedEvent event) {
     Guild server = event.getGuild();
 
@@ -119,7 +86,14 @@ public class JDAService {
         .setName(server.getName())
         .setDescription(server.getDescription())
         .setMembers(server.getMembers())
-        .setCategories(server.getCategories())
+        // see ServerBuilder.getChannelIfExistsElsewhere()
+        // .setCategories(server.getCategories())
+        .setOwner(server.getOwner())
+        // sets #general as the server AFK channel presently
+        // .setAfkChannel(server.getAfkChannel())
+        // .setDefaultChannel(server.getDefaultChannel())
+        // .setSystemChannel(server.getSystemChannel())
+        .setChannels(server.getChannels(false))
         .build()
     );
   }

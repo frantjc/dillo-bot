@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.dillos.dillobot.dto.discord.DiscordServerResponse;
+import com.dillos.dillobot.dto.discord.DiscordUserResponse;
 import com.dillos.dillobot.entities.DiscordServer;
 import com.dillos.dillobot.services.DiscordServerService;
 
@@ -54,6 +55,21 @@ public class ServerController {
 
     if (server.isPresent()) {
       return ResponseEntity.ok().body(new DiscordServerResponse(server.get()));
+    }
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/{id}/members")
+  public ResponseEntity<List<DiscordUserResponse>> getServerMembers(@PathVariable String id) {
+    log.info("GET /api/servers/{}/members", id);
+
+    Optional<DiscordServer> server = discordServerService.get(id);
+
+    if (server.isPresent()) {
+      return ResponseEntity.ok().body(server.get().getMembers().stream().map(member -> {
+        return new DiscordUserResponse(member);
+      }).collect(Collectors.toList()));
     }
 
     return ResponseEntity.noContent().build();

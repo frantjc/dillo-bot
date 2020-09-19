@@ -3,6 +3,7 @@ package com.dillos.dillobot.entities;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -10,6 +11,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 import lombok.Data;
+
 import net.dv8tion.jda.api.entities.Category;
 
 @Entity
@@ -21,7 +23,7 @@ public class DiscordCategory {
 
   String name;
 
-  @OneToMany
+  @OneToMany(cascade={ CascadeType.PERSIST, CascadeType.MERGE })
   @JoinTable(
     name = "discord_category_channel",
     joinColumns = {

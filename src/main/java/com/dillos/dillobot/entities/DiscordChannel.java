@@ -38,7 +38,9 @@ public class DiscordChannel {
 
   public enum ChannelType {
     VOICE("VOICE"),
-    TEXT("TEXT");
+    TEXT("TEXT"),
+    PRIVATE("PRIVATE"),
+    CATEGORY("CATEGORY");
 
     String value;
 
