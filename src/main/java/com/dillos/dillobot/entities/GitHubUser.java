@@ -71,7 +71,9 @@ public class GitHubUser {
 
   public GitHubUser(UserBuilder builder) {
     this.login = builder.getLogin();
-    this.id = Long.parseLong(builder.getId());
+    try {
+      this.id = Long.parseLong(builder.getId());
+    } catch (NumberFormatException e) {}
     this.nodeId = builder.getNodeId();
     this.gravatarId = builder.getGravatarId();
     this.url = builder.getUrl();

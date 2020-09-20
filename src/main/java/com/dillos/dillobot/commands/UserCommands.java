@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -48,9 +47,7 @@ public class UserCommands {
     String id = discordUserService.getIdFromAt(at);
 
     if (id != null) {
-      Member member = server.getMemberById(id);
-
-      log.info("afk channel: {}, member: {}", afk, member);
+      server.moveVoiceMember(server.getMemberById(id), afk).queue();
 
       return;
     }
