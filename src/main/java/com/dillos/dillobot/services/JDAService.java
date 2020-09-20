@@ -42,7 +42,7 @@ public class JDAService {
 
   Logger log = LoggerFactory.getLogger(JDAService.class);
 
-  @Value("${discord.bot.prefix:/}")
+  @Value("${discord.bot.prefix}")
   String prefix;
 
   @Value("${discord.bot.token}")
@@ -89,11 +89,12 @@ public class JDAService {
         // see ServerBuilder.getChannelIfExistsElsewhere()
         // .setCategories(server.getCategories())
         .setOwner(server.getOwner())
-        // sets #general as the server AFK channel presently
+        // incorrectly sets #general as the server AFK channel presently
         // .setAfkChannel(server.getAfkChannel())
         // .setDefaultChannel(server.getDefaultChannel())
         // .setSystemChannel(server.getSystemChannel())
         .setChannels(server.getChannels(false))
+        // .setRoles(server.getRoles())
         .build()
     );
   }
@@ -235,6 +236,7 @@ public class JDAService {
                       .build()
                   ).queue();
                 }
+                shouldInvoke = true;
               }
             }
           });

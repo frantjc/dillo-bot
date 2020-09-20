@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.dillos.dillobot.dto.discord.DiscordChannelResponse;
 import com.dillos.dillobot.dto.discord.DiscordServerResponse;
 import com.dillos.dillobot.dto.discord.DiscordUserResponse;
 import com.dillos.dillobot.entities.DiscordServer;
@@ -69,6 +70,34 @@ public class ServerController {
     if (server.isPresent()) {
       return ResponseEntity.ok().body(server.get().getMembers().stream().map(member -> {
         return new DiscordUserResponse(member);
+      }).collect(Collectors.toList()));
+    }
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/{id}/owner")
+  public ResponseEntity<DiscordUserResponse> getServerOwner(@PathVariable String id) {
+    log.info("GET /api/servers/{}/owner", id);
+
+    Optional<DiscordServer> server = discordServerService.get(id);
+
+    if (server.isPresent()) {
+      return ResponseEntity.ok().body(new DiscordUserResponse(server.get().getOwner()));
+    }
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/{id}/channels")
+  public ResponseEntity<List<DiscordChannelResponse>> getServerChannels(@PathVariable String id) {
+    log.info("GET /api/servers/{}/members", id);
+
+    Optional<DiscordServer> server = discordServerService.get(id);
+
+    if (server.isPresent()) {
+      return ResponseEntity.ok().body(server.get().getChannels().stream().map(channel -> {
+        return new DiscordChannelResponse(channel);
       }).collect(Collectors.toList()));
     }
 

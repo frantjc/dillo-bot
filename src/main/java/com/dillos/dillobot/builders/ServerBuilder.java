@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.dillos.dillobot.entities.DiscordCategory;
 import com.dillos.dillobot.entities.DiscordChannel;
+import com.dillos.dillobot.entities.DiscordRole;
 import com.dillos.dillobot.entities.DiscordServer;
 import com.dillos.dillobot.entities.DiscordUser;
 
@@ -13,6 +14,7 @@ import lombok.Getter;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
 @Getter
@@ -42,6 +44,8 @@ public class ServerBuilder {
 
   List<DiscordCategory> categories;
 
+  List<DiscordRole> roles;
+
   public ServerBuilder setId(String id) {
     this.id = id;
     return this;
@@ -62,6 +66,31 @@ public class ServerBuilder {
       return getUserIfExistsElsewhere(member);
     }).collect(Collectors.toList());
     return this;
+  }
+
+  public ServerBuilder setRoles(List<Role> roles) {
+    this.roles = roles.stream().map(role -> {
+      return getRoleIfExistsElsewhere(role);
+    }).collect(Collectors.toList());
+    return this;
+  }
+
+  private DiscordRole getRoleIfExistsElsewhere(Role role) {
+    return getRoleIfExistsElsewhere(new DiscordRole(role));
+  }
+
+  private DiscordRole getRoleIfExistsElsewhere(DiscordRole role) {
+    if (this.roles != null) {
+      return this.roles.stream().reduce(role, (accumulatedRole, currentRole) -> {
+        if (accumulatedRole.equals(currentRole)) {
+          return currentRole;
+        }
+
+        return accumulatedRole;
+      });
+    }
+
+    return role;
   }
 
   public ServerBuilder setCategories(List<Category> categories) {

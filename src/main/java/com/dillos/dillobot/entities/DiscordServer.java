@@ -119,6 +119,23 @@ public class DiscordServer {
   )
   List<DiscordChannel> channels;
 
+  @OneToMany(
+    cascade = {
+      CascadeType.PERSIST,
+      CascadeType.MERGE
+    }
+  )
+  @JoinTable(
+    name = "discord_server_role",
+    joinColumns = {
+      @JoinColumn(name = "discord_server_id", referencedColumnName = "id") 
+    },
+    inverseJoinColumns = {
+      @JoinColumn(name = "discord_role_id", referencedColumnName = "id") 
+    }
+  )
+  List<DiscordRole> roles;
+
   public DiscordServer(ServerBuilder builder) {
     this.id = builder.getId();
     this.name = builder.getName();
@@ -132,6 +149,7 @@ public class DiscordServer {
     this.members = builder.getMembers();
     this.categories = builder.getCategories();
     this.channels = builder.getChannels();
+    this.roles = builder.getRoles();
   }
 
   public DiscordServer() {}
