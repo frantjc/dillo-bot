@@ -189,7 +189,9 @@ public class GitHubCommands {
         .setDescription("GitHub account with login \"" + login + "\" not found");
     }
 
-    channel.sendMessage(message.build()).queue();
+    channel.sendMessage(
+      message.build()
+    ).queue();
   }
 
   @Command({ "/claimRequest {number}", "/claimIssue {number}" })

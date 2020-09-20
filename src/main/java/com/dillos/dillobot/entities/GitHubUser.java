@@ -111,4 +111,5 @@ public class GitHubUser {
   }
 
   public GitHubUser() {}
+
 }

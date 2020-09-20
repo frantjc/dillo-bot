@@ -96,4 +96,5 @@ public class DiscordUser {
   }
 
   public DiscordUser() {}
+
 }

@@ -16,8 +16,8 @@ public class SubscriptionResponse {
 
   SubscriptionType subscription;
 
-  public SubscriptionResponse(Subscription subscriptionEntity) {
-    this.id = subscriptionEntity.getId();
-    this.subscription = subscriptionEntity.getSubscription();
+  public SubscriptionResponse(Subscription subscription) {
+    this.id = subscription.getId();
+    this.subscription = subscription.getSubscription();
   }
 }

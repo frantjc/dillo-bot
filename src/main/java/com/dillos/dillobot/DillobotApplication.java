@@ -4,6 +4,7 @@ import com.dillos.dillobot.commands.GitHubCommands;
 import com.dillos.dillobot.commands.InformationalCommands;
 import com.dillos.dillobot.commands.SimpleCommands;
 import com.dillos.dillobot.commands.SubscriptionCommands;
+import com.dillos.dillobot.commands.UserCommands;
 import com.dillos.dillobot.services.JDAService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +25,22 @@ public class DillobotApplication implements CommandLineRunner {
 
 	InformationalCommands informationalCommands;
 
-	SubscriptionCommands subscriptionCommands;
+  SubscriptionCommands subscriptionCommands;
+  
+  UserCommands userCommands;
 
 	@Autowired
 	public DillobotApplication(
 		JDAService jdaService,
 		GitHubCommands gitHubCommands, SimpleCommands simpleCommands, InformationalCommands informationalCommands,
-		SubscriptionCommands subscriptionCommands
+		SubscriptionCommands subscriptionCommands, UserCommands userCommands
 	) {
 		this.jdaService = jdaService;
 		this.gitHubCommands = gitHubCommands;
 		this.simpleCommands = simpleCommands;
 		this.informationalCommands = informationalCommands;
-		this.subscriptionCommands = subscriptionCommands;
+    this.subscriptionCommands = subscriptionCommands;
+    this.userCommands = userCommands;
 	}
 
 	public static void main(String[] args) {
@@ -51,7 +55,8 @@ public class DillobotApplication implements CommandLineRunner {
 			gitHubCommands,
 			simpleCommands,
 			informationalCommands,
-			subscriptionCommands
+      subscriptionCommands,
+      userCommands
 		);
 
 		jdaService.getJda().awaitReady();

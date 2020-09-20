@@ -93,6 +93,13 @@ resources:
       repository: debian
       tag: stable-slim
 
+  - name: openjdk-14.0.2-slim-trigger
+    type: docker-image
+    icon: docker
+    source:
+      repository: openjdk
+      tag: 14.0.2-slim
+
   - name: time-trigger
     type: time
     icon: clock-outline
@@ -180,7 +187,7 @@ jobs:
     serial: true
     build_log_retention: *build_log_retention
     plan:
-      - get: debian-stable-slim-trigger
+      - get: openjdk-14.0.2-slim-trigger
         trigger: true
 
       - get: time-trigger
@@ -321,6 +328,12 @@ jobs:
   - name: release-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
+    on_success:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: SUCCESS
+        message: New DilloBot was released
     plan:
       - get: dillo-bot
         passed: [build-dillo-bot]
@@ -355,12 +368,6 @@ jobs:
   - name: containerize-dillo-bot
     serial: true
     build_log_retention: *build_log_retention
-    on_success:
-      put: notify
-      params:
-        channel: ((concourse.discord.channel))
-        title: SUCCESS
-        message: New DilloBot was successfully contained
     on_failure:
       do:
         - task: copy-src-dockerfile-to-root

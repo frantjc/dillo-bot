@@ -54,15 +54,15 @@ fi
 echo ""
 
 echo -e "${INFO_PREFIX} installing dependencies with yarn..."
-yarn install
+yarn upgrade
 INSTALL_SUCCESS=$?
 echo ""
 
 if [ $INSTALL_SUCCESS -ne 0 ]; then
-  echo -e "${FAIL_PREFIX} yarn install failed"
+  echo -e "${FAIL_PREFIX} yarn upgrade failed"
   echo -e "${INFO_PREFIX} continuing..."
 else
-  echo -e "${SUCCESS_PREFIX} yarn install successful"
+  echo -e "${SUCCESS_PREFIX} yarn upgrade successful"
 fi
 
 
