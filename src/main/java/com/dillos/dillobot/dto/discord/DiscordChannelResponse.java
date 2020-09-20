@@ -24,10 +24,12 @@ public class DiscordChannelResponse {
   public DiscordChannelResponse() {}
 
   public DiscordChannelResponse(DiscordChannel channel) {
-    this.id = channel.getId();
-    this.name = channel.getName();
-    this.subscriptions = channel.getSubscriptions().stream().map(subscription -> {
-      return subscription.getSubscription();
-    }).collect(Collectors.toList());
+    if (channel != null) {
+      this.id = channel.getId();
+      this.name = channel.getName();
+      this.subscriptions = channel.getSubscriptions().stream().map(subscription -> {
+        return subscription.getSubscription();
+      }).collect(Collectors.toList());
+    }
   }
 }

@@ -24,10 +24,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:copy": "npm run build && rm -rf src/main/resources/static && mkdir src/main/resources/static && mv build/ src/main/resources/static/",
-    "build:package": "npm run build:copy && ./mvnw package -DskipTests",
+    "build:move": "npm run build && rm -rf src/main/resources/static && mv build/ src/main/resources/static/",
+    "build:package": "npm run build:move && ./mvnw package -DskipTests",
     "build:start": "npm run build:package && java -jar target/dillo-bot.jar",
-    "build:run": "npm run build:copy && ./mvnw spring-boot:run",
+    "build:run": "npm run build:move && ./mvnw spring-boot:run",
     "test": "react-scripts test --watchAll=false",
     "test:watch": "react-scripts test",
     "eject": "react-scripts eject",

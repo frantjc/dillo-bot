@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface GitHubUserRepository extends JpaRepository<GitHubUser, Long> {
 
   public Optional<GitHubUser> findByLogin(String login);
+
 }

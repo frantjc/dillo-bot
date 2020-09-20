@@ -73,4 +73,5 @@ public class IssueResponse {
   }
 
   public IssueResponse() {}
+
 }

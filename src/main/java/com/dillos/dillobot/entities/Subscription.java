@@ -30,4 +30,5 @@ public class Subscription {
   SubscriptionType subscription;
   
   public Subscription() {}
+
 }
