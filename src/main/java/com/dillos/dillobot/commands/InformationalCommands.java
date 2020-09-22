@@ -3,19 +3,17 @@ package com.dillos.dillobot.commands;
 import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.log4j.Log4j2;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
+@Log4j2
 @Component
 public class InformationalCommands {
-
-  Logger log = LoggerFactory.getLogger(InformationalCommands.class);
 
   @Value("${discord.bot.redirect_uri}")
   String redirectUri;

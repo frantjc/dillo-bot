@@ -5,18 +5,16 @@ import com.dillos.dillobot.annotations.Channel;
 import com.dillos.dillobot.annotations.Command;
 import com.dillos.dillobot.annotations.Sender;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Component;
+
+import lombok.extern.log4j.Log4j2;
 
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
+@Log4j2
 @Component
 public class SimpleCommands {
-    
-  Logger log = LoggerFactory.getLogger(SimpleCommands.class);
 
   @Command("/log {string}")
   public void log(

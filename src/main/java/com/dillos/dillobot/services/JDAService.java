@@ -22,9 +22,6 @@ import com.dillos.dillobot.annotations.Sender;
 
 import org.apache.tools.ant.types.Commandline;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -37,10 +34,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service("jdaService")
 public class JDAService {
-
-  Logger log = LoggerFactory.getLogger(JDAService.class);
 
   @Value("${discord.bot.prefix}")
   String prefix;
