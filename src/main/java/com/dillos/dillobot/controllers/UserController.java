@@ -16,9 +16,6 @@ import com.dillos.dillobot.entities.GitHubUser;
 import com.dillos.dillobot.services.DiscordUserService;
 import com.dillos.dillobot.services.GitHubUserService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @RestController
 @RequestMapping("api/users")
 public class UserController {
-
-  Logger log = LoggerFactory.getLogger(UserController.class);
 
   GitHubUserService gitHubUserService;
 

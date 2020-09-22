@@ -16,21 +16,19 @@ import com.dillos.dillobot.services.DiscordUserService;
 import com.dillos.dillobot.services.GitHubService;
 import com.dillos.dillobot.services.GitHubUserService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.log4j.Log4j2;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
+@Log4j2
 @Component
 public class GitHubCommands {
-
-  Logger log = LoggerFactory.getLogger(GitHubCommands.class);
 
   @Value("${github.mark_uri}")
   String gitHubMarkUri;

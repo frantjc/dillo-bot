@@ -8,20 +8,19 @@ import com.dillos.dillobot.annotations.Server;
 import com.dillos.dillobot.services.DiscordUserService;
 import com.dillos.dillobot.services.JDAService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.log4j.Log4j2;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 
+@Log4j2
 @Component
 public class UserCommands {
-
-  Logger log = LoggerFactory.getLogger(UserCommands.class);
 
   DiscordUserService discordUserService;
 

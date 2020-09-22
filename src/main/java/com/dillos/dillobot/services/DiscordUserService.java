@@ -8,17 +8,12 @@ import com.dillos.dillobot.entities.DiscordUser;
 import com.dillos.dillobot.entities.GitHubUser;
 import com.dillos.dillobot.repositories.DiscordUserRepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DiscordUserService {
-
-  Logger log = LoggerFactory.getLogger(DiscordUserService.class);
 
   DiscordUserRepository discordUserRepository;
 
