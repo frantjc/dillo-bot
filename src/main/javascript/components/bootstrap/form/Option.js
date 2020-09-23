@@ -6,7 +6,8 @@ function Option({ selected, value, children, style, className }) {
       selected={selected}
       value={value}
       style={style}
-      className={className}>
+      className={className}
+    >
       {children}
     </option>
   );
