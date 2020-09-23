@@ -10,7 +10,8 @@ function NavItem({ href, children }) {
           window.location.pathname === href ? ' active' : ''
         }
                 `}
-        href={href}>
+        href={href}
+      >
         {children}
       </a>
     </li>

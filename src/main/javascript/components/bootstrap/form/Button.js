@@ -8,7 +8,8 @@ function Button({ children, type, onClick, style, className }) {
       className={`${classes.button}${className ? ` ${className}` : ''}`}
       style={style}
       type={type}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       {children}
     </button>
   );

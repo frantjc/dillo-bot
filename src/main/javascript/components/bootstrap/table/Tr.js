@@ -11,7 +11,8 @@ function Tr({ className, children, color }) {
               color ? `${className ? ' ' : ''}${classes.table}-${color}` : ''
             }`
           : null
-      }>
+      }
+    >
       {children}
     </tr>
   );

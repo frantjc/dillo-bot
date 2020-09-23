@@ -12,7 +12,8 @@ function NavDropdown({ href, dropdown, children }) {
         role="button"
         data-toggle="dropdown"
         aria-haspopup="true"
-        aria-expanded="false">
+        aria-expanded="false"
+      >
         {dropdown}
       </a>
       <div className={classes.dropdownMenu} aria-labelledby="navbarDropdown">

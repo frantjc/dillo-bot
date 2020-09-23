@@ -17,7 +17,8 @@ function Navbar({ children, brand }) {
         data-target="#navbarNavAltMarkup"
         aria-controls="navbarNavAltMarkup"
         aria-expanded="false"
-        aria-label="Toggle navigation">
+        aria-label="Toggle navigation"
+      >
         <span className={classes.navbarTogglerIcon} />
       </button>
       <div className={classes.navbarCollapse} id="navbarNavAltMarkup">

@@ -25,7 +25,8 @@ function TableSpace({ droppable = true, className }) {
   return (
     <div
       ref={drop}
-      className={`${classes.tableSpace}${className ? ` ${className}` : ''}`}>
+      className={`${classes.tableSpace}${className ? ` ${className}` : ''}`}
+    >
       {isOver ? (
         <div style={styles.droppable(isOver, canDrop)} />
       ) : table.name && table.getData ? (
