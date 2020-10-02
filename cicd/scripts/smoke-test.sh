@@ -30,7 +30,7 @@ curl --fail -I ${API}/users/discord
 SMOKE_SUCCESS=$?
 echo ""
 
-if [ $SMOKE_SUCCESS -ne 0 ]; then
+if [ ${SMOKE_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} curl ${API}/users/discord failed"
   exit 1;
 fi
@@ -40,7 +40,7 @@ curl --fail -I ${API}/users/github
 SMOKE_SUCCESS=$?
 echo ""
 
-if [ $SMOKE_SUCCESS -ne 0 ]; then
+if [ ${SMOKE_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} curl ${API}/users/github failed"
   exit 1;
 fi
@@ -50,7 +50,7 @@ curl --fail -I ${API}/channels
 SMOKE_SUCCESS=$?
 echo ""
 
-if [ $SMOKE_SUCCESS -ne 0 ]; then
+if [ ${SMOKE_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} curl ${API}/channels failed"
   exit 1;
 fi
@@ -60,7 +60,7 @@ curl --fail -I ${API}/servers
 SMOKE_SUCCESS=$?
 echo ""
 
-if [ $SMOKE_SUCCESS -ne 0 ]; then
+if [ ${SMOKE_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} curl ${API}/servers failed"
   exit 1;
 fi
@@ -70,7 +70,7 @@ curl --fail -I ${API: -3}
 SMOKE_SUCCESS=$?
 echo ""
 
-if [ $SMOKE_SUCCESS -ne 0 ]; then
+if [ ${SMOKE_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} curl ${API: -3} failed"
   exit 1;
 fi

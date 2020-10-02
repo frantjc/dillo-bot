@@ -31,7 +31,7 @@ echo -e "${INFO_PREFIX} linting src/main/javascript..."
 npm run lint:fix
 LINT_SUCCESS=$?
 
-if [ $LINT_SUCCESS -ne 0 ]; then
+if [ ${LINT_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} lint failed"
   echo -e "${INFO_PREFIX} throwing away changes..."
   git checkout .

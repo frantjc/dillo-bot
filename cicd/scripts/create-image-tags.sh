@@ -25,19 +25,19 @@ echo ""
 touch tags/additional_tags.txt
 
 echo -e "${INFO_PREFIX} getting environment..."
-LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
+LOWERCASED_ENV="$(echo "${ENV}" | tr '[A-Z]' '[a-z]')"
 ENVIRONMENT_SUCCESS=$?
-if [ "$LOWERCASED_ENV" = "" ]; then
+if [ "${LOWERCASED_ENV}" = "" ]; then
   ENVIRONMENT_SUCCESS=1
 fi
-if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
+if [ ${ENVIRONMENT_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} unable to find environment from ENV"
   echo -e "${INFO_PREFIX} assuming environment is prod"
 else
-  echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
+  echo -e "${SUCCESS_PREFIX} environment found: ${LOWERCASED_ENV}"
 fi
 
-if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
+if [ ${ENVIRONMENT_SUCCESS} -ne 1 ] && [ "${LOWERCASED_ENV}" = "d" ] || [ "${LOWERCASED_ENV}" = "dev" ] || [ "${LOWERCASED_ENV}" = "develop" ]; then
   echo -n "d" >> tags/additional_tags.txt
   echo -n " dev" >> tags/additional_tags.txt
   echo -n " develop" >> tags/additional_tags.txt
@@ -47,19 +47,19 @@ fi
 echo -e "${INFO_PREFIX} getting version..."
 VERSION=$(cat version/version)
 VERSION_SUCCESS=$?
-if [ $VERSION_SUCCESS -ne 0 ]; then
+if [ ${VERSION_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} unable to find version"
 else
-  echo -e "${SUCCESS_PREFIX} version found: $VERSION"
+  echo -e "${SUCCESS_PREFIX} version found: ${VERSION}"
 fi
 
-if [ $VERSION_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" != "d" ] && [ "$LOWERCASED_ENV" != "dev" ] && [ "$LOWERCASED_ENV" != "develop" ]; then
-  if [ $FIRST_TAG -ne 0 ]; then
+if [ ${VERSION_SUCCESS} -ne 1 ] && [ "${LOWERCASED_ENV}" != "d" ] && [ "${LOWERCASED_ENV}" != "dev" ] && [ "${LOWERCASED_ENV}" != "develop" ]; then
+  if [ ${FIRST_TAG} -ne 0 ]; then
     echo -n " " >> tags/additional_tags.txt
     FIRST_TAG=1
   fi
 
-  echo -n "$VERSION" >> tags/additional_tags.txt
+  echo -n "${VERSION}" >> tags/additional_tags.txt
 fi
 
 echo -e "${SUCCESS_PREFIX} created: tags/additional_tags.txt"
