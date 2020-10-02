@@ -31,6 +31,7 @@ resources:
   - name: dillo-bot-bucket
     type: s3
     icon: aws
+    check_every: 30m
     source:
       bucket: ((aws.s3.name))
       regexp: ((aws.s3.folder))/dillo-bot-d-(.*).jar
@@ -66,6 +67,7 @@ resources:
   - name: version
     type: semver
     icon: aws
+    check_every: 9999h
     source:
       initial_version: 0.0.0
       driver: s3
