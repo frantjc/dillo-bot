@@ -9,6 +9,7 @@ image_resource:
 params:
   USER:
   PUBLIC_DNS:
+  ENV:
 
 inputs:
   - name: key
