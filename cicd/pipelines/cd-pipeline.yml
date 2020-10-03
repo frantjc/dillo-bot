@@ -60,14 +60,7 @@ anchors:
 
 jobs:
   - name: run-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
-    on_success:
-      put: notify
-      params:
-        channel: ((concourse.discord.channel))
-        title: SUCCESS
-        message: New DilloBot is up and running!
+    <<: *default_job_config
     on_failure:
       put: notify
       params:
@@ -96,3 +89,32 @@ jobs:
         params:
           <<: *ssh_creds
           <<: *env_vars
+
+  - name: smoke-test-dillo-bot
+    <<: *default_job_config
+    on_success:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: SUCCESS
+        message: New DilloBot is up and running!
+    on_failure:
+      do:
+        - put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: New DilloBot failed smoke test, shutting him down
+        
+        - task: stop-container
+          file: dillo-bot/cicd/tasks/stop-container.yml
+          params: *ssh_creds
+    plan:
+      - get: dillo-bot
+        passed: [run-dillo-bot]
+        trigger: true
+
+      - task: smoke-test
+        file: dillo-bot/cicd/tasks/smoke-test.yml
+        params:
+          URL: ((aws.ec2.ipv4_address)):8081
