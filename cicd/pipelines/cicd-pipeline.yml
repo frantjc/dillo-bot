@@ -112,9 +112,11 @@ resources:
 
 
 anchors:
-  - &build_log_retention
-    builds: 10
-    minimum_succeeded_builds: 1
+  - &default_job_config
+    build_log_retention:
+      builds: 10
+      minimum_succeeded_builds: 1
+    serial: true
 
   - &env_vars
     DISCORD_TOKEN: ((discord.token))
@@ -141,8 +143,7 @@ anchors:
 
 jobs:
   - name: update-pipeline
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot
         trigger: true
@@ -187,8 +188,7 @@ jobs:
 
 
   - name: build-dillo-bot-resource-image
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: openjdk-14.0.2-slim-trigger
         trigger: true
@@ -203,8 +203,7 @@ jobs:
           build: dillo-bot/cicd/docker/image_resources/dillo-bot
 
   - name: build-general-resource-image
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: debian-stable-slim-trigger
         trigger: true
@@ -216,8 +215,7 @@ jobs:
           build: dillo-bot/cicd/docker/image_resources/general
 
   # - name: lint-dillo-bot
-  #   serial: true
-  #   build_log_retention: *build_log_retention
+  #   <<: *default_job_config
   #   plan:
   #     - get: dillo-bot-resource-image
   #       passed: [build-dillo-bot-resource-image]
@@ -238,8 +236,7 @@ jobs:
 
 
   - name: test-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
@@ -260,8 +257,7 @@ jobs:
 
 
   - name: test-dillo-bot-ui
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
@@ -281,8 +277,7 @@ jobs:
 
 
   - name: build-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot-resource-image
         passed: [test-dillo-bot, test-dillo-bot-ui]
@@ -329,8 +324,7 @@ jobs:
 
 
   - name: release-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     on_success:
       put: notify
       params:
@@ -369,8 +363,7 @@ jobs:
 
 
   - name: containerize-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     on_failure:
       do:
         - task: copy-src-dockerfile-to-root
@@ -427,14 +420,7 @@ jobs:
           labels_file: labels/labels_file.json
 
   - name: run-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
-    on_success:
-      put: notify
-      params:
-        channel: ((concourse.discord.channel))
-        title: SUCCESS
-        message: New DilloBot is up and running!
+    <<: *default_job_config
     on_failure:
       put: notify
       params:
@@ -466,3 +452,33 @@ jobs:
         params:
           <<: *ssh_creds
           <<: *env_vars
+  
+  - name: smoke-test-dillo-bot
+    <<: *default_job_config
+    on_success:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: SUCCESS
+        message: New DilloBot is up and running!
+    on_failure:
+      do:
+        - put: notify
+          params:
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: New DilloBot failed smoke test, shutting him down
+        
+        - task: stop-container
+          file: dillo-bot/cicd/tasks/stop-container.yml
+          params: *ssh_creds
+    plan:
+      - get: dillo-bot
+        passed: [run-dillo-bot]
+        trigger: true
+
+      - task: smoke-test
+        file: dillo-bot/cicd/tasks/smoke-test.yml
+        params:
+          URL: ((aws.ec2.ipv4_address)):8081
+

@@ -100,9 +100,11 @@ resources:
 
 
 anchors:
-  - &build_log_retention
-    builds: 10
-    minimum_succeeded_builds: 1
+  - &default_job_config
+    build_log_retention:
+      builds: 10
+      minimum_succeeded_builds: 1
+    serial: true
 
   - &env_vars
     DISCORD_TOKEN: ((discord.token))
@@ -118,8 +120,7 @@ anchors:
 
 jobs:
   - name: update-pipeline
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot
         trigger: true
@@ -154,8 +155,7 @@ jobs:
 
 
   - name: build-dillo-bot-resource-image
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: openjdk-14.0.2-slim-trigger
         trigger: true
@@ -171,8 +171,7 @@ jobs:
 
 
   - name: build-general-resource-image
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: debian-stable-slim-trigger
         trigger: true
@@ -185,8 +184,7 @@ jobs:
 
 
   # - name: lint-dillo-bot
-  #   serial: true
-  #   build_log_retention: *build_log_retention
+  #   <<: *default_job_config
   #   plan:
   #     - get: dillo-bot-resource-image
   #       passed: [build-dillo-bot-resource-image]
@@ -207,8 +205,7 @@ jobs:
 
 
   - name: test-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
@@ -229,8 +226,7 @@ jobs:
 
 
   - name: test-dillo-bot-ui
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot-resource-image
         passed: [build-dillo-bot-resource-image]
@@ -250,8 +246,7 @@ jobs:
 
 
   - name: build-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     plan:
       - get: dillo-bot-resource-image
         passed: [test-dillo-bot, test-dillo-bot-ui]
@@ -294,8 +289,7 @@ jobs:
 
 
   - name: release-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     on_success:
       put: notify
       params:
@@ -342,8 +336,7 @@ jobs:
 
 
   - name: containerize-dillo-bot
-    serial: true
-    build_log_retention: *build_log_retention
+    <<: *default_job_config
     on_success:
       put: notify
       params:

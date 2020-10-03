@@ -1,0 +1,7 @@
+.*.*
+*.md
+.vscode/
+cicd/
+documentation/
+target/
+node_modules/
