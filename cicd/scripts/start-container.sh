@@ -49,4 +49,4 @@ elif [[ "$(docker inspect -f '{{.State.Running}}' dillo_bot_db)" != "true" ]]; t
 fi
 
 docker pull frantjc/dillo-bot
-docker run -d --name dillo_bot -e GITHUB_TOKEN=$1 -e DISCORD_TOKEN=$2 -e DISCORD_CLIENT_ID=$3 -e DB_USER=$4 -e DB_PASSWORD=$5 -e DB_URI=$6 -e DB_DRIVER=$7 -p 8080:$8 frantjc/dillo-bot
+docker run -d --name dillo_bot -e GITHUB_TOKEN=$1 -e DISCORD_TOKEN=$2 -e DISCORD_CLIENT_ID=$3 -e DB_USER=$4 -e DB_PASSWORD=$5 -e DB_URI=$6 -e DB_DRIVER=$7 -p 8081:$8 frantjc/dillo-bot
