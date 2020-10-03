@@ -175,6 +175,7 @@ jobs:
             ec2:
               user: ((aws.ec2.user))
               public_dns: ((aws.ec2.public_dns))
+              ipv4_address: ((aws.ec2.ipv4_address))
               key: |
                 ((aws.ec2.key))
           database:
