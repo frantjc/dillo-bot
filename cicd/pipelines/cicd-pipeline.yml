@@ -478,6 +478,8 @@ jobs:
         passed: [run-dillo-bot]
         trigger: true
 
+      - get: general-resource-image
+
       - task: create-key
         file: dillo-bot/cicd/tasks/create-key.yml
         params:
