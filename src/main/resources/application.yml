@@ -19,6 +19,8 @@ flyway:
   outOfOrder: true
   baselineOnMigrate: true
   validateOnMigrate: true
+server:
+  port: 8081
 spring:
   datasource:
     driver-class-name: ${DB_DRIVER}

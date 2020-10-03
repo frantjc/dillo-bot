@@ -65,13 +65,13 @@ if [ ${SMOKE_SUCCESS} -ne 0 ]; then
   exit 1;
 fi
 
-echo -e "${INFO_PREFIX} curling ${API: -3} ..."
-curl --fail -I ${API: -3}
+echo -e "${INFO_PREFIX} curling ${API:0: -3} ..."
+curl --fail -I ${API:0: -3}
 SMOKE_SUCCESS=$?
 echo ""
 
 if [ ${SMOKE_SUCCESS} -ne 0 ]; then
-  echo -e "${FAIL_PREFIX} curl ${API: -3} failed"
+  echo -e "${FAIL_PREFIX} curl ${API:0: -3} failed"
   exit 1;
 fi
 
