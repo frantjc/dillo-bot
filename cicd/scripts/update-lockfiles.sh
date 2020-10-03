@@ -42,7 +42,7 @@ npm install
 INSTALL_SUCCESS=$?
 echo ""
 
-if [ $INSTALL_SUCCESS -ne 0 ]; then
+if [ ${INSTALL_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} npm install failed"
   echo -e "${INFO_PREFIX} continuing..."
 else
@@ -58,7 +58,7 @@ yarn upgrade
 INSTALL_SUCCESS=$?
 echo ""
 
-if [ $INSTALL_SUCCESS -ne 0 ]; then
+if [ ${INSTALL_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} yarn upgrade failed"
   echo -e "${INFO_PREFIX} continuing..."
 else

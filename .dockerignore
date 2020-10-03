@@ -4,4 +4,8 @@
 cicd/
 documentation/
 target/
+<<<<<<< HEAD
 node_modules/
+=======
+node_modules/
+>>>>>>> bc4541d9965ff0a854301378d88f29aca941a978

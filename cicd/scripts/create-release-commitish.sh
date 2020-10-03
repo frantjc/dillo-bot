@@ -20,25 +20,25 @@ ls -al
 echo ""
 
 echo -e "${INFO_PREFIX} getting environment..."
-LOWERCASED_ENV="$(echo "$ENV" | tr '[A-Z]' '[a-z]')"
+LOWERCASED_ENV="$(echo "${ENV}" | tr '[A-Z]' '[a-z]')"
 ENVIRONMENT_SUCCESS=$?
-if [ "$LOWERCASED_ENV" = "" ]; then
+if [ "${LOWERCASED_ENV}" = "" ]; then
   ENVIRONMENT_SUCCESS=1
 fi
-if [ $ENVIRONMENT_SUCCESS -ne 0 ]; then
+if [ ${ENVIRONMENT_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} unable to find environment from ENV"
   echo -e "${INFO_PREFIX} assuming environment is prod"
 else
-  echo -e "${SUCCESS_PREFIX} environment found: $LOWERCASED_ENV"
+  echo -e "${SUCCESS_PREFIX} environment found: ${LOWERCASED_ENV}"
 fi
 
-if [ $ENVIRONMENT_SUCCESS -ne 1 ] && [ "$LOWERCASED_ENV" = "d" ] || [ "$LOWERCASED_ENV" = "dev" ] || [ "$LOWERCASED_ENV" = "develop" ]; then
+if [ ${ENVIRONMENT_SUCCESS} -ne 1 ] && [ "${LOWERCASED_ENV}" = "d" ] || [ "${LOWERCASED_ENV}" = "dev" ] || [ "${LOWERCASED_ENV}" = "develop" ]; then
   echo -n "master" >> commitish/commitish_file.txt
 else
   echo -n "develop" >> commitish/commitish_file.txt
 fi
 
 COMMITISH=$(cat commitish/commitish_file.txt)
-echo -e "${INFO_PREFIX} release commitish: $COMMITISH"
+echo -e "${INFO_PREFIX} release commitish: ${COMMITISH}"
 
 exit 0;

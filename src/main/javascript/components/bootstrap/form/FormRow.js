@@ -6,7 +6,8 @@ function FormRow({ children, className, style }) {
   return (
     <div
       className={`${classes.formRow}${className ? ` ${className}` : ''}`}
-      style={style}>
+      style={style}
+    >
       {children}
     </div>
   );

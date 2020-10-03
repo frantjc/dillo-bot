@@ -8,7 +8,8 @@ function FormGroup({ children, row, className, style }) {
       className={`${classes.formGroup}${row ? ' row' : ''}${
         className ? ` ${className}` : ''
       }`}
-      style={style}>
+      style={style}
+    >
       {children}
     </div>
   );

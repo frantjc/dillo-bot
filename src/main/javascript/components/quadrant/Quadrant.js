@@ -26,7 +26,8 @@ function Quadrant({ quadrant, children }) {
     <div
       className={`${classes.quadrant}${
         convertedQuadrant ? ` ${convertedQuadrant}` : ''
-      }`}>
+      }`}
+    >
       {children}
     </div>
   );

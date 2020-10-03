@@ -9,7 +9,8 @@ function Label({ children, inputId, horizontal, className, style }) {
       className={`${horizontal ? classes.formLabel : ''}${
         className ? ` ${className}` : ''
       }`}
-      style={style}>
+      style={style}
+    >
       {children}
     </label>
   );
