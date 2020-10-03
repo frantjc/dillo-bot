@@ -20,19 +20,19 @@ ls -al
 echo ""
 
 echo -e "${INFO_PREFIX} creating key file..."
-echo "$KEY" > key/dillo-key.pem
+echo "${KEY}" > key/dillo-key.pem
 SUCCESS=$?
-if [ $SUCCESS -ne 0 ]; then
+if [ ${SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} failed to create .pem file"
   exit 1;
 fi
 
 chmod 400 key/dillo-key.pem
 SUCCESS=$?
-if [ $SUCCESS -ne 0 ]; then
+if [ ${SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} failed to change access permissions of .pem file"
 else
   echo -e "${SUCCESS_PREFIX} key created"
 fi
 
-exit $SUCCESS;
+exit ${SUCCESS};

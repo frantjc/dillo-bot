@@ -27,7 +27,7 @@ echo -e "${INFO_PREFIX} installing dependencies..."
 npm ci
 INSTALL_SUCCESS=$?
 echo ""
-if [ $INSTALL_SUCCESS -ne 0 ]; then
+if [ ${INSTALL_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} npm ci failed"
   exit 1;
 else
@@ -46,14 +46,14 @@ echo ""
 echo -e "${INFO_PREFIX} testing ui..."
 npm test
 TEST_SUCCESS=$?
-if [ $TEST_SUCCESS -ne 0 ]; then
+if [ ${TEST_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} build failed"
   exit 1;
 else
   echo -e "${SUCCESS_PREFIX} tests passed"
 fi
 
-if [ $AUDIT_SUCCESS -ne 0 ]; then
+if [ ${AUDIT_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} audit failed; there are dependencies with active vulnerabilities"
   echo -e "${INFO_PREFIX} the pipeline will continue regardless"
   npm audit
