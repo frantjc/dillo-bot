@@ -77,4 +77,4 @@ fi
 
 echo -e "${SUCCESS_PREFIX} smoke tests passed"
 
-exit SMOKE_SUCCESS;
+exit ${SMOKE_SUCCESS};
