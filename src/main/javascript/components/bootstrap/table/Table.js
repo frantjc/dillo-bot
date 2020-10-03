@@ -20,7 +20,8 @@ function Table({
         bordered ? ` ${classes.tableBordered}` : ''
       }${hover ? ` ${classes.tableHover}` : ''}${
         sm ? ` ${classes.tableSm}` : ''
-      }`}>
+      }`}
+    >
       {caption ? <caption>{caption}</caption> : null}
       {children}
     </table>

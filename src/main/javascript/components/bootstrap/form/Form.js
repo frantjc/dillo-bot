@@ -8,7 +8,8 @@ function Form({ children, inline, style, className }) {
       className={`${inline ? classes.formInline : ''}${
         className ? ` ${className}` : ''
       }`}
-      style={style}>
+      style={style}
+    >
       {children}
     </form>
   );

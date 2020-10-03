@@ -8,7 +8,8 @@ function FormCheck({ children, inline, className, style }) {
       className={`${classes.formCheck}${
         inline ? `${classes.formCheck}-inline` : ''
       }${className ? ` ${className}` : ''}`}
-      style={style}>
+      style={style}
+    >
       {children}
     </div>
   );

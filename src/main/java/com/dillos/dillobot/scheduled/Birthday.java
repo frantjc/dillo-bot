@@ -10,18 +10,16 @@ import com.dillos.dillobot.services.DiscordChannelService;
 import com.dillos.dillobot.services.DiscordUserService;
 import com.dillos.dillobot.services.JDAService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Component
 public class Birthday {
-
-  Logger log = LoggerFactory.getLogger(Birthday.class);
 
   JDAService jdaService;
 

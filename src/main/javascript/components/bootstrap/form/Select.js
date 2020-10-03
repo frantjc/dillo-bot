@@ -10,7 +10,8 @@ function Select({ multiple, children, id, onChange, name, style, className }) {
       className={`${classes.formControl}${className ? ` ${className}` : ''}`}
       onChange={onChange}
       name={name}
-      style={style}>
+      style={style}
+    >
       {children}
     </select>
   );

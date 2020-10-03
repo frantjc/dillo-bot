@@ -12,9 +12,6 @@ import com.dillos.dillobot.dto.github.IssueRequest;
 import com.dillos.dillobot.dto.github.IssueResponse;
 import com.dillos.dillobot.entities.GitHubUser;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -25,8 +22,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class GitHubService {
-
-  Logger log = LoggerFactory.getLogger(GitHubService.class);
 
   @Value("${github.repository.api}")
   String api;

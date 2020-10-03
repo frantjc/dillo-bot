@@ -12,6 +12,8 @@ params:
   DISCORD_TOKEN:
   GITHUB_TOKEN:
   DISCORD_CLIENT_ID:
+  PORT: 8081
+  ENV:
 
 inputs:
   - name: key

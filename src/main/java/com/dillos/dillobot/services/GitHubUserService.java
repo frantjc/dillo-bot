@@ -9,16 +9,11 @@ import com.dillos.dillobot.dto.github.IssueResponse;
 import com.dillos.dillobot.entities.GitHubUser;
 import com.dillos.dillobot.repositories.GitHubUserRepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GitHubUserService {
-  
-  Logger log = LoggerFactory.getLogger(GitHubUserService.class);
 
   GitHubUserRepository gitHubUserRepository;
 

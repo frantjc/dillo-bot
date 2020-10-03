@@ -7,15 +7,12 @@ image_resource:
     repository: frantjc/general-resource
 
 params:
-  USER:
-  PUBLIC_DNS:
-  ENV:
+  URL:
 
 inputs:
-  - name: key
   - name: dillo-bot
 
 run:
   path: /bin/bash
   args:
-    - "dillo-bot/cicd/scripts/ssh-and-stop-container.sh"
+    - "dillo-bot/cicd/scripts/smoke-test.sh"

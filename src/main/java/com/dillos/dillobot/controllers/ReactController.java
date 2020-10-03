@@ -1,19 +1,18 @@
 package com.dillos.dillobot.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Controller
 public class ReactController {
-    
-  Logger log = LoggerFactory.getLogger(ReactController.class);
 
   @GetMapping("/")
   public String index() {
     log.info("GET / -> /index.html");
     return "index.html";
   }
+
 }

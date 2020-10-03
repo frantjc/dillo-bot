@@ -11,7 +11,8 @@ function Thead({ className, children, color }) {
               color ? `${className ? ' ' : ''}${classes.thead}-color` : ''
             }`
           : null
-      }>
+      }
+    >
       {children}
     </thead>
   );

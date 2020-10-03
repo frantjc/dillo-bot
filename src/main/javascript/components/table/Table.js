@@ -66,7 +66,8 @@ function Table({
             dark
             striped
             caption={table.name ? table.name : null}
-            className={`${classes.scrollable} ${classes.scrollbar}`}>
+            className={`${classes.scrollable} ${classes.scrollbar}`}
+          >
             <Thead>
               <Tr>
                 {columns.map((column, colKey) => (
@@ -86,7 +87,8 @@ function Table({
                           table.onTableClick(row, column);
                         }
                       }}
-                      key={colKey}>
+                      key={colKey}
+                    >
                       {row[column]}
                     </Td>
                   ))}
@@ -104,7 +106,8 @@ function Table({
         <div
           ref={drag}
           style={styles.draggable(isDragging)}
-          className={classes.tableDraggable}>
+          className={classes.tableDraggable}
+        >
           <TableIcon size={50} color={'#272a30'} />
           <p className={classes.caption}>{table.name}</p>
         </div>
