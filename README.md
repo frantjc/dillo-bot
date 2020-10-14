@@ -76,7 +76,7 @@ $ git commit -m "I integrated dillo-bot with GitHub"
 $ git push
 ```
 
-Lastly, on GitHub, you should make a [Pull Request](https://github.com/frantjc/dillo-bot/pulls), asking for your code to be merged into develop.
+Lastly, on GitHub, you should make a [Pull Request](https://github.com/frantjc/dillo-bot/pulls), asking for your code to be merged into the `develop` branch.
 
 More Reading                                        |
 ----------------------------------------------------|
@@ -108,10 +108,9 @@ To just run the ui:
 $ npm start
 ```
 
-Or, to run it inside of Docker from source:
+Or, to run it inside of Docker:
 ```
-$ cp cicd/docker/dillo-bot/src/Dockerfile .
-$ docker run .
+$ docker run . // optionally, --build-arg skipTests=true
 ```
 
 > _Note: Docker is available on Windows 10 Pro, Mac, and Linux._
@@ -177,4 +176,4 @@ package com.dillos.dillobot;
 ...
 ```
 
-Done! If you are interested in the code behind this, it exists largely in [`src/main/java/com/dillos/dillobot/services/JDAService.java`](src/main/java/com/dillos/dillobot/services/JDAService.java) and [`src/main/java/com/dillos/dillobot/annotations`](src/main/java/com/dillos/dillobot/annotations).  I think it's pretty cool.
+Done! If you are interested in the code behind this, it exists largely in [`src/main/java/com/dillos/dillobot/services/JDAService.java`](src/main/java/com/dillos/dillobot/services/JDAService.java) and [`src/main/java/com/dillos/dillobot/annotations`](src/main/java/com/dillos/dillobot/annotations).  I think it's pretty cool.  At some point, I'd like to extract it to its own package and use it as a dependency here rather than including it in the source code.
