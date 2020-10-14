@@ -19,17 +19,19 @@
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "^1.1.0",
+    "cross-env": "^7.0.2",
     "eslint": "^6.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:move": "npm run build && rm -rf src/main/resources/static && mv build/ src/main/resources/static/",
-    "build:package": "npm run build:move && ./mvnw package -DskipTests",
+    "build:move": "cross-env npm run build && rm -rf src/main/resources/static && mv build/ src/main/resources/static/",
+    "build:package": "cross-env npm run build:move && ./mvnw package -DskipTests",
     "build:start": "npm run build:package && java -jar target/dillo-bot.jar",
-    "build:run": "npm run build:move && ./mvnw spring-boot:run",
-    "test": "react-scripts test --watchAll=false",
-    "test:watch": "react-scripts test",
+    "build:run": "cross-env npm run build:move && ./mvnw spring-boot:run",
+    "test": "cross-env ./mvnw test",
+    "test:ui": "react-scripts test --watchAll=false",
+    "test:ui:watch": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/main/javascript",
     "lint:fix": "eslint ./src/main/javascript --fix"

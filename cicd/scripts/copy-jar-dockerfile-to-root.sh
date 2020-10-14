@@ -13,7 +13,7 @@ echo ""
 
 mkdir dillo-bot-dockerfile/target
 cp dillo-bot-bucket/dillo-bot*.jar dillo-bot-dockerfile/target/dillo-bot.jar
-cp dillo-bot/cicd/docker/dillo-bot/jar/Dockerfile dillo-bot-dockerfile/ 
+cp dillo-bot/cicd/docker/dillo-bot/cicd/Dockerfile dillo-bot-dockerfile/ 
 
 echo -e "${INFO_PREFIX} dillo-bot-dockerfile/"
 ls dillo-bot-dockerfile/

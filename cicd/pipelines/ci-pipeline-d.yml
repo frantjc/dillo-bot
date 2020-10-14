@@ -299,6 +299,7 @@ jobs:
     plan:
       - get: dillo-bot
         passed: [build-dillo-bot]
+        trigger: true
 
       - get: dillo-bot-bucket
         passed: [build-dillo-bot]
