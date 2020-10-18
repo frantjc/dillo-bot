@@ -128,13 +128,10 @@ package com.dillos.dillobot.commands;
 @Component
 public class MyCommands {
 
-  @Command("/myCommand {someArg}")
-  public void myCommand(
-    @Arg(defaultValue = "mine") someArg,
-    @Channel MessageChannel channel
-  ) {
-      channel.sendMessage(someArg).queue();
-  }
+    @Command("/myCommand {someArg}")
+    public void myCommand(@Arg(defaultValue = "mine") someArg, @Channel MessageChannel channel) {
+        channel.sendMessage(someArg).queue();
+    }
 
 }
 ```
