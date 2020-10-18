@@ -12,11 +12,11 @@ A bot for Discord server Dillos the Third.
 
 #### [Nodejs 12.x](https://nodejs.org/en/download/)
 
-> _Note: Nodejs is only required for developing DilloBot's ui_
+> _Note: Nodejs is only required for developing DilloBot's ui._
 
 #### [Yarn](https://yarnpkg.com/)
 
-> _Note: Yarn is an optional package manager replacement for Nodejs's npm.  It is also only relevant to DilloBot's ui_
+> _Note: Yarn is an optional package manager replacement for Nodejs's npm.  It is also only relevant to DilloBot's ui._
 
 #### Editor suggestion: [VSCode](https://code.visualstudio.com/)
 
@@ -145,19 +145,15 @@ package com.dillos.dillobot;
 
 ...
 
-  MyCommands myCommands; // add your @Component class with some @Command functions
+    MyCommands myCommands; // add your @Component class with some @Command functions
 
-  // @Autowired your commands
-  @Autowired
-	public DillobotApplication(
-		JDAService jdaService,
-    SimpleCommands simpleCommands,
-    MyCommands myCommands
-	) {
+    // @Autowired your commands
+    @Autowired
+	public DillobotApplication(JDAService jdaService, SimpleCommands simpleCommands, MyCommands myCommands) {
 		this.jdaService = jdaService;
 		this.simpleCommands = simpleCommands;
-    this.myCommands = myCommands; // instantiate your commands
-  }
+        this.myCommands = myCommands; // instantiate your commands
+    }
     
 ...
 
@@ -167,11 +163,11 @@ package com.dillos.dillobot;
 
 		jdaService.addCommands(
 			simpleCommands,
-      myCommands // add your commands to the jda!
+            myCommands // add your commands to the jda!
 		);
 
 		jdaService.getJda().awaitReady();
-  }
+    }
 
 ...
 ```
