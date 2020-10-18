@@ -128,13 +128,10 @@ package com.dillos.dillobot.commands;
 @Component
 public class MyCommands {
 
-  @Command("/myCommand {someArg}")
-  public void myCommand(
-    @Arg(defaultValue = "mine") someArg,
-    @Channel MessageChannel channel
-  ) {
-      channel.sendMessage(someArg).queue();
-  }
+    @Command("/myCommand {someArg}")
+    public void myCommand(@Arg(defaultValue = "mine") someArg, @Channel MessageChannel channel) {
+        channel.sendMessage(someArg).queue();
+    }
 
 }
 ```
@@ -151,20 +148,19 @@ package com.dillos.dillobot;
     @Autowired
 	public DillobotApplication(JDAService jdaService, SimpleCommands simpleCommands, MyCommands myCommands) {
 		this.jdaService = jdaService;
-		this.simpleCommands = simpleCommands;
-        this.myCommands = myCommands; // instantiate your commands
+        this.simpleCommands = simpleCommands;
+        // instantiate your commands
+        this.myCommands = myCommands;
     }
     
 ...
 
 	@Override
 	public void run(String... args) throws Exception {
-		jdaService.start();
-
-		jdaService.addCommands(
-			simpleCommands,
-            myCommands // add your commands to the jda!
-		);
+        jdaService.start();
+        
+        // add your commands to the jda!
+		jdaService.addCommands(simpleCommands, myCommands);
 
 		jdaService.getJda().awaitReady();
     }
