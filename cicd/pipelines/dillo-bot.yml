@@ -361,7 +361,8 @@ jobs:
           bump: minor
 
       - put: version
-        file: version/version
+        params:
+          file: version/version
 
       - task: create-key
         file: dillo-bot/cicd/tasks/create-key.yml
