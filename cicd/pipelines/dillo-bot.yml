@@ -317,6 +317,7 @@ jobs:
           build: dillo-bot/
           tag_as_latest: true
           tag_file: version/version
+          build_args: *test_env_vars
         get_params:
           skip_download: true
 
