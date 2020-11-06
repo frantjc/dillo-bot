@@ -357,6 +357,7 @@ jobs:
         passed: [build-general-resource-image]
 
       - get: version
+        passed: [build-dillo-bot, containerize-dillo-bot]
         params:
           bump: minor
 
