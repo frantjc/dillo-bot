@@ -4,13 +4,14 @@ WORKDIR /usr/src/dillo-bot
 
 ARG skip_tests=false
 
-COPY src/ src/
 COPY .mvn/ .mvn/
-COPY mvnw .
-COPY pom.xml .
 COPY cicd/scripts/docker-test.sh .
-COPY package.json .
+COPY public/ public/
+COPY src/ src/
+COPY mvnw .
 COPY package-lock.json .
+COPY package.json .
+COPY pom.xml .
 COPY tsconfig.json .
 COPY yarn.lock .
 
