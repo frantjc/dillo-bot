@@ -14,6 +14,7 @@ COPY package-lock.json .
 COPY yarn.lock .
 
 RUN chmod +x mvnw \
+  && chmod +x docker-test.sh \
   && npm ci \
   && npm audit fix \
   && ./docker-test.sh ${skipTests} \

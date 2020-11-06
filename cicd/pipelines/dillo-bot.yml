@@ -34,10 +34,10 @@ resources:
     check_every: 30m
     source:
       bucket: ((aws.s3.name))
-      regexp: ((aws.s3.folder))/dillo-bot-(.*).jar
+      regexp: dillo-bot-(.*).jar
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
-      region_name: us-east-2
+      region_name: ((aws.s3.region))
 
   - name: dillo-bot-image
     type: docker-image
@@ -65,29 +65,27 @@ resources:
 
   - name: version
     type: semver
-    icon: aws
+    icon: information-outline
     check_every: 9999h
     source:
       initial_version: 0.0.0
       driver: s3
       bucket: ((aws.s3.name))
-      key: ((aws.s3.folder))/version
+      key: version
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
-      region_name: us-east-2
+      region_name: ((aws.s3.region))
 
-  - name: version-d
-    type: semver
-    icon: aws
-    check_every: 9999h
+  - name: vars
+    type: s3
+    icon: cog
+    check_every: 1h
     source:
-      initial_version: 0.0.0
-      driver: s3
       bucket: ((aws.s3.name))
-      key: ((aws.s3.folder))/dev/version
+      regexp: vars-(.*).yml
       access_key_id: ((aws.s3.key.id))
       secret_access_key: ((aws.s3.key.secret))
-      region_name: us-east-2
+      region_name: ((aws.s3.region))
 
   - name: debian-stable-slim-trigger
     type: docker-image
@@ -114,8 +112,8 @@ resources:
 anchors:
   - &default_job_config
     build_log_retention:
-      builds: 10
-      minimum_succeeded_builds: 1
+      builds: 12
+      minimum_succeeded_builds: 3
     serial: true
 
   - &env_vars
@@ -136,6 +134,9 @@ anchors:
     DB_PASSWORD: 
     DB_DRIVER: org.h2.Driver
 
+  - &ssh_creds
+    USER: ((aws.ec2.user))
+    HOST: ((aws.ec2.public_dns))
 
 
 jobs:
@@ -145,76 +146,12 @@ jobs:
       - get: dillo-bot
         trigger: true
 
-      - set_pipeline: dillo-bot-ci
-        file: dillo-bot/cicd/pipelines/ci-pipeline.yml
-        vars:
-          concourse:
-            discord:
-              token: ((concourse.discord.token))
-              channel: "((concourse.discord.channel))"
-          discord:
-            token: ((discord.token))
-            client:
-              id: "((discord.client.id))"
-          github:
-            owner: ((github.owner))
-            repository: ((github.repository))
-            uri: ((github.uri))
-            branch: ((github.branch))
-            token: ((github.token))
-          docker:
-            username: ((docker.username))
-            password: ((docker.password))
-          aws:
-            s3:
-              name: ((aws.s3.name))
-              folder: ((aws.s3.folder))
-              key:
-                secret: ((aws.s3.key.secret))
-                id: ((aws.s3.key.id))
-            ec2:
-              user: ((aws.ec2.user))
-              public_dns: ((aws.ec2.public_dns))
-              ipv4_address: ((aws.ec2.ipv4_address))
-              key: |
-                ((aws.ec2.key))
-          database:
-            user: ((database.user))
-            password: ((database.password))
-            uri: ((database.uri))
-            driver: ((database.driver))
+      - get: vars
+        trigger: true
 
-      - set_pipeline: dillo-bot-cd 
-        file: dillo-bot/cicd/pipelines/cd-pipeline.yml
-        vars:
-          concourse:
-            discord:
-              token: ((concourse.discord.token))
-              channel: "((concourse.discord.channel))"
-          discord:
-            token: ((discord.token))
-            client:
-              id: "((discord.client.id))"
-          github:
-            owner: ((github.owner))
-            repository: ((github.repository))
-            uri: ((github.uri))
-            branch: ((github.branch))
-            token: ((github.token))
-          docker:
-            username: ((docker.username))
-            password: ((docker.password))
-          aws:
-            ec2:
-              user: ((aws.ec2.user))
-              public_dns: ((aws.ec2.public_dns))
-              key: |
-                ((aws.ec2.key))
-          database:
-            user: ((database.user))
-            password: ((database.password))
-            uri: ((database.uri))
-            driver: ((database.driver))
+      - set_pipeline: self
+        file: dillo-bot/cicd/pipelines/dillo-bot.yml
+        var_files: [vars/vars.yml]
 
 
   - name: build-dillo-bot-resource-image
@@ -230,7 +167,7 @@ jobs:
 
       - put: dillo-bot-resource-image
         params:
-          build: dillo-bot/cicd/docker/dillo-bot/image_resource
+          build: dillo-bot/cicd/docker/image_resources/dillo-bot
 
   - name: build-general-resource-image
     <<: *default_job_config
@@ -309,6 +246,12 @@ jobs:
 
   - name: build-dillo-bot
     <<: *default_job_config
+    on_failure:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: FAIL
+        message: Failed to build new DilloBot
     plan:
       - get: dillo-bot-resource-image
         passed: [test-dillo-bot, test-dillo-bot-ui]
@@ -319,7 +262,7 @@ jobs:
 
       - get: version
         params:
-          bump: minor
+          bump: patch
 
       - try:
           task: build-ui
@@ -334,24 +277,38 @@ jobs:
       - task: build-jar
         file: dillo-bot/cicd/tasks/build-jar.yml
         params: *env_vars
-        on_failure:
-          put: notify
-          params:
-            channel: ((concourse.discord.channel))
-            title: FAIL
-            message: Failed to build new DilloBot
 
       - put: version
-        params:
-          file: version/version
-
-      - put: version-d
         params:
           file: version/version
 
       - put: dillo-bot-bucket
         params:
           file: target/dillo-bot*.jar
+
+
+  - name: containerize-dillo-bot
+    <<: *default_job_config
+    on_failure:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: FAIL
+        message: New DilloBot could not be contained
+    plan:
+      - get: dillo-bot
+        passed: [test-dillo-bot, test-dillo-bot-ui]
+        trigger: true
+
+      - get: version
+        params:
+          bump: patch
+
+      - put: dillo-bot-image
+        params:
+          build: dillo-bot/
+          tag_as_latest: true
+          tag_file: version/version
 
 
   - name: release-dillo-bot
@@ -372,87 +329,81 @@ jobs:
         trigger: true
 
       - get: version
-        passed: [build-dillo-bot]
-
-      - task: create-release-name
-        file: dillo-bot/cicd/tasks/create-release-name.yml
-
-      - task: create-release-tag
-        file: dillo-bot/cicd/tasks/create-release-tag.yml
-
-      - task: create-release-commitish
-        file: dillo-bot/cicd/tasks/create-release-commitish.yml
-
-      - task: create-release-globs
-        file: dillo-bot/cicd/tasks/create-release-globs.yml
+        passed: [build-dillo-bot, containerize-dillo-bot]
 
       - put: dillo-bot-release
         params:
-          name: name/name_file.txt
-          tag: tag/tag_file.txt
-          commitish: commitish/commitish_file.txt
-          globs: [globs/*.jar]
+          name: version/version
+          tag: version/version
+          globs: [dillo-bot-bucket/*.jar]
 
 
-  - name: containerize-dillo-bot
+  - name: run-dillo-bot
+    <<: *default_job_config
+    on_failure:
+      put: notify
+      params:
+        channel: ((concourse.discord.channel))
+        title: FAIL
+        message: Could not get new DilloBot to run on server
+    plan:
+      - get: dillo-bot
+        passed: [containerize-dillo-bot]
+
+      - get: dillo-bot-image
+        passed: [containerize-dillo-bot]
+      
+      - get: general-resource-image
+        passed: [build-general-resource-image]
+
+      - task: create-key
+        file: dillo-bot/cicd/tasks/create-key.yml
+        params:
+          KEY: ((aws.ec2.key))
+
+      - task: stop-container
+        file: dillo-bot/cicd/tasks/stop-container.yml
+        params: *ssh_creds
+
+      - task: start-container
+        file: dillo-bot/cicd/tasks/start-container.yml
+        params:
+          <<: *ssh_creds
+          <<: *env_vars
+  
+  - name: smoke-test-dillo-bot
     <<: *default_job_config
     on_success:
       put: notify
       params:
         channel: ((concourse.discord.channel))
         title: SUCCESS
-        message: New DilloBot was successfully contained
+        message: New DilloBot is up and running!
     on_failure:
       do:
-        - task: copy-src-dockerfile-to-root
-          file: dillo-bot/cicd/tasks/copy-src-dockerfile-to-root.yml
-
-        - task: create-image-labels
-          file: dillo-bot/cicd/tasks/create-image-labels.yml
-  
-        - task: create-image-tags
-          file: dillo-bot/cicd/tasks/create-image-tags.yml
-
-        - put: dillo-bot-image
+        - put: notify
           params:
-            build: dillo-bot-dockerfile/
-            additional_tags: tags/additional_tags.txt
-            labels_file: labels/labels_file.json
-          on_success:
-            put: notify
-            params:
-              channel: ((concourse.discord.channel))
-              title: WARN
-              message: New DilloBot was containerized from source
-          on_failure:
-            put: notify
-            params:
-              channel: ((concourse.discord.channel))
-              title: FAIL
-              message: New DilloBot could not be contained
+            channel: ((concourse.discord.channel))
+            title: FAIL
+            message: New DilloBot failed smoke test, shutting him down
+        
+        - task: stop-container
+          file: dillo-bot/cicd/tasks/stop-container.yml
+          params: *ssh_creds
     plan:
       - get: dillo-bot
-        passed: [build-dillo-bot]
+        passed: [run-dillo-bot]
         trigger: true
 
-      - get: version
-        passed: [build-dillo-bot]
+      - get: general-resource-image
+        passed: [run-dillo-bot]
 
-      - get: dillo-bot-bucket
-        passed: [build-dillo-bot]
-        trigger: true
-
-      - task: copy-jar-dockerfile-to-root
-        file: dillo-bot/cicd/tasks/copy-jar-dockerfile-to-root.yml
-
-      - task: create-image-labels
-        file: dillo-bot/cicd/tasks/create-image-labels.yml
-
-      - task: create-image-tags
-        file: dillo-bot/cicd/tasks/create-image-tags.yml
-
-      - put: dillo-bot-image
+      - task: create-key
+        file: dillo-bot/cicd/tasks/create-key.yml
         params:
-          build: dillo-bot-dockerfile/
-          additional_tags: tags/additional_tags.txt
-          labels_file: labels/labels_file.json
+          KEY: ((aws.ec2.key))
+
+      - task: smoke-test
+        file: dillo-bot/cicd/tasks/smoke-test.yml
+        params:
+          URL: ((aws.ec2.ipv4_address)):8081
