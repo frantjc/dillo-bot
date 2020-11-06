@@ -44,7 +44,7 @@ echo -e "${INFO_PREFIX} audit complete"
 echo ""
 
 echo -e "${INFO_PREFIX} testing ui..."
-npm test
+npm run test:ui
 TEST_SUCCESS=$?
 if [ ${TEST_SUCCESS} -ne 0 ]; then
   echo -e "${FAIL_PREFIX} build failed"

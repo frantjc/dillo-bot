@@ -1,7 +1,9 @@
 .*.*
 *.md
 .vscode/
-cicd/
+cicd/pipelines
+cicd/tasks
+cicd/docker
 documentation/
 target/
 node_modules/

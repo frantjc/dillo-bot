@@ -12,11 +12,11 @@ A bot for Discord server Dillos the Third.
 
 #### [Nodejs 12.x](https://nodejs.org/en/download/)
 
-> _Note: Nodejs is only required for developing DilloBot's ui_
+> _Note: Nodejs is only required for developing DilloBot's ui._
 
 #### [Yarn](https://yarnpkg.com/)
 
-> _Note: Yarn is an optional package manager replacement for Nodejs's npm.  It is also only relevant to DilloBot's ui_
+> _Note: Yarn is an optional package manager replacement for Nodejs's npm.  It is also only relevant to DilloBot's ui._
 
 #### Editor suggestion: [VSCode](https://code.visualstudio.com/)
 
@@ -76,7 +76,7 @@ $ git commit -m "I integrated dillo-bot with GitHub"
 $ git push
 ```
 
-Lastly, on GitHub, you should make a [Pull Request](https://github.com/frantjc/dillo-bot/pulls), asking for your code to be merged into develop.
+Lastly, on GitHub, you should make a [Pull Request](https://github.com/frantjc/dillo-bot/pulls), asking for your code to be merged into the `develop` branch.
 
 More Reading                                        |
 ----------------------------------------------------|
@@ -108,10 +108,9 @@ To just run the ui:
 $ npm start
 ```
 
-Or, to run it inside of Docker from source:
+Or, to run it inside of Docker:
 ```
-$ cp cicd/docker/dillo-bot/src/Dockerfile .
-$ docker run .
+$ docker run . // optionally, --build-arg skipTests=true
 ```
 
 > _Note: Docker is available on Windows 10 Pro, Mac, and Linux._
@@ -129,13 +128,10 @@ package com.dillos.dillobot.commands;
 @Component
 public class MyCommands {
 
-  @Command("/myCommand {someArg}")
-  public void myCommand(
-    @Arg(defaultValue = "mine") someArg,
-    @Channel MessageChannel channel
-  ) {
-      channel.sendMessage(someArg).queue();
-  }
+    @Command("/myCommand {someArg}")
+    public void myCommand(@Arg(defaultValue = "mine") someArg, @Channel MessageChannel channel) {
+        channel.sendMessage(someArg).queue();
+    }
 
 }
 ```
@@ -146,35 +142,30 @@ package com.dillos.dillobot;
 
 ...
 
-  MyCommands myCommands; // add your @Component class with some @Command functions
+    MyCommands myCommands; // add your @Component class with some @Command functions
 
-  // @Autowired your commands
-  @Autowired
-	public DillobotApplication(
-		JDAService jdaService,
-    SimpleCommands simpleCommands,
-    MyCommands myCommands
-	) {
+    // @Autowired your commands
+    @Autowired
+	public DillobotApplication(JDAService jdaService, SimpleCommands simpleCommands, MyCommands myCommands) {
 		this.jdaService = jdaService;
-		this.simpleCommands = simpleCommands;
-    this.myCommands = myCommands; // instantiate your commands
-  }
+        this.simpleCommands = simpleCommands;
+        // instantiate your commands
+        this.myCommands = myCommands;
+    }
     
 ...
 
 	@Override
 	public void run(String... args) throws Exception {
-		jdaService.start();
-
-		jdaService.addCommands(
-			simpleCommands,
-      myCommands // add your commands to the jda!
-		);
+        jdaService.start();
+        
+        // add your commands to the jda!
+		jdaService.addCommands(simpleCommands, myCommands);
 
 		jdaService.getJda().awaitReady();
-  }
+    }
 
 ...
 ```
 
-Done! If you are interested in the code behind this, it exists largely in [`src/main/java/com/dillos/dillobot/services/JDAService.java`](src/main/java/com/dillos/dillobot/services/JDAService.java) and [`src/main/java/com/dillos/dillobot/annotations`](src/main/java/com/dillos/dillobot/annotations).  I think it's pretty cool.
+Done! If you are interested in the code behind this, it exists largely in [`src/main/java/com/dillos/dillobot/services/JDAService.java`](src/main/java/com/dillos/dillobot/services/JDAService.java) and [`src/main/java/com/dillos/dillobot/annotations`](src/main/java/com/dillos/dillobot/annotations).  I think it's pretty cool.  At some point, I'd like to extract it to its own package and use it as a dependency here rather than including it in the source code.
