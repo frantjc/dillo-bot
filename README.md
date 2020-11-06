@@ -110,7 +110,7 @@ $ npm start
 
 Or, to run it inside of Docker:
 ```
-$ docker run . // optionally, --build-arg skipTests=true
+$ docker run . // optionally, --build-arg skip_tests=true
 ```
 
 > _Note: Docker is available on Windows 10 Pro, Mac, and Linux._

@@ -30,6 +30,7 @@
     "build:start": "npm run build:package && java -jar target/dillo-bot.jar",
     "build:run": "cross-env npm run build:move && ./mvnw spring-boot:run",
     "test": "cross-env ./mvnw test",
+    "test:api": "npm test",
     "test:ui": "react-scripts test --watchAll=false",
     "test:ui:watch": "react-scripts test",
     "eject": "react-scripts eject",
