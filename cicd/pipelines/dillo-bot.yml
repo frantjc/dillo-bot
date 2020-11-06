@@ -356,6 +356,13 @@ jobs:
       - get: general-resource-image
         passed: [build-general-resource-image]
 
+      - get: version
+        params:
+          bump: minor
+
+      - put: version
+        file: version/version
+
       - task: create-key
         file: dillo-bot/cicd/tasks/create-key.yml
         params:
