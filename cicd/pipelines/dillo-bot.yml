@@ -151,7 +151,7 @@ jobs:
 
       - set_pipeline: self
         file: dillo-bot/cicd/pipelines/dillo-bot.yml
-        var_files: [vars/vars.yml]
+        var_files: [vars/vars*.yml]
 
 
   - name: build-dillo-bot-resource-image
