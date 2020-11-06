@@ -54,6 +54,7 @@ resources:
       username: ((docker.username))
       password: ((docker.password))
       repository: ((docker.username))/dillo-bot-resource
+      skip_download: true
 
   - name: general-resource-image
     type: docker-image
@@ -62,6 +63,7 @@ resources:
       username: ((docker.username))
       password: ((docker.password))
       repository: ((docker.username))/general-resource
+      skip_download: true
 
   - name: version
     type: semver
@@ -93,6 +95,7 @@ resources:
     source:
       repository: debian
       tag: stable-slim
+      skip_download: true
 
   - name: openjdk-14.0.2-slim-trigger
     type: docker-image
@@ -100,6 +103,7 @@ resources:
     source:
       repository: openjdk
       tag: 14.0.2-slim
+      skip_download: true
 
   - name: time-trigger
     type: time
