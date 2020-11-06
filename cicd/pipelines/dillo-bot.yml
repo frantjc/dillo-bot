@@ -172,6 +172,8 @@ jobs:
       - put: dillo-bot-resource-image
         params:
           build: dillo-bot/cicd/docker/image_resources/dillo-bot
+        get_params:
+          skip_download: true
 
   - name: build-general-resource-image
     <<: *default_job_config
@@ -184,6 +186,8 @@ jobs:
       - put: general-resource-image
         params:
           build: dillo-bot/cicd/docker/image_resources/general
+        get_params:
+          skip_download: true
 
 
   # - name: lint-dillo-bot
@@ -313,6 +317,8 @@ jobs:
           build: dillo-bot/
           tag_as_latest: true
           tag_file: version/version
+        get_params:
+          skip_download: true
 
 
   - name: release-dillo-bot
