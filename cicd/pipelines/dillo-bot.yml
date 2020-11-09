@@ -3,9 +3,9 @@ resource_types:
     type: registry-image
     source:
       repository: trivigy/discord-resource
-  
-  
-  
+
+
+
 resources:
   - name: dillo-bot
     type: git
@@ -143,6 +143,7 @@ anchors:
     HOST: ((aws.ec2.public_dns))
 
 
+
 jobs:
   - name: update-pipeline
     <<: *default_job_config
@@ -174,6 +175,7 @@ jobs:
           build: dillo-bot/cicd/docker/image_resources/dillo-bot
         get_params:
           skip_download: true
+
 
   - name: build-general-resource-image
     <<: *default_job_config
@@ -364,7 +366,7 @@ jobs:
 
       - get: dillo-bot-image
         passed: [containerize-dillo-bot]
-      
+
       - get: general-resource-image
         passed: [build-general-resource-image]
 
@@ -391,7 +393,8 @@ jobs:
         params:
           <<: *ssh_creds
           <<: *env_vars
-  
+
+
   - name: smoke-test-dillo-bot
     <<: *default_job_config
     on_success:
@@ -407,7 +410,7 @@ jobs:
             channel: ((concourse.discord.channel))
             title: FAIL
             message: New DilloBot failed smoke test, shutting him down
-        
+
         - task: stop-container
           file: dillo-bot/cicd/tasks/stop-container.yml
           params: *ssh_creds
